@@ -97,14 +97,17 @@ export const forceLoadRendererPlugin = async (id: string) => {
         ...document.adoptedStyleSheets,
         ...styleSheetList,
       ];
-      // Remove them when the plugin is unloaded (they were kept, and added again on every re-enable)
-      unregisterStyleMap[id] = [
-        () => {
-          document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
-            (styleSheet) => !styleSheetList.includes(styleSheet),
-          );
-        },
-      ];
+      // Remove them when the plugin is unloaded (they were kept, and added again on every re-enable),
+      // except for plugins that need a restart: their code keeps running until then
+      if (!plugin.restartNeeded) {
+        unregisterStyleMap[id] = [
+          () => {
+            document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+              (styleSheet) => !styleSheetList.includes(styleSheet),
+            );
+          },
+        ];
+      }
     }
 
     console.log(

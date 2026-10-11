@@ -69,6 +69,10 @@ document.addEventListener('visibilitychange', () => {
     scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
   }
 });
+// A page loaded while the window is hidden doesn't get the event
+if (document.visibilityState === 'hidden') {
+  scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
+}
 
 ipcRenderer.on('plugin:unload', async (_, id: string) => {
   await forceUnloadPreloadPlugin(id);

@@ -144,6 +144,12 @@ export default createPlugin({
           });
         };
 
+        // Draw the current frame (when the video doesn't play, e.g. after a resize which clears the canvas)
+        const redraw = () => {
+          lastImageData = null;
+          onSync();
+        };
+
         this.update = () => {
           const rect = video.getBoundingClientRect();
 
@@ -164,13 +170,14 @@ export default createPlugin({
           blurCanvas.style.setProperty('--height', `${this.size}%`);
           blurCanvas.style.setProperty('--blur', `${this.blur}px`);
           blurCanvas.style.setProperty('--opacity', `${this.opacity}`);
+
+          // Setting the size cleared the canvas (so a paused video also has the effect)
+          redraw();
         };
         this.update();
 
         /* hooking */
         let canvasInterval: NodeJS.Timeout | null = null;
-        // Draw a frame, so a paused video also has the effect
-        onSync();
         if (!video.paused) {
           canvasInterval = setInterval(
             onSync,
@@ -189,9 +196,14 @@ export default createPlugin({
             Math.max(1, Math.ceil(1000 / this.buffer)),
           );
         };
+        const onFrameChange = () => {
+          if (video.paused) redraw();
+        };
         // Media events don't bubble: listen on the media element itself
         video.addEventListener('pause', onPause);
         video.addEventListener('play', onPlay);
+        video.addEventListener('seeked', onFrameChange);
+        video.addEventListener('loadeddata', onFrameChange);
 
         /* injecting */
         videoWrapper.prepend(blurCanvas);
@@ -200,8 +212,13 @@ export default createPlugin({
         return () => {
           if (canvasInterval) clearInterval(canvasInterval);
 
+          if (typeof lastEffectWorkId === 'number') {
+            cancelAnimationFrame(lastEffectWorkId);
+          }
           video.removeEventListener('pause', onPause);
           video.removeEventListener('play', onPlay);
+          video.removeEventListener('seeked', onFrameChange);
+          video.removeEventListener('loadeddata', onFrameChange);
 
           if (blurCanvas.isConnected) blurCanvas.remove();
         };
