@@ -141,12 +141,19 @@ export const loadAllRendererPlugins = async () => {
   // Check the enabled state before importing a plugin,
   // so disabled plugins (and their dependencies) are never evaluated
   for (const pluginId of rendererPluginIds) {
-    if (await window.mainConfig.plugins.isEnabled(pluginId)) {
-      await forceLoadRendererPlugin(pluginId);
-    } else {
-      if (loadedPluginMap[pluginId]) {
+    // One broken plugin must not prevent the others from loading
+    try {
+      if (await window.mainConfig.plugins.isEnabled(pluginId)) {
+        await forceLoadRendererPlugin(pluginId);
+      } else if (loadedPluginMap[pluginId]) {
         await forceUnloadRendererPlugin(pluginId);
       }
+    } catch (error) {
+      console.error(
+        LoggerPrefix,
+        t('common.console.plugins.load-failed', { pluginName: pluginId }),
+        error,
+      );
     }
   }
 };
