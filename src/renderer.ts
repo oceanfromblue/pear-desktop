@@ -1,7 +1,10 @@
 import i18next from 'i18next';
 import { setTheme } from 'mdui/functions/setTheme.js';
 import 'mdui/mdui.css';
-import 'mdui';
+// Only register the mdui components that are actually used (by the navigation and synced-lyrics plugins),
+// the full library also bundles the material color utilities which are never used
+import 'mdui/components/button-icon.js';
+import 'mdui/components/tooltip.js';
 
 import { loadI18n, setLanguage, t as i18t } from '@/i18n';
 import {
