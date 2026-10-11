@@ -48,7 +48,23 @@ export const pluginVirtualModuleGenerator = (
     (writer) => {
       for (const { name, path } of plugins) {
         const absolutePath = resolve(srcPath, '..', path).replace(/\\/g, '/');
-        if (mode === 'main' || mode === 'renderer') {
+        if (mode === 'main') {
+          // full module (backend + menu) is imported only for enabled plugins,
+          // the stub (name/description/config/...) comes from a light `.stub` module
+          const stubPath = absolutePath.replace(/\.(js|ts|jsx|tsx)$/, '.stub.$1');
+          writer.writeLine(
+            `import ${kebabToCamel(name)}PluginStubImport from '${stubPath}';`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}PluginImport = () => import('${absolutePath}');`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}Plugin = async () => (await ${kebabToCamel(name)}PluginImport()).default;`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}PluginStub = () => Promise.resolve(${kebabToCamel(name)}PluginStubImport);`,
+          );
+        } else if (mode === 'renderer') {
           // dynamic import (for main and renderer)
           // NOTE: the renderer is bundled into a single IIFE file, but the bundler still wraps
           // dynamically imported modules in lazy initializers, so the code (and the heavy
@@ -131,6 +147,21 @@ export const pluginVirtualModuleGenerator = (
       writer.writeLine('  return await promise;');
       writer.writeLine('};');
       writer.blankLine();
+
+      if (mode === 'main') {
+        writer.writeLine('const mainPluginLoaders = {');
+        for (const { name } of plugins) {
+          writer.writeLine(`  "${name}": ${kebabToCamel(name)}Plugin,`);
+        }
+        writer.writeLine('};');
+        writer.writeLine('const mainPluginCache = {};');
+        writer.writeLine('export const mainPlugin = async (id) => {');
+        writer.writeLine('  if (!Object.hasOwn(mainPluginLoaders, id)) return undefined;');
+        writer.writeLine('  mainPluginCache[id] ??= mainPluginLoaders[id]().then((plg) => supportsPlatform(plg) ? plg : undefined);');
+        writer.writeLine('  return await mainPluginCache[id];');
+        writer.writeLine('};');
+        writer.blankLine();
+      }
 
       if (mode === 'renderer') {
         // Load a single plugin, so only enabled plugins are evaluated

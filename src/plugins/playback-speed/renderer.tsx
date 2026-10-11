@@ -7,6 +7,7 @@ import {
   isPlayerMenu,
 } from '@/plugins/utils/renderer/check';
 import { getSongMenu } from '@/providers/dom-elements';
+import { getMediaElement } from '@/providers/media-element';
 
 import { PlaybackSpeedSlider } from './components/slider';
 
@@ -14,7 +15,7 @@ const MIN_PLAYBACK_SPEED = 0.07;
 const MAX_PLAYBACK_SPEED = 16;
 
 const forcePlaybackRate = (e: Event) => {
-  if (e.target instanceof HTMLVideoElement) {
+  if (e.target instanceof HTMLMediaElement) {
     const videoElement = e.target;
     if (videoElement.playbackRate !== speed()) {
       videoElement.playbackRate = speed();
@@ -30,7 +31,7 @@ const sliderContainer = document.createElement('div');
 export const onPlayerApiReady = () => {
   const observePopupContainer = () => {
     const updatePlayBackSpeed = () => {
-      const videoElement = document.querySelector<HTMLVideoElement>('video');
+      const videoElement = getMediaElement();
       if (videoElement) {
         videoElement.playbackRate = speed();
       }
@@ -104,7 +105,7 @@ export const onPlayerApiReady = () => {
   };
 
   const observeVideo = () => {
-    const video = document.querySelector<HTMLVideoElement>('video');
+    const video = getMediaElement();
     if (video) {
       video.addEventListener('ratechange', forcePlaybackRate);
       video.addEventListener('peard:src-changed', forcePlaybackRate);
@@ -116,7 +117,7 @@ export const onPlayerApiReady = () => {
 };
 
 export const onUnload = () => {
-  const video = document.querySelector<HTMLVideoElement>('video');
+  const video = getMediaElement();
   if (video) {
     video.removeEventListener('ratechange', forcePlaybackRate);
     video.removeEventListener('peard:src-changed', forcePlaybackRate);

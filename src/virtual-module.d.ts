@@ -6,6 +6,8 @@ declare module 'virtual:plugins' {
   export const mainPlugins: () => Promise<Record<string, Plugin>>;
   export const preloadPlugins: () => Promise<Record<string, Plugin>>;
   export const rendererPlugins: () => Promise<Record<string, Plugin>>;
+  /** Main only: load a single plugin's main-process module (backend + menu) */
+  export const mainPlugin: (id: string) => Promise<Plugin | undefined>;
   /** Renderer only: the ids of every plugin (including the ones without a renderer) */
   export const rendererPluginIds: string[];
   /** Renderer only: load a single plugin, `undefined` if it has no renderer or is not supported */

@@ -28,7 +28,13 @@ export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
 
   const mainAndPreloadExcludes = ['electron', 'custom-electron-prompt', ...builtinModules];
+
+  // By default, every key of a JSON file becomes a named export (a getter function),
+  // which is very costly in memory for big dictionaries (e.g. ~55k getters for hanja)
+  const json = { namedExports: false, stringify: 'auto' } as const;
+
   const mainConfig: MainViteConfig = {
+    json,
     plugins: [
       pluginLoader('backend'),
       viteResolve({
@@ -69,6 +75,7 @@ export default defineConfig(({ mode }) => {
   };
 
   const preloadConfig: PreloadViteConfig = {
+    json,
     plugins: [
       pluginLoader('preload'),
       viteResolve({
@@ -101,6 +108,7 @@ export default defineConfig(({ mode }) => {
 
   const rendererExcludes = ['electron', ...builtinModules];
   const rendererConfig: RendererViteConfig = {
+    json,
     plugins: [
       pluginLoader('renderer'),
       viteResolve({

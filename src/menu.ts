@@ -475,6 +475,25 @@ export const mainMenuTemplate = async (
           ],
         },
         {
+          label: t('main.menu.options.submenu.lower-video-quality-when-hidden'),
+          type: 'checkbox',
+          checked: config.get('options.lowerVideoQualityWhenHidden') ?? true,
+          click(item: MenuItem) {
+            config.setMenuOption(
+              'options.lowerVideoQualityWhenHidden',
+              item.checked,
+            );
+          },
+        },
+        {
+          label: t('main.menu.options.submenu.audio-only'),
+          type: 'checkbox',
+          checked: config.get('options.audioOnly') ?? false,
+          click(item: MenuItem) {
+            config.setMenuOption('options.audioOnly', item.checked);
+          },
+        },
+        {
           label: t('main.menu.options.submenu.language.label') + ' (Language)',
           submenu: [
             {

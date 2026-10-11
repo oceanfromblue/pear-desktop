@@ -1,4 +1,5 @@
 import { t } from '@/i18n';
+import { getMediaElement } from '@/providers/media-element';
 import { createPlugin } from '@/utils';
 
 import type { MusicPlayer } from '@/types/music-player';
@@ -54,15 +55,17 @@ export default createPlugin<
 
       if (event.detail.name === 'dataloaded') {
         this.api?.pauseVideo();
-        document
-          .querySelector<HTMLVideoElement>('video')
-          ?.addEventListener('timeupdate', this.timeUpdateListener, {
+        getMediaElement()?.addEventListener(
+          'timeupdate',
+          this.timeUpdateListener,
+          {
             once: true,
-          });
+          },
+        );
       }
     },
     timeUpdateListener(e: Event) {
-      if (e.target instanceof HTMLVideoElement) {
+      if (e.target instanceof HTMLMediaElement) {
         e.target.pause();
       }
     },

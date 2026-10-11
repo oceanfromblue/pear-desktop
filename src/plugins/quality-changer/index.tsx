@@ -2,6 +2,7 @@ import { dialog } from 'electron';
 import { render } from 'solid-js/web';
 
 import { t } from '@/i18n';
+import { setManualVideoQuality } from '@/providers/video-quality';
 import { createPlugin } from '@/utils';
 
 import { QualitySettingButton } from './templates/quality-setting-button';
@@ -64,6 +65,8 @@ export default createPlugin({
         }
 
         const newQuality = qualityLevels[quality.response];
+        // Don't let the video quality manager override the user's choice
+        setManualVideoQuality();
         api.setPlaybackQualityRange(newQuality);
         api.setPlaybackQuality(newQuality);
       };

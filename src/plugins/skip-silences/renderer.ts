@@ -1,3 +1,5 @@
+import { getMediaElement } from '@/providers/media-element';
+
 import type { SkipSilencesPluginConfig } from './index';
 import type { RendererContext } from '@/types/contexts';
 
@@ -31,7 +33,7 @@ const getMaxVolume = (
 };
 
 const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
-  const video = document.querySelector('video');
+  const video = getMediaElement();
   const { audioContext } = e.detail;
   const sourceNode = e.detail.audioSource;
 
@@ -127,7 +129,7 @@ export const onRendererUnload = () => {
   document.removeEventListener('peard:audio-can-play', audioCanPlayListener);
 
   if (playOrSeekHandler) {
-    const video = document.querySelector('video');
+    const video = getMediaElement();
     video?.removeEventListener('play', playOrSeekHandler);
     video?.removeEventListener('seeked', playOrSeekHandler);
   }

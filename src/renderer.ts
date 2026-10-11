@@ -20,8 +20,14 @@ import {
   getLoadedRendererPlugin,
   loadAllRendererPlugins,
 } from './loader/renderer';
+import {
+  forceAudioOnlyPlayer,
+  setupAudioOnlyMode,
+} from './providers/audio-only';
 import { startingPages } from './providers/extracted-data';
+import { getMediaElement } from './providers/media-element';
 import { setupSongInfo } from './providers/song-info-front';
+import { setupVideoQualityManager } from './providers/video-quality';
 
 import type { MusicPlayer } from '@/types/music-player';
 import type { MusicPlayerAppElement } from '@/types/music-player-app-element';
@@ -29,6 +35,12 @@ import type { QueueResponse } from '@/types/music-player-desktop-internal';
 import type { PluginConfig } from '@/types/plugins';
 import type { QueueElement } from '@/types/queue';
 import type { SearchBoxElement } from '@/types/search-box-element';
+
+// Must run before the player is created (this script runs before the page scripts)
+const isAudioOnlyMode = !!window.mainConfig.get('options.audioOnly');
+if (isAudioOnlyMode) {
+  forceAudioOnlyPlayer();
+}
 
 setTheme('dark');
 
@@ -312,10 +324,21 @@ async function onApiLoaded() {
     },
   );
 
-  const video = document.querySelector('video')!;
+  // A <video>, or an <audio> in audio only mode
+  const video = getMediaElement()!;
   const audioContext = new AudioContext();
   const audioSource = audioContext.createMediaElementSource(video);
   audioSource.connect(audioContext.destination);
+
+  if (isAudioOnlyMode) {
+    setupAudioOnlyMode(api!);
+  } else if (
+    window.mainConfig.get('options.lowerVideoQualityWhenHidden') ??
+    true
+  ) {
+    // Before the plugins, so they can report when they hide the video
+    setupVideoQualityManager(api!);
+  }
 
   for (const [id, plugin] of Object.entries(getAllLoadedRendererPlugins())) {
     if (typeof plugin.renderer !== 'function') {

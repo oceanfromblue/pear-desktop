@@ -4,6 +4,7 @@ import { Innertube } from '\u0079\u006f\u0075\u0074\u0075\u0062\u0065i.js';
 
 import { t } from '@/i18n';
 import { getNetFetchAsFetch } from '@/plugins/utils/main';
+import { getMediaElement } from '@/providers/media-element';
 import promptOptions from '@/providers/prompt-options';
 import { createPlugin } from '@/utils';
 
@@ -235,7 +236,7 @@ export default createPlugin<
       };
 
       const syncVideoWithTransitionAudio = () => {
-        const video = document.querySelector('video')!;
+        const video = getMediaElement()!;
 
         const videoFader = new VolumeFader(video, {
           fadeScaling: this.config?.fadeScaling,
@@ -291,7 +292,7 @@ export default createPlugin<
           resolveTransition = resolve;
         });
 
-        const video = document.querySelector('video')!;
+        const video = getMediaElement()!;
 
         const fader = new VolumeFader(transitionAudio._sounds[0]._node, {
           initialVolume: video.volume,

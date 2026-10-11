@@ -113,6 +113,7 @@
             }
           },
           "always-on-top": "Always on top",
+          "audio-only": "Audio only mode: never load videos (experimental, restart required)",
           "auto-update": "Auto Update",
           "hide-menu": {
             "dialog": {
@@ -131,6 +132,7 @@
               "to-help-translate": "Want to help translate? Click here"
             }
           },
+          "lower-video-quality-when-hidden": "Lower video quality while the video isn't visible (saves memory, restart required)",
           "resume-on-start": "Resume last song when app starts",
           "single-instance-lock": "Single Instance Lock",
           "start-at-login": "Start at login",

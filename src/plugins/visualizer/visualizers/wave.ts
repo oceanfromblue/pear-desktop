@@ -12,7 +12,6 @@ class WaveVisualizer extends Visualizer {
     audioSource: MediaElementAudioSourceNode,
     canvas: HTMLCanvasElement,
     audioNode: GainNode,
-    _stream: MediaStream,
     config: VisualizerPluginConfig,
   ) {
     super(audioSource, audioNode);

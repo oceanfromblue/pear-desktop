@@ -27,7 +27,7 @@ import electronUpdater from 'electron-updater';
 import { deepEqual } from 'fast-equals';
 import { parse } from 'node-html-parser';
 import { availableLanguages } from 'virtual:i18n';
-import { allPlugins, mainPlugins } from 'virtual:plugins';
+import { allPlugins } from 'virtual:plugins';
 
 import * as config from '@/config';
 import { APPLICATION_NAME, loadI18n, setLanguage, t } from '@/i18n';
@@ -187,8 +187,8 @@ function onClosed() {
   mainWindow = null;
 }
 
-ipcMain.handle('peard:get-main-plugin-names', async () =>
-  Object.keys(await mainPlugins()),
+ipcMain.handle('peard:get-main-plugin-names', () =>
+  Object.keys(getAllLoadedMainPlugins()),
 );
 
 const initHook = async (win: BrowserWindow) => {

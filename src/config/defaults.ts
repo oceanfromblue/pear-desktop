@@ -36,6 +36,9 @@ export interface DefaultConfig {
     usePodcastParticipantAsArtist: boolean;
     themes: string[];
     customWindowTitle?: string;
+    // Optional: the stored options of existing users don't contain it (missing = enabled)
+    lowerVideoQualityWhenHidden?: boolean;
+    audioOnly?: boolean;
   };
   'plugins': Record<string, unknown>;
 }
@@ -72,6 +75,8 @@ export const defaultConfig: DefaultConfig = {
     overrideUserAgent: false,
     usePodcastParticipantAsArtist: false,
     themes: [],
+    lowerVideoQualityWhenHidden: true,
+    audioOnly: false,
   },
   'plugins': {},
 };

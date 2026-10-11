@@ -1,10 +1,10 @@
-import { StatusDisplayType } from 'discord-api-types/v10';
-
 import { t } from '@/i18n';
 import { createPlugin } from '@/utils';
 
 import { backend } from './main';
 import { onMenu } from './menu';
+
+import type { StatusDisplayType } from 'discord-api-types/v10';
 
 export type DiscordPluginConfig = {
   'enabled': boolean;
@@ -54,7 +54,9 @@ export default createPlugin({
     'playOn\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u004d\u0075\u0073\u0069\u0063': true,
     'hideGitHubButton': false,
     'hideDurationLeft': false,
-    'statusDisplayType': StatusDisplayType.Details,
+    // StatusDisplayType.Details: a literal, so the whole discord-api-types bundle
+    // isn't pulled into every process
+    'statusDisplayType': 2 satisfies StatusDisplayType.Details,
   } as DiscordPluginConfig,
   menu: onMenu,
   backend,

@@ -1,6 +1,6 @@
 import { deepmerge } from 'deepmerge-ts';
 import { type BrowserWindow, ipcMain } from 'electron';
-import { allPlugins, mainPlugins } from 'virtual:plugins';
+import { allPlugins, mainPlugin } from 'virtual:plugins';
 
 import * as config from '@/config';
 import { t } from '@/i18n';
@@ -98,8 +98,8 @@ export const forceLoadMainPlugin = async (
   id: string,
   win: BrowserWindow,
 ): Promise<void> => {
-  const plugin = (await mainPlugins())[id];
-  if (!plugin) return;
+  const plugin = await mainPlugin(id);
+  if (!plugin?.backend) return;
 
   try {
     const hasStarted = await startPlugin(id, plugin, {
@@ -135,8 +135,11 @@ export const loadAllMainPlugins = async (win: BrowserWindow) => {
   const pluginConfigs = config.plugins.getPlugins();
   const queue: Promise<void>[] = [];
 
-  for (const [plugin, pluginDef] of Object.entries(await mainPlugins())) {
-    const config = deepmerge(pluginDef.config, pluginConfigs[plugin] ?? {});
+  for (const [plugin, pluginStub] of Object.entries(await allPlugins())) {
+    const config = deepmerge(
+      pluginStub.config ?? { enabled: false },
+      pluginConfigs[plugin] ?? {},
+    );
     if (config.enabled) {
       queue.push(forceLoadMainPlugin(plugin, win));
     } else if (loadedPluginMap[plugin]) {

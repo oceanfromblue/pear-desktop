@@ -1,6 +1,7 @@
 import is from 'electron-is';
 
 import { t } from '@/i18n';
+import { getMediaElement } from '@/providers/media-element';
 import { createPlugin } from '@/utils';
 
 import { sortSegments } from './segments';
@@ -86,7 +87,7 @@ export default createPlugin({
   },
   renderer: {
     timeUpdateListener: (e: Event) => {
-      if (e.target instanceof HTMLVideoElement) {
+      if (e.target instanceof HTMLMediaElement) {
         const target = e.target;
 
         for (const segment of currentSegments) {
@@ -109,7 +110,7 @@ export default createPlugin({
       });
     },
     onPlayerApiReady() {
-      const video = document.querySelector<HTMLVideoElement>('video');
+      const video = getMediaElement();
       if (!video) return;
 
       video.addEventListener('timeupdate', this.timeUpdateListener);
@@ -117,7 +118,7 @@ export default createPlugin({
       video.addEventListener('emptied', this.resetSegments);
     },
     stop() {
-      const video = document.querySelector<HTMLVideoElement>('video');
+      const video = getMediaElement();
       if (!video) return;
 
       video.removeEventListener('timeupdate', this.timeUpdateListener);

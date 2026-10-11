@@ -113,6 +113,7 @@
             }
           },
           "always-on-top": "항상 최상단에 표시하기",
+          "audio-only": "오디오 전용 모드: 영상을 아예 불러오지 않음 (실험적, 재시작 필요)",
           "auto-update": "자동 업데이트",
           "hide-menu": {
             "dialog": {
@@ -131,6 +132,7 @@
               "to-help-translate": "번역을 돕고 싶으신가요? 여기를 누르세요"
             }
           },
+          "lower-video-quality-when-hidden": "영상이 보이지 않을 때 화질 낮추기 (메모리 절약, 재시작 필요)",
           "resume-on-start": "앱 시작 시 마지막 곡 다시 듣기",
           "single-instance-lock": "단일 인스턴스 잠금",
           "start-at-login": "로그온 시 자동 실행",
