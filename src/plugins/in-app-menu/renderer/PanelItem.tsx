@@ -1,9 +1,9 @@
 import { autoUpdate, offset, size } from '@floating-ui/dom';
+import { css } from 'goober';
 import { useFloating } from 'solid-floating-ui';
 import { createSignal, Match, Show, Switch } from 'solid-js';
 import { type JSX } from 'solid-js/jsx-runtime';
 import { Portal } from 'solid-js/web';
-import { css } from 'solid-styled-components';
 import { Transition } from 'solid-transition-group';
 
 import { cacheNoArgs } from '@/providers/decorators';

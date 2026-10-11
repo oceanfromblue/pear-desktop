@@ -1,4 +1,5 @@
 import { type Menu, type MenuItem } from 'electron';
+import { css } from 'goober';
 import {
   createEffect,
   createResource,
@@ -10,7 +11,6 @@ import {
   Show,
   Switch,
 } from 'solid-js';
-import { css } from 'solid-styled-components';
 import { TransitionGroup } from 'solid-transition-group';
 
 import { cacheNoArgs } from '@/providers/decorators';

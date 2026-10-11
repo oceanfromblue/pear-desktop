@@ -5,10 +5,10 @@ import {
   type OffsetOptions,
   size,
 } from '@floating-ui/dom';
+import { css } from 'goober';
 import { useFloating } from 'solid-floating-ui';
 import { createSignal, type JSX, Show, splitProps, mergeProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
-import { css } from 'solid-styled-components';
 import { Transition } from 'solid-transition-group';
 
 import { cacheNoArgs } from '@/providers/decorators';
