@@ -39,6 +39,7 @@ export interface DefaultConfig {
     // Optional: the stored options of existing users don't contain it (missing = enabled)
     lowerVideoQualityWhenHidden?: boolean;
     audioOnly?: boolean;
+    lowMemoryMode?: boolean;
   };
   'plugins': Record<string, unknown>;
 }
@@ -77,6 +78,7 @@ export const defaultConfig: DefaultConfig = {
     themes: [],
     lowerVideoQualityWhenHidden: true,
     audioOnly: false,
+    lowMemoryMode: false,
   },
   'plugins': {},
 };

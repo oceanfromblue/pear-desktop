@@ -557,6 +557,16 @@ export const mainMenuTemplate = async (
             },
             {
               label: t(
+                'main.menu.options.submenu.advanced-options.submenu.low-memory-mode',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.lowMemoryMode') ?? false,
+              click(item: MenuItem) {
+                config.setMenuOption('options.lowMemoryMode', item.checked);
+              },
+            },
+            {
+              label: t(
                 'main.menu.options.submenu.advanced-options.submenu.disable-hardware-acceleration',
               ),
               type: 'checkbox',

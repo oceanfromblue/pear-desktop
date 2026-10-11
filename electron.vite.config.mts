@@ -14,6 +14,7 @@ import viteResolve from 'vite-plugin-resolve';
 import solidPlugin from 'vite-plugin-solid';
 
 import { i18nImporter } from './vite-plugins/i18n-importer.mjs';
+import latin1Output from './vite-plugins/latin1-output.mjs';
 import { pluginVirtualModuleGenerator } from './vite-plugins/plugin-importer.mjs';
 import pluginLoader from './vite-plugins/plugin-loader.mjs';
 
@@ -118,6 +119,9 @@ export default defineConfig(({ mode }) => {
       withFilter(solidPlugin(), {
         load: { id: [/\.(tsx|jsx)$/, '/@solid-refresh'] },
       }),
+      // The renderer is injected as a script, whose source V8 keeps in memory
+      // (production only: it would break the source maps)
+      !isDev && latin1Output(),
     ],
     root: './src/',
     build: {

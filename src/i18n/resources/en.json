@@ -99,6 +99,7 @@
               "auto-reset-app-cache": "Reset app cache when app starts",
               "disable-hardware-acceleration": "Disable hardware acceleration",
               "edit-config-json": "Edit config.json",
+              "low-memory-mode": "Low memory mode: uses less memory, but can be slower or less stable (restart required)",
               "override-user-agent": "Override User-Agent",
               "restart-on-config-changes": "Restart on config changes",
               "set-proxy": {

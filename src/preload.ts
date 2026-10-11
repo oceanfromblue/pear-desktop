@@ -49,6 +49,27 @@ loadI18n().then(async () => {
   await loadAllPreloadPlugins();
 });
 
+// While nobody can see the page (e.g. hidden in the tray), free the memory it doesn't need:
+// clears Blink's memory cache and sends a memory pressure signal (garbage collection, caches)
+const TRIM_MEMORY_DELAY_MS = 60_000;
+const TRIM_MEMORY_INTERVAL_MS = 15 * 60_000;
+let trimMemoryTimeout: ReturnType<typeof setTimeout> | undefined;
+const scheduleMemoryTrim = (delay: number) => {
+  trimMemoryTimeout = setTimeout(() => {
+    if (document.visibilityState !== 'hidden') return;
+
+    webFrame.clearCache();
+    // The memory grows back while playing in the background
+    scheduleMemoryTrim(TRIM_MEMORY_INTERVAL_MS);
+  }, delay);
+};
+document.addEventListener('visibilitychange', () => {
+  clearTimeout(trimMemoryTimeout);
+  if (document.visibilityState === 'hidden') {
+    scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
+  }
+});
+
 ipcRenderer.on('plugin:unload', async (_, id: string) => {
   await forceUnloadPreloadPlugin(id);
 });

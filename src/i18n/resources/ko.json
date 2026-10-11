@@ -99,6 +99,7 @@
               "auto-reset-app-cache": "앱 시작 시 앱 캐시 초기화하기",
               "disable-hardware-acceleration": "하드웨어 가속 비활성화",
               "edit-config-json": "config.json 편집",
+              "low-memory-mode": "저메모리 모드: 메모리를 덜 쓰지만 느려지거나 불안정할 수 있음 (재시작 필요)",
               "override-user-agent": "User-Agent 재정의하기",
               "restart-on-config-changes": "설정 변경 시 재시작하기",
               "set-proxy": {
