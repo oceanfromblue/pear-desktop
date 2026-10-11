@@ -185,6 +185,10 @@ export default createPlugin({
       const canvas = document.createElement('canvas');
       canvas.id = 'visualizer';
       visualizerContainer.prepend(canvas);
+      // Size it before creating the visualizer (Vudio reads the size once)
+      const { width, height } = window.getComputedStyle(visualizerContainer);
+      canvas.width = Math.ceil(parseFloat(width));
+      canvas.height = Math.ceil(parseFloat(height));
 
       const gainNode = this.props.audioContext.createGain();
       gainNode.gain.value = 1.25;

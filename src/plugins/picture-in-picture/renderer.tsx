@@ -25,10 +25,12 @@ export const onPlayerApiReady = async (
     if ((await getConfig()).useNativePiP) {
       const isInPiP = document.pictureInPictureElement !== null;
       const video = document.querySelector<HTMLVideoElement>('video');
-      const togglePiP = () =>
-        isInPiP
-          ? document.exitPictureInPicture()
-          : video?.requestPictureInPicture();
+      const togglePiP = () => {
+        if (isInPiP) return document.exitPictureInPicture();
+        // Audio only mode: no <video> to show in native PiP, use the in-app PiP instead
+        if (!video) throw new Error('No video element');
+        return video.requestPictureInPicture();
+      };
 
       try {
         await togglePiP();
