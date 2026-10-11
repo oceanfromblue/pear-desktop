@@ -330,11 +330,10 @@ async function onApiLoaded() {
   const audioSource = audioContext.createMediaElementSource(video);
   audioSource.connect(audioContext.destination);
 
-  if (isAudioOnlyMode) {
-    setupAudioOnlyMode(api!);
-  } else if (
-    window.mainConfig.get('options.lowerVideoQualityWhenHidden') ??
-    true
+  const isPlayingAudioOnly = isAudioOnlyMode && setupAudioOnlyMode(api!);
+  if (
+    !isPlayingAudioOnly &&
+    (window.mainConfig.get('options.lowerVideoQualityWhenHidden') ?? true)
   ) {
     // Before the plugins, so they can report when they hide the video
     setupVideoQualityManager(api!);

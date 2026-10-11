@@ -235,7 +235,13 @@ export default createPlugin<
         syncVideoWithTransitionAudio();
       };
 
+      let trackListeners: AbortController | undefined;
       const syncVideoWithTransitionAudio = () => {
+        // Remove the listeners of the previous song, they were accumulating otherwise
+        trackListeners?.abort();
+        trackListeners = new AbortController();
+        const { signal } = trackListeners;
+
         const video = getMediaElement()!;
 
         const videoFader = new VolumeFader(video, {
@@ -246,23 +252,35 @@ export default createPlugin<
         transitionAudio.play();
         transitionAudio.seek(video.currentTime);
 
-        video.addEventListener('seeking', () => {
-          transitionAudio.seek(video.currentTime);
-        });
+        video.addEventListener(
+          'seeking',
+          () => {
+            transitionAudio.seek(video.currentTime);
+          },
+          { signal },
+        );
 
-        video.addEventListener('pause', () => {
-          transitionAudio.pause();
-        });
+        video.addEventListener(
+          'pause',
+          () => {
+            transitionAudio.pause();
+          },
+          { signal },
+        );
 
-        video.addEventListener('play', () => {
-          transitionAudio.play();
-          transitionAudio.seek(video.currentTime);
+        video.addEventListener(
+          'play',
+          () => {
+            transitionAudio.play();
+            transitionAudio.seek(video.currentTime);
 
-          // Fade in
-          const videoVolume = video.volume;
-          video.volume = 0;
-          videoFader.fadeTo(videoVolume);
-        });
+            // Fade in
+            const videoVolume = video.volume;
+            video.volume = 0;
+            videoFader.fadeTo(videoVolume);
+          },
+          { signal },
+        );
 
         // Exit just before the end for the transition
         const transitionBeforeEnd = () => {
@@ -278,7 +296,7 @@ export default createPlugin<
           }
         };
 
-        video.addEventListener('timeupdate', transitionBeforeEnd);
+        video.addEventListener('timeupdate', transitionBeforeEnd, { signal });
       };
 
       const crossfade = (cb: () => void) => {

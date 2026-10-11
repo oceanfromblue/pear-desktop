@@ -21,8 +21,6 @@ export const forceAudioOnlyPlayer = () => {
     enumerable: false,
     configurable: true,
   });
-
-  document.documentElement.setAttribute(AUDIO_ONLY_ATTRIBUTE, '');
 };
 
 const audioOnlyStyle = `
@@ -35,6 +33,9 @@ const audioOnlyStyle = `
   }
 `;
 
+/**
+ * @returns `false` if the player doesn't run in audio only mode
+ */
 export const setupAudioOnlyMode = (api: MusicPlayer) => {
   const mediaElement = getMediaElement();
   if (!(mediaElement instanceof HTMLAudioElement)) {
@@ -43,10 +44,10 @@ export const setupAudioOnlyMode = (api: MusicPlayer) => {
       LoggerPrefix,
       'Audio only mode is enabled, but the player still uses a video element',
     );
-    document.documentElement.removeAttribute(AUDIO_ONLY_ATTRIBUTE);
-    return;
+    return false;
   }
 
+  document.documentElement.setAttribute(AUDIO_ONLY_ATTRIBUTE, '');
   const style = document.createElement('style');
   style.textContent = audioOnlyStyle;
   document.head.appendChild(style);
@@ -84,4 +85,6 @@ export const setupAudioOnlyMode = (api: MusicPlayer) => {
     if (name === 'dataloaded') fixImage();
   });
   fixImage();
+
+  return true;
 };
