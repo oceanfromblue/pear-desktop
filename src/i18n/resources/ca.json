@@ -109,7 +109,8 @@
                   "title": "Definir servidor intermediari (proxy)"
                 }
               },
-              "toggle-dev-tools": "Commuta les DevTools"
+              "toggle-dev-tools": "Commuta les DevTools",
+              "force-smtc": "Forçar l'ús de SMTC extern"
             }
           },
           "always-on-top": "Mostra sempre per sobre",
@@ -144,7 +145,9 @@
               "disabled": "Deshabilitat",
               "enabled-and-hide-app": "Mostra la icona i amaga l'aplicació",
               "enabled-and-show-app": "Mostra la icona i mostra l'aplicació",
-              "play-pause-on-click": "Reprodueix / pausa en clicar"
+              "play-pause-on-click": "Reprodueix / pausa en clicar",
+              "move-to-current-desktop": "Mou a l'escriptori virtual actual en mostrar",
+              "force-white-icons": "Força l'ús d'icones blanques"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "M'agrada",
+      "dislike": "No m'agrada",
+      "unlike": "A diferència de",
+      "undislike": "No m'agrada"
     }
   },
   "plugins": {
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Amaga text del botó",
             "refresh-on-play-pause": "Recarrega al Reproduir/Pausar",
-            "tray-controls": "Obra/Tanca en clicar a la safata"
+            "tray-controls": "Obra/Tanca en clicar a la safata",
+            "hover-controls": "Mostra el mini-reproductor en passar el cursor per la safata"
           }
         },
         "priority": "Prioritat de les notificacions",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Salta les cançons amb «no m'agrada»",
-      "name": "Salta les cançons que no t'agraden"
-    },
     "skip-silences": {
       "description": "Omet automàticament les seccions amb silenci a les cançons",
       "name": "Omet els silencis"
@@ -886,6 +890,24 @@
           },
           "tooltip": "Tria l'efecte a aplicar a la línia actual"
         },
+        "lyrics-font-size": {
+          "label": "Mida de la lletra",
+          "submenu": {
+            "large": {
+              "label": "Gran",
+              "tooltip": "Utilitza la mida de lletra original més gran"
+            },
+            "medium": {
+              "label": "Mitjana",
+              "tooltip": "Utilitza una mida de lletra equilibrada"
+            },
+            "small": {
+              "label": "Petita",
+              "tooltip": "Utilitza una mida de lletra més compacta"
+            }
+          },
+          "tooltip": "Tria com de gran ha de ser el text de la lletra"
+        },
         "precise-timing": {
           "label": "Fes que les lletres es sincronitzin a la perfecció",
           "tooltip": "Calcula al mil·lisegon l'aparició de la següent línia (pot tenir un petit impacte en el rendiment)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "Mostra els codis de temps",
           "tooltip": "Mostra els codis de temps al costat de la lletra"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Neteja la memòria cau de traducció",
+            "tooltip": "Elimina totes les traduccions emmagatzemades al disc."
+          },
+          "configure": {
+            "label": "Configura la clau API i el model…",
+            "tooltip": "Estableix les opcions de traducció específiques del proveïdor."
+          },
+          "enabled": {
+            "label": "Activa la traducció",
+            "tooltip": "Mostra una línia traduïda sota cada línia de lletra original."
+          },
+          "label": "Traducció de la lletra",
+          "provider": {
+            "label": "Proveïdor",
+            "tooltip": "Quin servei s'utilitzarà per a la traducció."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Utilitza l'API nativa de missatges d'Anthropic.",
+              "prompt-title": "Configuració d'Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Utilitza l'API de llenguatge generatiu de Google (generateContent).",
+              "prompt-title": "Configuració de Gemini"
+            },
+            "google-translate": {
+              "host": "Servidor",
+              "name": "Google Traductor",
+              "prompt-label": "Utilitza l'extrem no oficial gratuït de Google Translate. No es requereix clau API, però Google pot limitar-ne la velocitat.",
+              "prompt-title": "Configuració de Google Translate"
+            },
+            "local-cli": {
+              "command": "Ordre",
+              "engine": "CLI local",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI local",
+              "prompt-label": "Utilitza un Claude Code, Codex o Gemini CLI iniciat sessió localment. L'ordre i el model són automàtics; el CLI utilitza el seu propi valor predeterminat.",
+              "prompt-title": "Configuració del CLI local",
+              "timeout": "Temps d'espera en segons (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Mode API (responses / auto / chat-completions)",
+              "base-url": "URL base",
+              "name": "Compatible amb OpenAI",
+              "prompt-label": "Utilitza servidors compatibles amb OpenAI, inclòs Ollama (URL base http://127.0.0.1:11434/v1, mode API auto o chat-completions).",
+              "prompt-title": "Configuració compatible amb OpenAI"
+            },
+            "shared": {
+              "api-key": "Clau API",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Idioma de destinació",
+            "options": {
+              "ar": "العربية",
+              "auto": "Segueix l'idioma de l'aplicació",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "L'idioma al qual traduir les lletres."
+          },
+          "tooltip": "Tradueix les lletres i mostra el resultat traduït línia per línia per a la visualització."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Utilitza lletres de YTM sense proxy",
+          "tooltip": "Omet el proxy de navegació YTM i crida directament a YouTube Music utilitzant la sessió autenticada de l'aplicació. Útil si confies en la teva xarxa/regió per permetre crides de navegació directes."
+        },
+        "show-custom-search-button": {
+          "label": "Mostra el botó de cerca personalitzada",
+          "tooltip": "Mostra un botó de cerca al selector de lletres que et permeta sobreescriure la consulta de cerca i l'artista de la cançó actual."
         }
       },
       "name": "Lletres sincronitzades",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Tipus de visualitzador"
       },
       "name": "Visualitzador"
+    },
+    "audio-only": {
+      "description": "Força el mode només àudio — bloqueja tots els fluxos de vídeo a nivell de xarxa i reproductor per estalviar RAM i ample de banda",
+      "name": "Només àudio"
+    },
+    "playback-recovery": {
+      "description": "Recupera automàticament els estats de reproducció encallats, estancats o aturats",
+      "menu": {
+        "log-to-console": "Registra els esdeveniments de recuperació a la consola"
+      },
+      "name": "Recuperació de la reproducció"
+    },
+    "playlist-search": {
+      "description": "Afegeix un camp de cerca per filtrar llistes de reproducció a la barra lateral i al diàleg \"Afegeix a la llista de reproducció\"",
+      "name": "Cerca de llista de reproducció",
+      "templates": {
+        "search-placeholder": "Cerca llistes de reproducció",
+        "no-results": "No s'han trobat llistes de reproducció"
+      }
     }
   }
 }

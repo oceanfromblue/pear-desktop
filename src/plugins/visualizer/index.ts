@@ -9,6 +9,9 @@ import {
 } from './visualizers';
 import { type Visualizer } from './visualizers/visualizer';
 
+/** Effects the bundled vudio build can draw. */
+export type VudioEffect = 'waveform' | 'circlewave' | 'circlebar' | 'lighting';
+
 type WaveColor = {
   gradient: string[];
   rotate?: number;
@@ -22,7 +25,7 @@ export type VisualizerPluginConfig = {
     blendTimeInSeconds: number;
   };
   vudio: {
-    effect: string;
+    effect: VudioEffect;
     accuracy: number;
     lighting: {
       maxHeight: number;
@@ -33,8 +36,8 @@ export type VisualizerPluginConfig = {
       shadowColor: string;
       fadeSide: boolean;
       prettify: boolean;
-      horizontalAlign: string;
-      verticalAlign: string;
+      horizontalAlign: 'left' | 'center' | 'right';
+      verticalAlign: 'top' | 'middle' | 'bottom';
       dottify: boolean;
     };
   };
@@ -62,7 +65,7 @@ type RenderProps = {
   audioContext: AudioContext | null;
   audioSource: MediaElementAudioSourceNode | null;
   observer: ResizeObserver | null;
-  audioCanPlayListener: ((e: CustomEvent<Compressor>) => void) | null;
+  gainNode: GainNode | null;
 };
 
 export default createPlugin({
@@ -135,6 +138,154 @@ export default createPlugin({
     },
   } as VisualizerPluginConfig,
   stylesheets: [emptyStyle],
+  settings: [
+    {
+      fields: [
+        {
+          type: 'select',
+          key: 'type',
+          label: () => t('plugins.visualizer.menu.visualizer-type'),
+          options: (['butterchurn', 'vudio', 'wave'] as const).map((value) => ({
+            value,
+            label: () => value,
+          })),
+        },
+      ],
+    },
+    {
+      title: () => 'Butterchurn',
+      fields: [
+        {
+          type: 'text',
+          key: 'butterchurn.preset',
+          label: () => t('plugins.visualizer.settings.preset'),
+          placeholder: () => 'Flexi - mindblob',
+        },
+        {
+          type: 'slider',
+          key: 'butterchurn.blendTimeInSeconds',
+          label: () => t('plugins.visualizer.settings.blend-time'),
+          min: 0,
+          max: 10,
+          step: 0.1,
+          unit: 's',
+        },
+      ],
+    },
+    {
+      title: () => 'Vudio',
+      fields: [
+        {
+          type: 'select',
+          variant: 'dropdown',
+          key: 'vudio.effect',
+          label: () => t('plugins.visualizer.settings.effect'),
+          options: ['waveform', 'circlewave', 'circlebar', 'lighting'].map(
+            (value) => ({ value, label: () => value }),
+          ),
+        },
+        {
+          type: 'select',
+          variant: 'dropdown',
+          key: 'vudio.accuracy',
+          label: () => t('plugins.visualizer.settings.accuracy'),
+          // Vudio sets `analyser.fftSize = accuracy * 2`, so only powers of
+          // two within the Web Audio fftSize range are valid.
+          options: [32, 64, 128, 256, 512, 1024].map((value) => ({
+            value,
+            label: () => String(value),
+          })),
+        },
+        {
+          type: 'slider',
+          key: 'vudio.lighting.maxHeight',
+          label: () => t('plugins.visualizer.settings.max-height'),
+          min: 10,
+          max: 500,
+          step: 5,
+          unit: 'px',
+        },
+        {
+          type: 'slider',
+          key: 'vudio.lighting.maxSize',
+          label: () => t('plugins.visualizer.settings.max-size'),
+          min: 1,
+          max: 50,
+          step: 1,
+          unit: 'px',
+        },
+        {
+          type: 'slider',
+          key: 'vudio.lighting.lineWidth',
+          label: () => t('plugins.visualizer.settings.line-width'),
+          min: 1,
+          max: 10,
+          step: 1,
+          unit: 'px',
+        },
+        {
+          type: 'text',
+          key: 'vudio.lighting.color',
+          label: () => t('plugins.visualizer.settings.color'),
+          placeholder: () => '#49f3f7',
+        },
+        {
+          type: 'slider',
+          key: 'vudio.lighting.shadowBlur',
+          label: () => t('plugins.visualizer.settings.shadow-blur'),
+          min: 0,
+          max: 20,
+          step: 1,
+          unit: 'px',
+        },
+        {
+          type: 'text',
+          key: 'vudio.lighting.shadowColor',
+          label: () => t('plugins.visualizer.settings.shadow-color'),
+          placeholder: () => 'rgba(244,244,244,.5)',
+        },
+        {
+          type: 'switch',
+          key: 'vudio.lighting.fadeSide',
+          label: () => t('plugins.visualizer.settings.fade-side'),
+        },
+        {
+          type: 'switch',
+          key: 'vudio.lighting.prettify',
+          label: () => t('plugins.visualizer.settings.prettify'),
+          description: () =>
+            t('plugins.visualizer.settings.prettify-description'),
+        },
+        {
+          type: 'switch',
+          key: 'vudio.lighting.dottify',
+          label: () => t('plugins.visualizer.settings.dottify'),
+          description: () =>
+            t('plugins.visualizer.settings.dottify-description'),
+        },
+        {
+          type: 'select',
+          variant: 'dropdown',
+          key: 'vudio.lighting.horizontalAlign',
+          label: () => t('plugins.visualizer.settings.horizontal-align'),
+          options: ['left', 'center', 'right'].map((value) => ({
+            value,
+            label: () => value,
+          })),
+        },
+        {
+          type: 'select',
+          variant: 'dropdown',
+          key: 'vudio.lighting.verticalAlign',
+          label: () => t('plugins.visualizer.settings.vertical-align'),
+          options: ['top', 'middle', 'bottom'].map((value) => ({
+            value,
+            label: () => value,
+          })),
+        },
+      ],
+    },
+  ],
   menu: async ({ getConfig, setConfig }) => {
     const config = await getConfig();
     const visualizerTypes = ['butterchurn', 'vudio', 'wave'] as const; // For bundling
@@ -160,8 +311,9 @@ export default createPlugin({
       audioContext: null,
       audioSource: null,
       observer: null,
-      audioCanPlayListener: null,
-    } as RenderProps,
+      gainNode: null,
+      audioCanPlayHandler: undefined,
+    } as RenderProps & { audioCanPlayHandler?: EventListener },
 
     createVisualizer(
       this: { props: RenderProps },
@@ -179,19 +331,21 @@ export default createPlugin({
         return;
       }
 
-      // Use a new canvas every time: Vudio keeps a listener on its canvas,
-      // so reusing it would keep every previous visualizer (one per song) in memory
-      document.querySelector('#visualizer')?.remove();
-      const canvas = document.createElement('canvas');
-      canvas.id = 'visualizer';
-      visualizerContainer.prepend(canvas);
-      // Size it before creating the visualizer (Vudio reads the size once)
-      const { width, height } = window.getComputedStyle(visualizerContainer);
-      canvas.width = Math.ceil(parseFloat(width));
-      canvas.height = Math.ceil(parseFloat(height));
+      let canvas = document.querySelector<HTMLCanvasElement>('#visualizer');
+      if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'visualizer';
+        visualizerContainer?.prepend(canvas);
+      }
+
+      // Disconnect previous gainNode if present
+      if (this.props.gainNode) {
+        this.props.gainNode.disconnect();
+      }
 
       const gainNode = this.props.audioContext.createGain();
       gainNode.gain.value = 1.25;
+      this.props.gainNode = gainNode;
       this.props.audioSource.connect(gainNode);
 
       let visualizerType: {
@@ -214,8 +368,14 @@ export default createPlugin({
         if (canvas && visualizerContainer) {
           const { width, height } =
             window.getComputedStyle(visualizerContainer);
-          canvas.width = Math.ceil(parseFloat(width));
-          canvas.height = Math.ceil(parseFloat(height));
+          const w = parseFloat(width);
+          const h = parseFloat(height);
+          // Guard against non-px / hidden containers (NaN) and zero-size
+          // containers so the canvas is never resized to 0×0.
+          if (Number.isFinite(w) && Number.isFinite(h) && w > 0 && h > 0) {
+            canvas.width = Math.ceil(w);
+            canvas.height = Math.ceil(h);
+          }
         }
         this.props.visualizerInstance?.resize(canvas.width, canvas.height);
       };
@@ -226,44 +386,60 @@ export default createPlugin({
       this.props.observer.observe(visualizerContainer);
     },
 
+    // Rebuild immediately when the user changes the visualizer type/enabled
+    // via the menu. createVisualizer destroys the previous instance and is
+    // safe to call before audio is ready (it returns early with no audio).
     onConfigChange(newConfig) {
       this.createVisualizer(newConfig);
     },
 
     onPlayerApiReady(_, { getConfig }) {
-      this.props.audioCanPlayListener = async (e) => {
+      if (this.props.audioCanPlayHandler) return;
+      this.props.audioCanPlayHandler = async (e: Event) => {
+        const detail = (
+          e as CustomEvent<{
+            audioContext: AudioContext;
+            audioSource: MediaElementAudioSourceNode;
+          }>
+        ).detail;
         // This event is sent for every song, but the audio graph stays the same:
         // don't rebuild the visualizer (and its WebGL context) every time
         if (
           this.props.visualizerInstance &&
-          this.props.audioSource === e.detail.audioSource
+          this.props.audioSource === detail.audioSource
         ) {
           return;
         }
 
-        this.props.audioContext = e.detail.audioContext;
-        this.props.audioSource = e.detail.audioSource;
+        this.props.audioContext = detail.audioContext;
+        this.props.audioSource = detail.audioSource;
         this.createVisualizer(await getConfig());
       };
       document.addEventListener(
         'peard:audio-can-play',
-        this.props.audioCanPlayListener,
+        this.props.audioCanPlayHandler,
         { passive: true },
       );
     },
 
     stop() {
-      if (this.props.audioCanPlayListener) {
+      if (this.props.audioCanPlayHandler) {
         document.removeEventListener(
           'peard:audio-can-play',
-          this.props.audioCanPlayListener,
+          this.props.audioCanPlayHandler,
         );
-        this.props.audioCanPlayListener = null;
+        this.props.audioCanPlayHandler = undefined;
       }
       this.props.visualizerInstance?.destroy();
       this.props.visualizerInstance = null;
       this.props.observer?.disconnect();
       this.props.observer = null;
+      if (this.props.gainNode) {
+        this.props.gainNode.disconnect();
+        this.props.gainNode = null;
+      }
+      this.props.audioContext = null;
+      this.props.audioSource = null;
       document.querySelector('#visualizer')?.remove();
     },
   },

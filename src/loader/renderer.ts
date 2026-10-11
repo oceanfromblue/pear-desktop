@@ -6,11 +6,43 @@ import { LoggerPrefix, startPlugin, stopPlugin } from '@/utils';
 import type { RendererContext } from '@/types/contexts';
 import type { PluginConfig, PluginDef } from '@/types/plugins';
 
-const unregisterStyleMap: Record<string, (() => void)[]> = {};
+const adoptedStyleSheetMap: Record<string, CSSStyleSheet[]> = {};
 const loadedPluginMap: Record<
   string,
   PluginDef<unknown, unknown, unknown>
 > = {};
+
+/** The renderer-side IPC bridge, shared with the standalone settings window. */
+export const createRendererIpc = (): RendererContext<PluginConfig>['ipc'] => {
+  // The preload listener receives Electron's event argument; `off` has to be
+  // given the very function `on` registered, so keep them here.
+  const listeners = new Map<CallableFunction, (...args: unknown[]) => void>();
+
+  return {
+    send: (event: string, ...args: unknown[]) => {
+      window.ipcRenderer.send(event, ...args);
+    },
+    invoke: (event: string, ...args: unknown[]) =>
+      window.ipcRenderer.invoke(event, ...args),
+    on: (event: string, listener: CallableFunction) => {
+      const wrapped = (_: unknown, ...args: unknown[]) => {
+        // oxlint-disable-next-line typescript/no-unsafe-call
+        listener(...args);
+      };
+      listeners.set(listener, wrapped);
+      window.ipcRenderer.on(event, wrapped);
+    },
+    off: (event: string, listener: CallableFunction) => {
+      const wrapped = listeners.get(listener);
+      if (!wrapped) return;
+      listeners.delete(listener);
+      window.ipcRenderer.off(event, wrapped);
+    },
+    removeAllListeners: (event: string) => {
+      window.ipcRenderer.removeAllListeners(event);
+    },
+  };
+};
 
 export const createContext = <Config extends PluginConfig>(
   id: string,
@@ -20,29 +52,16 @@ export const createContext = <Config extends PluginConfig>(
   setConfig: async (newConfig) => {
     await window.ipcRenderer.invoke('peard:set-config', id, newConfig);
   },
-  ipc: {
-    send: (event: string, ...args: unknown[]) => {
-      window.ipcRenderer.send(event, ...args);
-    },
-    invoke: (event: string, ...args: unknown[]) =>
-      window.ipcRenderer.invoke(event, ...args),
-    on: (event: string, listener: CallableFunction) => {
-      window.ipcRenderer.on(event, (_, ...args: unknown[]) => {
-        // oxlint-disable-next-line typescript/no-unsafe-call
-        listener(...args);
-      });
-    },
-    removeAllListeners: (event: string) => {
-      window.ipcRenderer.removeAllListeners(event);
-    },
-  },
+  ipc: createRendererIpc(),
 });
 
 export const forceUnloadRendererPlugin = async (id: string) => {
-  unregisterStyleMap[id]?.forEach((unregister) => unregister());
-
-  delete unregisterStyleMap[id];
-  delete loadedPluginMap[id];
+  if (adoptedStyleSheetMap[id]) {
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+      (sheet) => !adoptedStyleSheetMap[id].includes(sheet),
+    );
+    delete adoptedStyleSheetMap[id];
+  }
 
   const plugin = await rendererPlugin(id);
   if (!plugin) return;
@@ -55,6 +74,7 @@ export const forceUnloadRendererPlugin = async (id: string) => {
     document.querySelector(`style#plugin-${id}`)?.remove();
   }
   if (hasStopped || (hasStopped === null && plugin?.renderer)) {
+    delete loadedPluginMap[id];
     console.log(
       LoggerPrefix,
       t('common.console.plugins.unloaded', { pluginName: id }),
@@ -93,21 +113,16 @@ export const forceLoadRendererPlugin = async (id: string) => {
         return styleSheet;
       });
 
+      // Removed when the plugin is unloaded, except for plugins that need a restart:
+      // their code keeps running until then (e.g. in-app-menu)
+      if (!plugin.restartNeeded) {
+        adoptedStyleSheetMap[id] = styleSheetList;
+      }
+
       document.adoptedStyleSheets = [
         ...document.adoptedStyleSheets,
         ...styleSheetList,
       ];
-      // Remove them when the plugin is unloaded (they were kept, and added again on every re-enable),
-      // except for plugins that need a restart: their code keeps running until then
-      if (!plugin.restartNeeded) {
-        unregisterStyleMap[id] = [
-          () => {
-            document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
-              (styleSheet) => !styleSheetList.includes(styleSheet),
-            );
-          },
-        ];
-      }
     }
 
     console.log(
@@ -133,12 +148,6 @@ export const loadAllRendererPlugins = async () => {
         await forceUnloadRendererPlugin(pluginId);
       }
     }
-  }
-};
-
-export const unloadAllRendererPlugins = async () => {
-  for (const id of Object.keys(loadedPluginMap)) {
-    await forceUnloadRendererPlugin(id);
   }
 };
 

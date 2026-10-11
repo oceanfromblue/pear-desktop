@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import url from 'node:url';
 
@@ -23,12 +24,13 @@ import {
 import electronDebug from 'electron-debug';
 import is from 'electron-is';
 import unhandled from 'electron-unhandled';
-import electronUpdater from 'electron-updater';
+import { autoUpdater } from 'electron-updater';
 import { deepEqual } from 'fast-equals';
 import { parse } from 'node-html-parser';
 import { availableLanguages } from 'virtual:i18n';
 import { allPlugins } from 'virtual:plugins';
 
+import { buildLabel, copyright } from '@/app-info';
 import * as config from '@/config';
 import { APPLICATION_NAME, loadI18n, setLanguage, t } from '@/i18n';
 import {
@@ -40,18 +42,41 @@ import {
 import { refreshMenu, setApplicationMenu } from '@/menu';
 import musicPlayerCss from '@/music-player.css?inline';
 import { defaultAuthProxyConfig } from '@/plugins/auth-proxy-adapter/config';
-import { fileExists, injectCSS, injectCSSAsFile } from '@/plugins/utils/main';
+import { injectCSS } from '@/plugins/utils/main';
 import { restart, setupAppControls } from '@/providers/app-controls';
+import { appIconPath, windowIconPath } from '@/providers/app-icon';
+import { classifyLink } from '@/providers/external-links';
 import {
   APP_PROTOCOL,
   handleProtocol,
   setupProtocolHandler,
 } from '@/providers/protocol-handler';
-import { setupSongInfo } from '@/providers/song-info';
+import { syncShortcutIcons } from '@/providers/shortcut-icons';
+import {
+  registerCallback,
+  setupSongInfo,
+  SongInfoEvent,
+} from '@/providers/song-info';
+import {
+  createThemeFromCssFiles,
+  getThemesDir,
+  openThemesFolder,
+  setupThemes,
+  themePaletteLayers,
+  themesForRenderer,
+} from '@/themes/main';
 import { setUpTray } from '@/tray';
+import {
+  restartRequirementKey,
+  type RestartRequirement,
+} from '@/types/restart';
 import { LoggerPrefix } from '@/utils';
 import { isTesting } from '@/utils/testing';
+import { showOnCurrentDesktop } from '@/window-utils';
 
+import packageJson from '../package.json';
+
+import type { RepeatMode } from '@/types/datahost-get-state';
 import type { PluginConfig } from '@/types/plugins';
 
 // Catch errors and log them
@@ -62,7 +87,13 @@ unhandled({
 
 // Prevent window being garbage collected
 let mainWindow: Electron.BrowserWindow | null;
-electronUpdater.autoUpdater.autoDownload = false;
+let renderProcessGoneRegistered = false;
+const settingsRestartSessions = new Set<number>();
+const pendingSettingsRestartRequirements = new Map<
+  string,
+  RestartRequirement
+>();
+autoUpdater.autoDownload = false;
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
@@ -167,6 +198,91 @@ if (disableHardwareAcceleration) {
 app.commandLine.appendSwitch('enable-features', enabledFeatures.join(','));
 app.commandLine.appendSwitch('disable-features', disabledFeatures.join(','));
 
+// Windows SMTC support via node-smtc
+if (is.windows()) {
+  if (config.get('options.forceSmtc')) {
+    import('node-smtc').then((mod) => {
+      const SMTCPlayer = mod.default;
+      console.log('disabled mediasess');
+      app.commandLine.appendSwitch(
+        'disable-features',
+        'HardwareMediaKeyHandling',
+      );
+      app.commandLine.appendSwitch('disable-features', 'MediaSessionService');
+
+      const smtc = new SMTCPlayer();
+      smtc.addListener('play', () => {
+        mainWindow?.webContents.send('peard:play');
+      });
+      smtc.addListener('pause', () => {
+        mainWindow?.webContents.send('peard:pause');
+      });
+      smtc.addListener('next', () => {
+        mainWindow?.webContents.send('peard:next-video');
+      });
+      smtc.addListener('previous', () => {
+        mainWindow?.webContents.send('peard:previous-video');
+      });
+      smtc.addListener('shuffle', () => {
+        mainWindow?.webContents.send('peard:shuffle');
+        mainWindow?.webContents.send('peard:get-shuffle');
+      });
+      smtc.addListener('repeat', () => {
+        mainWindow?.webContents.send('peard:switch-repeat');
+      });
+      smtc.addListener('positionchange', (ms: number) => {
+        mainWindow?.webContents.send('peard:seek-to', ms / 1000);
+      });
+      ipcMain.on('peard:get-shuffle-response', (_, val: boolean) => {
+        smtc.setShuffle(val);
+      });
+      ipcMain.on('peard:shuffle-changed', (_, val: boolean) => {
+        smtc.setShuffle(val);
+      });
+      ipcMain.on('peard:repeat-changed', (_, repeatMode: RepeatMode) => {
+        return smtc.setAutoRepeat(
+          repeatMode == 'NONE'
+            ? 'none'
+            : repeatMode == 'ONE'
+              ? 'track'
+              : 'list',
+        );
+      });
+      registerCallback((songInfo, event) => {
+        if (event === SongInfoEvent.VideoSrcChanged) {
+          smtc.setAlbumArtist(songInfo.artist);
+          smtc.setAlbumTitle(songInfo.album ?? '');
+          smtc.setArtist(songInfo.artist);
+          smtc.setTitle(songInfo.title);
+          if (songInfo.image) {
+            const p = path.join(tmpdir(), 'thumb.png');
+            fs.writeFileSync(p, songInfo.image.toPNG());
+            smtc.setThumbnail(p);
+          }
+          smtc.setStartTime(0);
+          smtc.setMinSeekTime(0);
+          smtc.setPosition(0);
+          smtc.setEndTime(songInfo.songDuration * 1000);
+          smtc.setMaxSeekTime(songInfo.songDuration * 1000);
+        }
+
+        if (event === SongInfoEvent.PlayOrPaused) {
+          smtc.setPosition((songInfo.elapsedSeconds ?? 0) * 1000);
+          smtc.setPlaybackStatus(songInfo.isPaused ? 'paused' : 'playing');
+        }
+
+        if (event === SongInfoEvent.TimeChanged) {
+          smtc.setPosition((songInfo.elapsedSeconds ?? 0) * 1000);
+        }
+      });
+      smtc.setAppMediaId(
+        'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063',
+      );
+      smtc.start();
+    });
+  }
+}
+
 if (config.get('options.proxy')) {
   const authProxyEnabled = await config.plugins.isEnabled('auth-proxy-adapter');
 
@@ -193,12 +309,18 @@ electronDebug({
   showDevTools: false, // Disable automatic devTools on new window
 });
 
-let icon = 'assets/icon.png';
-if (process.platform === 'win32') {
-  icon = 'assets/generated/icons/win/icon.ico';
-} else if (process.platform === 'darwin') {
-  icon = 'assets/generated/icons/mac/icon.icns';
-}
+const icon = windowIconPath();
+
+// Without this, Electron's default About panel shows the raw app id instead of a proper name, and no icon.
+app.setAboutPanelOptions({
+  applicationName: APPLICATION_NAME,
+  // Channel and commit ride along here: `version` is macOS-only, and GTK prints
+  // nothing but this field (macOS prefixes it with "Version ").
+  applicationVersion: `v${app.getVersion()} ${buildLabel()}`,
+  iconPath: appIconPath(),
+  copyright,
+  website: `https://github.com/${packageJson.repository}`,
+});
 
 function onClosed() {
   // Dereference the window
@@ -213,6 +335,37 @@ ipcMain.handle('peard:get-main-plugin-names', () =>
 const initHook = async (win: BrowserWindow) => {
   const allPluginStubs = await allPlugins();
 
+  const addPendingSettingsRestartRequirement = (
+    requirement: RestartRequirement,
+  ) => {
+    pendingSettingsRestartRequirements.set(
+      restartRequirementKey(requirement),
+      requirement,
+    );
+  };
+
+  ipcMain.handle('ytmd-sui:restart-session-open', (event) => {
+    // First active session starts a fresh batch; later ones join it.
+    if (settingsRestartSessions.size === 0) {
+      pendingSettingsRestartRequirements.clear();
+    }
+    settingsRestartSessions.add(event.sender.id);
+  });
+  ipcMain.handle(
+    'ytmd-sui:restart-session-close',
+    async (event, requirements: RestartRequirement[]) => {
+      settingsRestartSessions.delete(event.sender.id);
+      requirements.forEach(addPendingSettingsRestartRequirement);
+
+      // Keep batching while any settings window remains active.
+      if (settingsRestartSessions.size > 0) return;
+
+      const pending = [...pendingSettingsRestartRequirements.values()];
+      pendingSettingsRestartRequirements.clear();
+      if (pending.length) await showNeedToRestartDialog(pending, true);
+    },
+  );
+
   ipcMain.handle(
     'peard:get-config',
     (_, id: string) =>
@@ -224,6 +377,19 @@ const initHook = async (win: BrowserWindow) => {
   ipcMain.handle('peard:set-config', (_, name: string, obj: object) =>
     config.setPartial(`plugins.${name}`, obj, allPluginStubs[name].config),
   );
+
+  ipcMain.handle('peard:get-themes', () => ({
+    themes: themesForRenderer(),
+    selected: config.get('options.theme'),
+    // The values each theme layers over its own palette: the preset the user
+    // picked, or the palette they edited themselves.
+    overrides: themePaletteLayers(),
+  }));
+  ipcMain.handle('peard:create-theme-from-css', (_, paths: string[]) =>
+    createThemeFromCssFiles(paths),
+  );
+  ipcMain.handle('peard:open-themes-folder', () => openThemesFolder());
+  ipcMain.handle('peard:get-themes-dir', () => getThemesDir());
 
   config.watch((newValue, oldValue) => {
     const newPluginConfigList = (newValue?.plugins ?? {}) as Record<
@@ -245,19 +411,33 @@ const initHook = async (win: BrowserWindow) => {
           newPluginConfig ?? {},
         ) as PluginConfig;
 
+        // Essential plugins can never be disabled.
+        if (allPluginStubs[id]?.essential) config.enabled = true;
+
         if (config.enabled !== oldConfig?.enabled) {
           if (config.enabled) {
             win.webContents.send('plugin:enable', id);
             ipcMain.emit('plugin:enable', id);
-            forceLoadMainPlugin(id, win);
+            forceLoadMainPlugin(id, win).catch((err) =>
+              console.error(`Failed to load main plugin ${id}:`, err),
+            );
           } else {
             win.webContents.send('plugin:unload', id);
             ipcMain.emit('plugin:unload', id);
-            forceUnloadMainPlugin(id, win);
+            forceUnloadMainPlugin(id, win).catch((err) =>
+              console.error(`Failed to unload main plugin ${id}:`, err),
+            );
           }
 
           if (allPluginStubs[id]?.restartNeeded) {
-            showNeedToRestartDialog(id);
+            const requirement: RestartRequirement = { type: 'plugin', id };
+            if (settingsRestartSessions.size > 0) {
+              addPendingSettingsRestartRequirement(requirement);
+            } else {
+              showNeedToRestartDialog([requirement]).catch((err) =>
+                console.error(`Failed to show restart dialog for ${id}:`, err),
+              );
+            }
           }
         }
 
@@ -277,8 +457,22 @@ const initHook = async (win: BrowserWindow) => {
   });
 };
 
-const showNeedToRestartDialog = async (id: string) => {
-  const plugin = (await allPlugins())[id];
+const showNeedToRestartDialog = async (
+  requirements: RestartRequirement[],
+  showSummary = false,
+) => {
+  const plugins = await allPlugins();
+  const changes = [
+    ...new Set(
+      requirements.map((requirement) =>
+        requirement.type === 'plugin'
+          ? (plugins[requirement.id]?.name?.() ?? requirement.id)
+          : requirement.label,
+      ),
+    ),
+  ];
+  const pluginName = changes[0] ?? '';
+  const useSummary = showSummary || requirements.length > 1;
 
   const dialogOptions: Electron.MessageBoxOptions = {
     type: 'info',
@@ -286,13 +480,23 @@ const showNeedToRestartDialog = async (id: string) => {
       t('main.dialog.need-to-restart.buttons.restart-now'),
       t('main.dialog.need-to-restart.buttons.later'),
     ],
-    title: t('main.dialog.need-to-restart.title'),
-    message: t('main.dialog.need-to-restart.message', {
-      pluginName: plugin?.name?.() ?? id,
-    }),
-    detail: t('main.dialog.need-to-restart.detail', {
-      pluginName: plugin?.name?.() ?? id,
-    }),
+    title: t(
+      useSummary
+        ? 'main.dialog.restart-summary.title'
+        : 'main.dialog.need-to-restart.title',
+    ),
+    message: t(
+      useSummary
+        ? 'main.dialog.restart-summary.message'
+        : 'main.dialog.need-to-restart.message',
+      { pluginName },
+    ),
+    detail: t(
+      useSummary
+        ? 'main.dialog.restart-summary.detail'
+        : 'main.dialog.need-to-restart.detail',
+      { changes: changes.join(', '), pluginName },
+    ),
     defaultId: 0,
     cancelId: 1,
   };
@@ -304,48 +508,74 @@ const showNeedToRestartDialog = async (id: string) => {
     dialogPromise = dialog.showMessageBox(dialogOptions);
   }
 
-  dialogPromise.then((dialogOutput) => {
-    switch (dialogOutput.response) {
-      case 0: {
-        restart();
-        break;
-      }
+  dialogPromise
+    .then((dialogOutput) => {
+      switch (dialogOutput.response) {
+        case 0: {
+          restart();
+          break;
+        }
 
-      // Ignore
-      default: {
-        break;
+        // Ignore
+        default: {
+          break;
+        }
       }
-    }
-  });
+    })
+    .catch((err) => {
+      console.error('Failed to show restart dialog:', err);
+    });
 };
 
 function initTheme(win: BrowserWindow) {
   injectCSS(win.webContents, musicPlayerCss);
-  // Load user CSS
-  const themes: string[] = config.get('options.themes');
-  if (Array.isArray(themes)) {
-    for (const cssFile of themes) {
-      fileExists(
-        cssFile,
-        () => {
-          injectCSSAsFile(win.webContents, cssFile);
-        },
-        () => {
-          console.warn(
-            LoggerPrefix,
-            t('main.console.theme.css-file-not-found', { cssFile }),
-          );
-        },
-      );
-    }
-  }
 
   win.webContents.once('did-finish-load', () => {
-    if (is.dev()) {
+    if (is.dev() && process.env.OPEN_DEVTOOLS) {
       console.debug(LoggerPrefix, t('main.console.did-finish-load.dev-tools'));
       win.webContents.openDevTools();
     }
   });
+}
+
+/** Hands a link to the desktop; a scheme nothing handles is dropped. */
+const openExternally = (url: string) => {
+  shell.openExternal(url).catch(() => {});
+};
+
+/**
+ * Keeps Google/YouTube links in the app and sends the rest to the browser.
+ * Chromium opens `target="_blank"` links as windows and plain ones in place,
+ * so both routes are covered, and the redirect one as well: YouTube's
+ * outbound links bounce through its own host before leaving.
+ *
+ * Applied to popups too, so a link on a page that is itself in a popup
+ * window behaves the same.
+ */
+function interceptExternalLinks(win: BrowserWindow) {
+  const { webContents } = win;
+
+  const route = (event: Electron.Event, url: string) => {
+    const target = classifyLink(url, config.get('url'));
+
+    if (target === 'in-app') return;
+
+    event.preventDefault();
+    if (target === 'external') openExternally(url);
+  };
+
+  webContents.setWindowOpenHandler(({ url }) => {
+    const target = classifyLink(url, config.get('url'));
+
+    if (target === 'in-app') return { action: 'allow' };
+
+    if (target === 'external') openExternally(url);
+    return { action: 'deny' };
+  });
+
+  webContents.on('will-navigate', (event) => route(event, event.url));
+  webContents.on('will-redirect', (event) => route(event, event.url));
+  webContents.on('did-create-window', (popup) => interceptExternalLinks(popup));
 }
 
 async function createMainWindow() {
@@ -406,6 +636,8 @@ async function createMainWindow() {
 
   const win = new BrowserWindow(electronWindowSettings);
 
+  interceptExternalLinks(win);
+
   await initHook(win);
   initTheme(win);
 
@@ -427,10 +659,10 @@ async function createMainWindow() {
     const scaledY = windowY;
 
     if (
-      scaledX + (scaledWidth / 2) < display.bounds.x - 8 || // Left
-      scaledX + (scaledWidth / 2) > display.bounds.x + display.bounds.width || // Right
+      scaledX + scaledWidth / 2 < display.bounds.x - 8 || // Left
+      scaledX + scaledWidth / 2 > display.bounds.x + display.bounds.width || // Right
       scaledY < display.bounds.y - 8 || // Top
-      scaledY + (scaledHeight / 2) > display.bounds.y + display.bounds.height // Bottom
+      scaledY + scaledHeight / 2 > display.bounds.y + display.bounds.height // Bottom
     ) {
       // Window is offscreen
       if (is.dev()) {
@@ -462,16 +694,26 @@ async function createMainWindow() {
     : config.defaultConfig.url;
   win.on('closed', onClosed);
 
+  let lastSavedPosition = config.get('window-position') as
+    | { x: number; y: number }
+    | undefined;
+  let lastSavedSize = config.get('window-size') as
+    | { width: number; height: number }
+    | undefined;
+
   win.on('move', () => {
     if (win.isMaximized()) {
       return;
     }
 
     const [x, y] = win.getPosition();
-    lateSave('window-position', { x, y });
+    if (lastSavedPosition?.x !== x || lastSavedPosition?.y !== y) {
+      lastSavedPosition = { x, y };
+      lateSave('window-position', { x, y });
+    }
   });
 
-  let winWasMaximized: boolean;
+  let winWasMaximized = win.isMaximized();
 
   win.on('resize', () => {
     const [width, height] = win.getSize();
@@ -486,10 +728,13 @@ async function createMainWindow() {
       return;
     }
 
-    lateSave('window-size', {
-      width,
-      height,
-    });
+    if (lastSavedSize?.width !== width || lastSavedSize?.height !== height) {
+      lastSavedSize = { width, height };
+      lateSave('window-size', {
+        width,
+        height,
+      });
+    }
   });
 
   const savedTimeouts: Record<string, NodeJS.Timeout | undefined> = {};
@@ -509,9 +754,12 @@ async function createMainWindow() {
     }, 600);
   }
 
-  app.on('render-process-gone', (_event, _webContents, details) => {
-    showUnresponsiveDialog(win, details);
-  });
+  if (!renderProcessGoneRegistered) {
+    renderProcessGoneRegistered = true;
+    app.on('render-process-gone', (_event, _webContents, details) => {
+      showUnresponsiveDialog(win, details);
+    });
+  }
 
   win.once('ready-to-show', () => {
     if (config.get('options.appVisible')) {
@@ -694,6 +942,13 @@ app.whenReady().then(async () => {
     console.log(LoggerPrefix, t('main.console.i18n.loaded'));
   });
 
+  await setupThemes();
+
+  // Override the logo baked into the bundle when the original YTM icons are requested
+  if (is.macOS() && config.get('options.useYtmIcons')) {
+    app.dock?.setIcon(appIconPath());
+  }
+
   if (config.get('options.autoResetAppCache')) {
     // Clear cache after 20s
     const clearCacheTimeout = setTimeout(() => {
@@ -808,11 +1063,19 @@ app.whenReady().then(async () => {
   await refreshMenu(mainWindow);
   setUpTray(app, mainWindow);
 
+  // Shortcuts created or re-pinned after the option was toggled start out on
+  // the exe icon, so re-sync on launch (the sync writes only where a shortcut
+  // actually differs).
+  if (is.windows()) {
+    syncShortcutIcons();
+  }
+
   setupProtocolHandler(mainWindow);
 
   app.on('second-instance', (_, commandLine) => {
     const uri = `${APP_PROTOCOL}://`;
     const protocolArgv = commandLine.find((arg) => arg.startsWith(uri));
+
     if (protocolArgv) {
       const lastIndex = protocolArgv.endsWith('/') ? -1 : undefined;
       const command = protocolArgv.slice(uri.length, lastIndex);
@@ -829,6 +1092,22 @@ app.whenReady().then(async () => {
       return;
     }
 
+    // Only treat the last argument as a protocol command when it actually
+    // carries the scheme. On Windows a plain relaunch (e.g. clicking the
+    // pinned taskbar icon) has only the executable path in argv, and its
+    // drive-letter colon would otherwise be mistaken for a command separator,
+    // swallowing the launch before the window is restored below.
+    const lastArg = commandLine.at(-1) ?? '';
+
+    if (lastArg.startsWith(`${APP_PROTOCOL}:`)) {
+      const splited = lastArg.split(':');
+
+      if (splited.length > 1) {
+        handleProtocol(splited.shift()!, ...splited);
+        return;
+      }
+    }
+
     if (!mainWindow) {
       return;
     }
@@ -837,11 +1116,14 @@ app.whenReady().then(async () => {
       mainWindow.restore();
     }
 
-    if (!mainWindow.isVisible()) {
-      mainWindow.show();
+    if (config.get('options.trayMoveToCurrentDesktop')) {
+      showOnCurrentDesktop(mainWindow);
+    } else {
+      if (!mainWindow.isVisible()) {
+        mainWindow.show();
+      }
+      mainWindow.focus();
     }
-
-    mainWindow.focus();
   });
 
   // Autostart at login
@@ -851,12 +1133,12 @@ app.whenReady().then(async () => {
 
   if (!is.dev() && config.get('options.autoUpdates')) {
     const updateTimeout = setTimeout(() => {
-      electronUpdater.autoUpdater.checkForUpdatesAndNotify();
+      autoUpdater.checkForUpdatesAndNotify();
       clearTimeout(updateTimeout);
     }, 2000);
-    electronUpdater.autoUpdater.on('update-available', () => {
+    autoUpdater.on('update-available', () => {
       const downloadLink =
-        'https://github.com/pear-devs/pear-desktop/releases/latest';
+        'https://github.com/michei69/pear-desktop/releases/latest';
       const dialogOptions: Electron.MessageBoxOptions = {
         type: 'info',
         buttons: [
@@ -931,44 +1213,54 @@ app.whenReady().then(async () => {
 });
 
 function showUnresponsiveDialog(
-  win: BrowserWindow,
+  _win: Electron.BrowserWindow,
   details: Electron.RenderProcessGoneDetails,
 ) {
-  if (details) {
-    console.error(
-      LoggerPrefix,
-      t('main.console.unresponsive.details', {
-        error: JSON.stringify(details, null, '\t'),
-      }),
-    );
+  const buttons = [
+    t('main.dialog.unresponsive.buttons.wait'),
+    t('main.dialog.unresponsive.buttons.relaunch'),
+    t('main.dialog.unresponsive.buttons.quit'),
+  ];
+
+  const dialogOptions: Electron.MessageBoxOptions = {
+    type: 'info',
+    buttons,
+    title: t('main.dialog.unresponsive.title'),
+    message: t('main.dialog.unresponsive.message'),
+    detail: t('main.dialog.unresponsive.details', {
+      error: details.reason,
+    }),
+    defaultId: 0,
+    cancelId: 0,
+  };
+
+  let dialogPromise: Promise<Electron.MessageBoxReturnValue>;
+  if (mainWindow) {
+    dialogPromise = dialog.showMessageBox(mainWindow, dialogOptions);
+  } else {
+    dialogPromise = dialog.showMessageBox(dialogOptions);
   }
 
-  dialog
-    .showMessageBox(win, {
-      type: 'error',
-      title: t('main.dialog.unresponsive.title'),
-      message: t('main.dialog.unresponsive.message'),
-      detail: t('main.dialog.unresponsive.detail'),
-      buttons: [
-        t('main.dialog.unresponsive.buttons.wait'),
-        t('main.dialog.unresponsive.buttons.relaunch'),
-        t('main.dialog.unresponsive.buttons.quit'),
-      ],
-      cancelId: 0,
-    })
-    .then((result) => {
-      switch (result.response) {
-        case 1: {
-          restart();
-          break;
-        }
-
-        case 2: {
-          app.quit();
-          break;
-        }
+  dialogPromise.then((dialogOutput) => {
+    switch (dialogOutput.response) {
+      case 1: {
+        // Relaunch
+        restart();
+        break;
       }
-    });
+
+      case 2: {
+        // Quit
+        app.quit();
+        break;
+      }
+
+      // Wait
+      default: {
+        break;
+      }
+    }
+  });
 }
 
 function removeContentSecurityPolicy(
@@ -1003,21 +1295,18 @@ function removeContentSecurityPolicy(
   });
 
   // When multiple listeners are defined, apply them all
-  betterSession.webRequest.setResolver(
-    'onHeadersReceived',
-    async (listeners) => {
-      return listeners.reduce(
-        async (accumulator, listener) => {
-          const acc = await accumulator;
-          if (acc.cancel) {
-            return acc;
-          }
+  betterSession.webRequest.setResolver('onHeadersReceived', (listeners) => {
+    return listeners.reduce(
+      async (accumulator, listener) => {
+        const acc = await accumulator;
+        if (acc.cancel) {
+          return acc;
+        }
 
-          const result = await listener.apply();
-          return { ...acc, ...result };
-        },
-        Promise.resolve({ cancel: false }),
-      );
-    },
-  );
+        const result = await listener.apply();
+        return { ...acc, ...result };
+      },
+      Promise.resolve({ cancel: false }),
+    );
+  });
 }

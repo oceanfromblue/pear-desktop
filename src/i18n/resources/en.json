@@ -29,9 +29,6 @@
       "second-instance": {
         "receive-command": "Received command over protocol: \"{{command}}\""
       },
-      "theme": {
-        "css-file-not-found": "CSS file \"{{cssFile}}\" does not exist, ignoring"
-      },
       "unresponsive": {
         "details": "Unresponsive Error!\n{{error}}"
       },
@@ -57,6 +54,11 @@
         "message": "\"{{pluginName}}\" needs to restart",
         "title": "Restart Required"
       },
+      "restart-summary": {
+        "detail": "Restart the app to apply: {{changes}}",
+        "message": "Some changes require a restart",
+        "title": "Restart Required"
+      },
       "unresponsive": {
         "buttons": {
           "quit": "Quit",
@@ -65,7 +67,8 @@
         },
         "detail": "We are sorry for the inconvenience! please choose what to do:",
         "message": "The Application is Unresponsive",
-        "title": "Window Unresponsive"
+        "title": "Window Unresponsive",
+        "details": "Reason: {{error}}"
       },
       "update-available": {
         "buttons": {
@@ -86,6 +89,7 @@
           "copy-current-url": "Copy current URL",
           "go-back": "Go back",
           "go-forward": "Go forward",
+          "open-settings": "Open Settings",
           "quit": "Exit",
           "restart": "Restart App"
         }
@@ -110,7 +114,8 @@
                   "title": "Set proxy"
                 }
               },
-              "toggle-dev-tools": "Toggle DevTools"
+              "toggle-dev-tools": "Toggle DevTools",
+              "force-smtc": "Force the use of external SMTC"
             }
           },
           "always-on-top": "Always on top",
@@ -130,7 +135,20 @@
             },
             "label": "Language",
             "submenu": {
-              "to-help-translate": "Want to help translate? Click here"
+              "to-help-translate": "Want to help translate? Click here",
+              "sync": {
+                "label": "Sync language",
+                "submenu": {
+                  "from-youtube": "From YouTube",
+                  "to-youtube": "To YouTube"
+                },
+                "failure": {
+                  "dialog": {
+                    "title": "Language Not Changed",
+                    "message": "Language or locale does not exist in app yet."
+                  }
+                }
+              }
             }
           },
           "lower-video-quality-when-hidden": "Lower video quality while the video isn't visible (saves memory, restart required)",
@@ -141,13 +159,22 @@
             "label": "Starting page",
             "unset": "Unset"
           },
+          "shared-links": {
+            "label": "Shared links",
+            "submenu": {
+              "strip-music": "Strip 'music.'",
+              "strip-si": "Strip '&si='"
+            }
+          },
           "tray": {
             "label": "Tray",
             "submenu": {
               "disabled": "Disabled",
               "enabled-and-hide-app": "Enabled and hide app",
               "enabled-and-show-app": "Enabled and show app",
-              "play-pause-on-click": "Play/Pause on click"
+              "move-to-current-desktop": "Move to current virtual desktop on show",
+              "play-pause-on-click": "Play/Pause on click",
+              "force-white-icons": "Force the use of white icons"
             }
           },
           "visual-tweaks": {
@@ -168,19 +195,22 @@
                 }
               },
               "remove-upgrade-button": "Remove upgrade button",
+              "use-ytm-icons": "Use original YouTube Music icons",
               "theme": {
-                "dialog": {
-                  "button": {
-                    "cancel": "Cancel",
-                    "remove": "Remove"
-                  },
-                  "remove-theme": "Are you sure you want to remove the custom theme?",
-                  "remove-theme-message": "This will remove the custom theme"
-                },
                 "label": "Theme",
                 "submenu": {
                   "import-css-file": "Import custom CSS file",
-                  "no-theme": "No theme"
+                  "no-theme": "No theme",
+                  "colors": {
+                    "label": "Colors"
+                  },
+                  "presets": {
+                    "label": "Presets",
+                    "default": "Default",
+                    "custom": "Custom"
+                  },
+                  "reset-colors": "Reset colors",
+                  "open-themes-folder": "Open themes folder"
                 }
               }
             }
@@ -207,6 +237,10 @@
     "tray": {
       "next": "Next",
       "play-pause": "Play/Pause",
+      "like": "Like",
+      "dislike": "Dislike",
+      "unlike": "Unlike",
+      "undislike": "Undislike",
       "previous": "Previous",
       "quit": "Exit",
       "restart": "Restart App",
@@ -214,6 +248,15 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
+      }
+    },
+    "themes": {
+      "consent": {
+        "title": "Run theme code?",
+        "message": "\"{{theme}}\" contains a script that will run with full access to the app.",
+        "detail": "Theme scripts are not sandboxed. This code can read and change your settings, talk to the app, and do anything else the app itself can do. Only allow this if you trust where the theme came from. You can revoke this by removing the theme.",
+        "allow": "Run this theme",
+        "cancel": "Cancel"
       }
     }
   },
@@ -238,6 +281,10 @@
         "enable-seekbar": "Enable seekbar theming"
       },
       "name": "Album Color Theme"
+    },
+    "audio-only": {
+      "description": "Forces audio-only mode — blocks all video streams at network and player level to save RAM and bandwidth",
+      "name": "Audio Only"
     },
     "ambient-mode": {
       "description": "Applies a lighting effect by casting gentle colors from the video, into your screen’s background",
@@ -348,10 +395,19 @@
           "label": "Enter the port for the API server:",
           "title": "Port"
         }
+      },
+      "settings": {
+        "choose-file": "Choose file…"
       }
     },
     "audio-compressor": {
       "description": "Apply compression to audio (lowers the volume of the loudest parts of the signal and raises the volume of the softest parts)",
+      "menu": {
+        "auto-track-gain": "Auto track gain (boost quiet tracks)",
+        "maximum-gain": {
+          "label": "Maximum gain"
+        }
+      },
       "name": "Audio Compressor"
     },
     "auth-proxy-adapter": {
@@ -418,6 +474,9 @@
           "display-seconds": "Display Seconds",
           "24-hour-format": "24-Hour Format"
         }
+      },
+      "settings": {
+        "hour-12": "Use 12-hour format"
       }
     },
     "compact-sidebar": {
@@ -436,6 +495,7 @@
             "fade-in-duration": "Fade in duration (ms)",
             "fade-out-duration": "Fade out duration (ms)",
             "fade-scaling": {
+              "equal-power": "Equal Power",
               "label": "Fade scaling",
               "linear": "Linear",
               "logarithmic": "Logarithmic"
@@ -444,6 +504,17 @@
           },
           "title": "Crossfade options"
         }
+      },
+      "settings": {
+        "fade-in": "Fade in",
+        "fade-out": "Fade out",
+        "seconds-before-end": "Start before end",
+        "fade-scaling": "Fade scaling",
+        "scaling": {
+          "linear": "Linear",
+          "logarithmic": "Logarithmic"
+        },
+        "seconds-before-end-description": "Seconds before the end of a track at which the crossfade to the next one starts"
       }
     },
     "custom-output-device": {
@@ -498,6 +569,13 @@
           "label": "Enter inactivity timeout in seconds:",
           "title": "Set inactivity timeout"
         }
+      },
+      "settings": {
+        "auto-reconnect": "Auto-reconnect",
+        "activity-timeout-enabled": "Clear presence when paused",
+        "activity-timeout-time": "Clear after",
+        "hide-github-button": "Hide “View on GitHub” button",
+        "hide-duration-left": "Hide time remaining"
       }
     },
     "do-not-track": {
@@ -505,7 +583,11 @@
       "menu": {
         "blocker": "Blocker"
       },
-      "name": "Do Not Track"
+      "name": "Do Not Track",
+      "settings": {
+        "cache": "Cache blocklists",
+        "disable-default-lists": "Disable default blocklists"
+      }
     },
     "downloader": {
       "backend": {
@@ -578,6 +660,10 @@
       },
       "templates": {
         "button": "Download"
+      },
+      "settings": {
+        "finish-folder": "Folder for finished downloads",
+        "finish-folder-description": "Leave unset to use the download folder above."
       }
     },
     "equalizer": {
@@ -595,6 +681,10 @@
     "exponential-volume": {
       "description": "Makes the volume slider exponential so it's easier to select lower volumes.",
       "name": "Exponential Volume"
+    },
+    "fullscreen-auto-hide": {
+      "description": "Automatically hide the player controls and mouse cursor after a few seconds of inactivity while in fullscreen",
+      "name": "Fullscreen Auto-hide"
     },
     "in-app-menu": {
       "description": "Gives menu-bars a fancy, dark or album-color look",
@@ -687,8 +777,8 @@
           "label": "Interactive Settings",
           "submenu": {
             "hide-button-text": "Hide button text",
-            "refresh-on-play-pause": "Refresh on Play/Pause",
-            "tray-controls": "Open/Close on tray click"
+            "hover-controls": "Show mini-player on tray hover",
+            "refresh-on-play-pause": "Refresh on Play/Pause"
           }
         },
         "priority": "Notification Priority",
@@ -700,6 +790,19 @@
     "performance-improvement": {
       "description": "Improve performance by enabling experimental scripts",
       "name": "Performance improvement [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Automatically recovers from stuck, stalled, or dead playback states",
+      "menu": {
+        "log-to-console": "Log recovery events to console"
+      },
+      "name": "Playback Recovery",
+      "settings": {
+        "stall-timeout": "Stall timeout",
+        "stall-timeout-description": "How long playback may make no progress before a recovery attempt",
+        "max-retries": "Max retries",
+        "max-retries-description": "Number of recovery attempts before skipping to the next track"
+      }
     },
     "picture-in-picture": {
       "description": "Allows to switch the app to picture-in-picture mode",
@@ -717,7 +820,14 @@
         },
         "save-window-position": "Save window position",
         "save-window-size": "Save window size",
-        "use-native-pip": "Use browser native PiP"
+        "use-native-pip": "Use browser native PiP",
+        "prompt": {
+          "title": "Picture-in-Picture",
+          "label": "Configure the Picture-in-Picture hotkey",
+          "keybind-options": {
+            "hotkey": "Hotkey to toggle Picture-in-Picture"
+          }
+        }
       },
       "name": "Picture-in-picture",
       "templates": {
@@ -726,9 +836,20 @@
     },
     "playback-speed": {
       "description": "Listen fast, listen slow! Adds a slider that controls song speed",
+      "menu": {
+        "no-preserves-pitch": "Disable pitch preservation"
+      },
       "name": "Playback Speed",
       "templates": {
         "button": "Speed"
+      }
+    },
+    "playlist-search": {
+      "description": "Adds a search input to filter playlists in the sidebar and the Add to playlist dialog",
+      "name": "Playlist Search",
+      "templates": {
+        "search-placeholder": "Search playlists",
+        "no-results": "No playlists found"
       }
     },
     "precise-volume": {
@@ -752,7 +873,17 @@
           "label": "Choose Volume Increase/Decrease Steps",
           "title": "Volume Steps"
         }
+      },
+      "settings": {
+        "steps": "Volume step",
+        "arrows-shortcut": "Arrow key shortcuts",
+        "shortcut-up": "Global shortcut: volume up",
+        "shortcut-down": "Global shortcut: volume down"
       }
+    },
+    "prefer-song": {
+      "description": "Play the song instead of the music video when an album track is a video",
+      "name": "Prefer Song"
     },
     "quality-changer": {
       "backend": {
@@ -780,6 +911,10 @@
             "message": "Failed to authenticate with Last.fm\nHide the popup until the next restart.",
             "title": "Authentication Failed"
           }
+        },
+        "invalid-regex": {
+          "title": "Invalid regular expression",
+          "message": "Regular expression on line {{line}} is invalid: {{error}}"
         }
       },
       "menu": {
@@ -787,11 +922,15 @@
           "api-settings": "Last.fm API Settings"
         },
         "listenbrainz": {
-          "token": "Enter ListenBrainz user token"
+          "token": "Enter ListenBrainz user token",
+          "api-root": "ListenBrainz API URL"
         },
         "scrobble-alternative-title": "Use alternative titles",
         "scrobble-alternative-artist": "Use alternative artists",
-        "scrobble-other-media": "Scrobble other media"
+        "scrobble-other-media": "Scrobble other media",
+        "regex-filters": "Regular expression filters",
+        "use-musicbrainz": "Use MusicBrainz to correct metadata",
+        "musicbrainz-email": "MusicBrainz contact email"
       },
       "name": "Scrobbler",
       "prompt": {
@@ -803,9 +942,42 @@
           "token": {
             "label": "Enter your ListenBrainz user token:",
             "title": "ListenBrainz token"
+          },
+          "api-root": {
+            "label": "Enter the base API URL:",
+            "title": "ListenBrainz API URL"
           }
+        },
+        "regex-filter-multi": {
+          "label": "Enter one regex per line:"
+        },
+        "musicbrainz-email": {
+          "title": "MusicBrainz Contact Email",
+          "label": "Enter an email for MusicBrainz API:"
         }
+      },
+      "settings": {
+        "lastfm-api-root": "Last.fm API URL",
+        "musicbrainz-email-description": "Used as contact info for the MusicBrainz API; required for MusicBrainz metadata correction"
       }
+    },
+    "search-commands": {
+      "commands": {
+        "play": "Play a video from a YouTube link or id",
+        "settings": "Open the settings"
+      },
+      "description": "Type / in the search box to run commands, with autocomplete for their arguments",
+      "name": "Search Commands",
+      "settings": {
+        "open-keybind": "Open shortcut",
+        "open-keybind-description": "Electron-style accelerator, e.g. CmdOrCtrl+/ or Alt+Space",
+        "open-shortcut": "Open the search box from anywhere",
+        "open-shortcut-description": "Summons the search box already in command mode, like Spotlight. Pressing it again closes it."
+      }
+    },
+    "seek-shortcuts": {
+      "description": "Seek 5 seconds backward/forward with the left/right arrow keys",
+      "name": "Seek Shortcuts"
     },
     "shortcuts": {
       "description": "Allows setting global hotkeys for playback (play/pause/next/previous) and turning off media OSD by overriding media keys, turning on Ctrl/CMD + F to search, turning on Linux MPRIS support for media keys, and custom hotkeys for advanced users",
@@ -824,19 +996,34 @@
           "label": "Choose Global Keybinds for Songs Control:",
           "title": "Global Keybinds"
         }
+      },
+      "settings": {
+        "global-keybinds": "Global keybinds (work app-wide)",
+        "local-keybinds": "Local keybinds (only while the window is focused)"
       }
-    },
-    "skip-disliked-songs": {
-      "description": "Skips disliked songs",
-      "name": "Skip Disliked Songs"
     },
     "skip-silences": {
       "description": "Automatically skip silences sections in songs",
-      "name": "Skip Silences"
+      "name": "Skip Silences",
+      "settings": {
+        "only-skip-beginning": "Only skip silence at the beginning of a track"
+      }
     },
     "sponsorblock": {
       "description": "Automatically Skips non-music parts like intro/outro or parts of music videos where the song isn't playing",
-      "name": "SponsorBlock"
+      "name": "SponsorBlock",
+      "settings": {
+        "categories": "Segments to skip",
+        "category": {
+          "sponsor": "Sponsor",
+          "intro": "Intro",
+          "outro": "Outro",
+          "interaction": "Interaction reminder",
+          "selfpromo": "Self-promotion",
+          "music_offtopic": "Non-music section"
+        },
+        "api-url": "API URL"
+      }
     },
     "synced-lyrics": {
       "description": "Provides synced lyrics to songs, using providers like LRClib.",
@@ -845,14 +1032,6 @@
         "not-found": "⚠️ No lyrics found for this song."
       },
       "menu": {
-        "preferred-provider": {
-          "label": "Preferred Provider",
-          "tooltip": "Choose the default provider to use",
-          "none": {
-            "label": "None",
-            "tooltip": "No preferred provider"
-          }
-        },
         "default-text-string": {
           "label": "Default character between lyrics",
           "tooltip": "Choose the default character to use for the gap between lyrics"
@@ -879,6 +1058,24 @@
           },
           "tooltip": "Choose the effect to apply to the current line"
         },
+        "lyrics-font-size": {
+          "label": "Lyrics font size",
+          "submenu": {
+            "small": {
+              "label": "Small",
+              "tooltip": "Use a more compact lyrics size"
+            },
+            "medium": {
+              "label": "Medium",
+              "tooltip": "Use a balanced lyrics size"
+            },
+            "large": {
+              "label": "Large",
+              "tooltip": "Use the original larger lyrics size"
+            }
+          },
+          "tooltip": "Choose how large the lyrics text should be"
+        },
         "precise-timing": {
           "label": "Make the lyrics perfectly synced",
           "tooltip": "Calculate to the milisecond the display of the next line (can have a small impact on performance)"
@@ -894,6 +1091,10 @@
         "show-time-codes": {
           "label": "Show time codes",
           "tooltip": "Show the time codes next to the lyrics"
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Use YTM lyrics with no proxy",
+          "tooltip": "Skip the YTM browse proxy and call YouTube Music directly using the app's authenticated session. Useful if you trust your network/region to allow direct browse calls."
         },
         "convert-chinese-character": {
           "label": "Convert Chinese character",
@@ -912,6 +1113,145 @@
             }
           },
           "tooltip": "Convert Chinese character to Traditional or Simplified"
+        },
+        "translation": {
+          "label": "Lyrics translation",
+          "tooltip": "Translate lyrics and show the translated result line-by-line for display.",
+          "enabled": {
+            "label": "Enable translation",
+            "tooltip": "Show a translated line beneath each original lyric line."
+          },
+          "provider": {
+            "label": "Provider",
+            "tooltip": "Which service to use for translation."
+          },
+          "target-language": {
+            "label": "Target language",
+            "tooltip": "The language to translate lyrics into.",
+            "options": {
+              "auto": "Follow app language",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文",
+              "en": "English",
+              "ja": "日本語",
+              "ko": "한국어",
+              "fr": "Français",
+              "de": "Deutsch",
+              "es": "Español",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "it": "Italiano",
+              "nl": "Nederlands",
+              "ru": "Русский",
+              "uk": "Українська",
+              "pl": "Polski",
+              "tr": "Türkçe",
+              "ar": "العربية",
+              "he": "עברית",
+              "fa": "فارسی",
+              "hi": "हिन्दी",
+              "bn": "বাংলা",
+              "ur": "اردو",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "mr": "मराठी",
+              "id": "Bahasa Indonesia",
+              "ms": "Bahasa Melayu",
+              "vi": "Tiếng Việt",
+              "th": "ไทย",
+              "fil": "Filipino",
+              "sw": "Kiswahili",
+              "sv": "Svenska",
+              "no": "Norsk",
+              "da": "Dansk",
+              "fi": "Suomi",
+              "cs": "Čeština",
+              "ro": "Română",
+              "hu": "Magyar",
+              "el": "Ελληνικά",
+              "bg": "Български",
+              "sr": "Српски",
+              "hr": "Hrvatski",
+              "sk": "Slovenčina",
+              "lt": "Lietuvių"
+            }
+          },
+          "configure": {
+            "label": "Configure API key & model…",
+            "tooltip": "Set provider-specific translation options."
+          },
+          "clear-cache": {
+            "label": "Clear translation cache",
+            "tooltip": "Delete all cached translations stored on disk."
+          },
+          "providers": {
+            "shared": {
+              "api-key": "API key",
+              "model": "Model"
+            },
+            "openai-compatible": {
+              "name": "OpenAI compatible",
+              "prompt-title": "OpenAI-compatible settings",
+              "prompt-label": "Use OpenAI-compatible servers, including Ollama (base URL http://127.0.0.1:11434/v1, API mode auto or chat-completions).",
+              "base-url": "Base URL",
+              "api-mode": "API mode (responses / auto / chat-completions)"
+            },
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-title": "Anthropic settings",
+              "prompt-label": "Uses the native Anthropic Messages API."
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-title": "Gemini settings",
+              "prompt-label": "Uses Google's Generative Language API (generateContent)."
+            },
+            "local-cli": {
+              "name": "Local CLI",
+              "prompt-title": "Local CLI settings",
+              "prompt-label": "Use a locally logged-in Claude Code, Codex, or Gemini CLI. The command and model are automatic; the CLI uses its own logged-in default.",
+              "engine": "Local CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "command": "Command",
+              "timeout": "Timeout seconds (15-600)"
+            },
+            "google-translate": {
+              "name": "Google Translate",
+              "prompt-title": "Google Translate settings",
+              "prompt-label": "Uses the unofficial free Google Translate endpoint. No API key is required, but Google may rate-limit it.",
+              "host": "Host"
+            }
+          }
+        },
+        "show-custom-search-button": {
+          "label": "Show custom search button",
+          "tooltip": "Show a search button in the lyrics picker that lets you override the search query and artist for the current song."
+        },
+        "provider-priority": {
+          "tooltip": "Providers are tried in this order: the first one with lyrics for the current song wins. Use the arrows to reorder."
+        },
+        "prefer-synced": {
+          "tooltip": "Pick the first provider in the list with time-synced lyrics, instead of the first one with any lyrics."
+        },
+        "previous-provider": {
+          "tooltip": "Previous provider"
+        },
+        "next-provider": {
+          "tooltip": "Next provider"
+        },
+        "custom-search-button": {
+          "tooltip": "Custom search query"
+        },
+        "star-provider": {
+          "tooltip": "Always use this provider for this song, whatever the priority order says. Falls back to the normal order if it has no lyrics for the song."
+        },
+        "unstar-provider": {
+          "tooltip": "Stop pinning this provider to this song."
+        },
+        "use-priority-list": {
+          "tooltip": "Try the providers in the order below. Turn this off to let the lyrics decide instead: whichever provider has the best lyrics for the song wins."
         }
       },
       "name": "Synced Lyrics",
@@ -923,11 +1263,31 @@
         "duration-mismatch": "⚠️ - The lyrics may be out of sync due to a duration mismatch.",
         "inexact": "⚠️ - The lyrics for this song may not be exact",
         "instrumental": "⚠️ - This is an instrumental song"
+      },
+      "settings": {
+        "precise-timing": "Precise timing",
+        "show-inexact": "Show inexact lyrics",
+        "show-time-codes": "Show time codes",
+        "romanization": "Romanize lyrics",
+        "line-effect": "Line effect",
+        "effect": {
+          "fancy": "Fancy",
+          "scale": "Scale",
+          "offset": "Offset",
+          "focus": "Focus"
+        },
+        "prefer-synced": "Prefer synced lyrics",
+        "provider-priority": "Provider Priority",
+        "use-priority-list": "Use priority list"
       }
     },
     "taskbar-mediacontrol": {
       "description": "Control playback from your Windows taskbar",
       "name": "Taskbar Media Control"
+    },
+    "toast-autoclose": {
+      "description": "Automatically close YouTube Music toasts after three seconds",
+      "name": "Toast Auto-Close"
     },
     "touchbar": {
       "description": "Adds a TouchBar widget for macOS users",
@@ -957,6 +1317,9 @@
             "none": "None"
           }
         }
+      },
+      "settings": {
+        "type-description": "Background material used for window transparency"
       }
     },
     "tuna-obs": {
@@ -999,7 +1362,116 @@
       "menu": {
         "visualizer-type": "Visualizer Type"
       },
-      "name": "Visualizer"
+      "name": "Visualizer",
+      "settings": {
+        "preset": "Preset",
+        "blend-time": "Blend time",
+        "effect": "Effect",
+        "accuracy": "Accuracy",
+        "max-height": "Max height",
+        "max-size": "Max size",
+        "line-width": "Line width",
+        "color": "Color",
+        "shadow-blur": "Shadow blur",
+        "shadow-color": "Shadow color",
+        "fade-side": "Fade sides",
+        "prettify": "Prettify",
+        "prettify-description": "Taper the bars towards the edges",
+        "dottify": "Dottify",
+        "dottify-description": "Draw dots instead of a continuous line",
+        "horizontal-align": "Horizontal alignment",
+        "vertical-align": "Vertical alignment"
+      }
+    },
+    "statusbar-lyrics": {
+      "settings": {
+        "include-pronunciation": "Include pronunciation"
+      }
+    }
+  },
+  "settings-ui": {
+    "name": "Settings UI",
+    "description": "Adds an in-app settings panel, opened from the sidebar",
+    "title": "Settings",
+    "settings": {
+      "show-button": "Show the settings entry in the sidebar",
+      "show-button-description": "Turn this off to keep the sidebar clean; Settings is still under Navigation → Open Settings.",
+      "separate-window": "Always open Settings in a separate window",
+      "separate-window-description": "Opens the standalone settings window, the way the tray entry does, instead of the in-app panel."
+    },
+    "search-placeholder": "Search settings",
+    "search-results": "Search results",
+    "search-matching": "Matching “{{query}}”",
+    "no-match": "No settings match “{{query}}”.",
+    "close": "Close",
+    "edit-config": "Edit config.json",
+    "restart-banner": "Some changes need a restart to take effect.",
+    "restart-now": "Restart now",
+    "later": "Later",
+    "restart-pill": "restart",
+    "restart-pill-hint": "Requires restart",
+    "refresh-options": "Refresh options",
+    "move-up": "Move up",
+    "move-down": "Move down",
+    "about": {
+      "tagline": "A feature-rich desktop app for YouTube Music",
+      "versions": "Versions",
+      "version-app": "App",
+      "version-build": "Build",
+      "version-electron": "Electron",
+      "version-chromium": "Chromium",
+      "version-node": "Node.js",
+      "version-platform": "Platform",
+      "links": "Links",
+      "link-repo": "Repository",
+      "link-issue": "Report an issue",
+      "link-releases": "Releases",
+      "link-license": "License",
+      "actions": "Actions",
+      "check-updates": "Check for updates",
+      "copy-debug": "Copy debug info",
+      "copied": "Copied!"
+    },
+    "sections": {
+      "general": {
+        "label": "General"
+      },
+      "appearance": {
+        "label": "Appearance"
+      },
+      "window": {
+        "label": "Window & Tray"
+      },
+      "advanced": {
+        "label": "Advanced"
+      },
+      "plugins": {
+        "label": "Plugins"
+      },
+      "about": {
+        "label": "About"
+      }
+    },
+    "groups": {
+      "updates-session": "Updates & session",
+      "startup-language": "Startup & language",
+      "interface": "Interface",
+      "window-title": "Window",
+      "window": "Window",
+      "system": "System",
+      "network": "Network",
+      "performance": "Performance",
+      "configuration": "Configuration"
+    },
+    "stepper-decrement": "Decrease",
+    "stepper-increment": "Increase",
+    "fields": {
+      "podcast-artist": "Use podcast participants as artists",
+      "podcast-artist-desc": "Off: a podcast episode’s artist is the channel that published it.",
+      "theme-preset": "Preset",
+      "theme-variable-name": "Variable",
+      "theme-variable-value": "Value",
+      "theme-variable-add": "Add variable"
     }
   }
 }

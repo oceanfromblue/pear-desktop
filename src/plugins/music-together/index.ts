@@ -398,8 +398,15 @@ export default createPlugin<
       );
       if (typeof id !== 'string') return false;
 
-      const connection = await this.connection.connect(id).catch(() => false);
-      if (!connection) return false;
+      const connection = await this.connection.connect(id).catch(() => null);
+      if (!connection) {
+        // The join failed (peer unreachable or connection error) — tear the
+        // PeerJS peer down so its signaling socket isn't leaked, and reset
+        // the mode for the next attempt.
+        this.connection?.disconnect();
+        this.connection = undefined;
+        return false;
+      }
       this.connection.onConnections((connection) => {
         if (!connection?.open) {
           this.api?.toastService?.show(
@@ -598,7 +605,14 @@ export default createPlugin<
             _update: (...args: unknown[]) => void;
           }
         >('tp-yt-paper-progress'),
-      );
+      ).filter((el) => {
+        const slider = el.closest('tp-yt-paper-slider');
+        // Only intercept the seek bar, never volume sliders: YTM's
+        // volume slider contains an internal tp-yt-paper-progress track,
+        // so without this filter volume drags get broadcast as time
+        // progress and seek the host (see issue #23).
+        return !slider || slider.id === 'progress-bar';
+      });
       const rollbackList = progress.map((progress) => {
         const original = progress._update;
         progress._update = (...args) => {
@@ -657,12 +671,12 @@ export default createPlugin<
       }
 
       this.profiles = {};
-      this.popups.host.setUsers(Object.values(this.profiles));
-      this.popups.guest.setUsers(Object.values(this.profiles));
+      this.popups.host?.setUsers(Object.values(this.profiles));
+      this.popups.guest?.setUsers(Object.values(this.profiles));
 
-      this.popups.host.dismiss();
-      this.popups.guest.dismiss();
-      this.popups.setting.dismiss();
+      this.popups.host?.dismiss();
+      this.popups.guest?.dismiss();
+      this.popups.setting?.dismiss();
     },
 
     /* methods */
@@ -763,13 +777,17 @@ export default createPlugin<
 
       this.stateInterval = window.setInterval(() => {
         if (this.connection?.mode !== 'host') return;
-        const index = this.queue?.selectedIndex ?? 0;
+        try {
+          const index = this.queue?.selectedIndex ?? 0;
 
-        this.connection.broadcast('SYNC_PROGRESS', {
-          progress: this.playerApi?.getCurrentTime(),
-          state: this.playerApi?.getPlayerState(),
-          index,
-        });
+          this.connection.broadcast('SYNC_PROGRESS', {
+            progress: this.playerApi?.getCurrentTime(),
+            state: this.playerApi?.getPlayerState(),
+            index,
+          });
+        } catch {
+          // Silently ignore broadcast errors to keep the interval running
+        }
       }, 1000);
 
       /* UI */

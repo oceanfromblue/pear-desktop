@@ -5,6 +5,8 @@ import { type LineLyrics } from '@/plugins/synced-lyrics/types';
 
 import { _ytAPI } from '..';
 import { config, currentTime } from '../renderer';
+import { lyricsStore } from '../store';
+import { getLineTranslation } from '../translation-store';
 import {
   canonicalize,
   convertChineseCharacter,
@@ -98,9 +100,23 @@ export const SyncedLine = (props: SyncedLineProps) => {
     const input = canonicalize(text());
     if (!config()?.romanization) return;
 
-    romanize(input).then((result) => {
-      setRomanization(canonicalize(result));
-    });
+    romanize(input)
+      .then((result) => {
+        setRomanization(canonicalize(result));
+      })
+      .catch(() => {
+        // Romanization is best-effort — keep the previous value on failure
+      });
+  });
+
+  // SyncedLine receives `props.index` from the VList iteration. The list is
+  // [lyricsPicker, ...lines], so the lyric line index is `props.index - 1`.
+  const translation = createMemo(() => {
+    if (!config()?.translation?.enabled) return '';
+    const videoId = lyricsStore.videoId;
+    if (!videoId) return '';
+    const lyricIndex = props.index - 1;
+    return getLineTranslation(videoId, lyricIndex) ?? '';
   });
 
   return (
@@ -111,7 +127,7 @@ export const SyncedLine = (props: SyncedLineProps) => {
           _ytAPI?.seekTo((props.line.timeInMs + 10) / 1000);
         }}
       >
-        <div class="description ytmusic-description-shelf-renderer" dir="auto">
+        <div class="description ytmusic-description-shelf-renderer">
           <yt-formatted-string
             text={{
               runs: [
@@ -121,20 +137,23 @@ export const SyncedLine = (props: SyncedLineProps) => {
               ],
             }}
           />
-
           <div
             class="text-lyrics"
             ref={(div: HTMLDivElement) => {
               // TODO: Investigate the animation, even though the duration is properly set, all lines have the same animation duration
+              // Guard against non-finite durations (the last line has duration: Infinity)
+              const duration = Number.isFinite(props.line.duration)
+                ? props.line.duration
+                : 0;
               div.style.setProperty(
                 '--lyrics-duration',
-                `${props.line.duration / 1000}s`,
+                `${duration / 1000}s`,
                 'important',
               );
             }}
             style={{ 'display': 'flex', 'flex-direction': 'column' }}
           >
-            <span>
+            <span dir="auto">
               <For each={text().split(' ')}>
                 {(word, index) => {
                   return (
@@ -161,8 +180,36 @@ export const SyncedLine = (props: SyncedLineProps) => {
                 simplifyUnicode(text()) !== simplifyUnicode(romanization())
               }
             >
-              <span class="romaji">
+              <span class="romaji" dir="auto">
                 <For each={romanization().split(' ')}>
+                  {(word, index) => {
+                    return (
+                      <span
+                        style={{
+                          'transition-delay': `${index() * 0.05}s`,
+                          'animation-delay': `${index() * 0.05}s`,
+                        }}
+                      >
+                        <yt-formatted-string
+                          text={{
+                            runs: [{ text: `${word} ` }],
+                          }}
+                        />
+                      </span>
+                    );
+                  }}
+                </For>
+              </span>
+            </Show>
+
+            <Show
+              when={
+                translation() &&
+                simplifyUnicode(text()) !== simplifyUnicode(translation())
+              }
+            >
+              <span class="translation" dir="auto">
+                <For each={translation().split(' ')}>
                   {(word, index) => {
                     return (
                       <span

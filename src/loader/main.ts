@@ -48,6 +48,9 @@ const createContext = (
     removeHandler: (event: string) => {
       ipcMain.removeHandler(event);
     },
+    removeAllListeners: (event: string) => {
+      ipcMain.removeAllListeners(event);
+    },
   },
 
   window: win,
@@ -140,7 +143,7 @@ export const loadAllMainPlugins = async (win: BrowserWindow) => {
       pluginStub.config ?? { enabled: false },
       pluginConfigs[plugin] ?? {},
     );
-    if (config.enabled) {
+    if (pluginStub.essential || config.enabled) {
       queue.push(forceLoadMainPlugin(plugin, win));
     } else if (loadedPluginMap[plugin]) {
       queue.push(forceUnloadMainPlugin(plugin, win));
@@ -148,18 +151,6 @@ export const loadAllMainPlugins = async (win: BrowserWindow) => {
   }
 
   await Promise.allSettled(queue);
-};
-
-export const unloadAllMainPlugins = async (win: BrowserWindow) => {
-  for (const id of Object.keys(loadedPluginMap)) {
-    await forceUnloadMainPlugin(id, win);
-  }
-};
-
-export const getLoadedMainPlugin = (
-  id: string,
-): PluginDef<unknown, unknown, unknown> | undefined => {
-  return loadedPluginMap[id];
 };
 
 export const getAllLoadedMainPlugins = () => {

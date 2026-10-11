@@ -109,7 +109,8 @@
                   "title": "Ställ in proxy"
                 }
               },
-              "toggle-dev-tools": "Visa eller dölj utvecklarverktyg"
+              "toggle-dev-tools": "Visa eller dölj utvecklarverktyg",
+              "force-smtc": "Tvinga användning av extern SMTC"
             }
           },
           "always-on-top": "Alltid överst",
@@ -144,7 +145,9 @@
               "disabled": "Inaktiverad",
               "enabled-and-hide-app": "Aktivera och dölj appen",
               "enabled-and-show-app": "Aktivera och visa appen",
-              "play-pause-on-click": "Spela upp eller pausa vid klick"
+              "play-pause-on-click": "Spela upp eller pausa vid klick",
+              "move-to-current-desktop": "Flytta till aktuellt virtuellt skrivbord vid visning",
+              "force-white-icons": "Tvinga användning av vita ikoner"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Gilla",
+      "dislike": "Ogilla",
+      "unlike": "Till skillnad från",
+      "undislike": "Ta bort ogillande"
     }
   },
   "plugins": {
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Dölj knapptext",
             "refresh-on-play-pause": "Uppdatera vid uppspelning/paus",
-            "tray-controls": "Öppna/stäng vid klick i systemfältet"
+            "tray-controls": "Öppna/stäng vid klick i systemfältet",
+            "hover-controls": "Visa minispelare när muspekaren hålls över systemfältsikonen"
           }
         },
         "priority": "Notisprioritet",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Hoppar över låtar du inte gillar",
-      "name": "Hoppa över låtar du inte gillar"
-    },
     "skip-silences": {
       "description": "Hoppa automatiskt över tysta partier i låtar",
       "name": "Hoppa över tysta partier"
@@ -886,6 +890,24 @@
           },
           "tooltip": "Välj effekten som ska användas på den aktuella raden"
         },
+        "lyrics-font-size": {
+          "label": "Textstorlek för sångtexter",
+          "submenu": {
+            "large": {
+              "label": "Stor",
+              "tooltip": "Använd den ursprungliga större textstorleken"
+            },
+            "medium": {
+              "label": "Mellan",
+              "tooltip": "Använd en balanserad textstorlek"
+            },
+            "small": {
+              "label": "Liten",
+              "tooltip": "Använd en mer kompakt textstorlek"
+            }
+          },
+          "tooltip": "Välj hur stor sångtexten ska vara"
+        },
         "precise-timing": {
           "label": "Synkronisera låttexterna exakt",
           "tooltip": "Beräkna till millisekunden när nästa rad ska visas (kan ha en liten inverkan på prestanda)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "Visa tidskoder",
           "tooltip": "Visa tidskoderna bredvid låttexterna"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Rensa översättningscache",
+            "tooltip": "Ta bort alla cachade översättningar som sparats på disken."
+          },
+          "configure": {
+            "label": "Konfigurera API-nyckel och modell…",
+            "tooltip": "Ställ in leverantörsspecifika översättningsalternativ."
+          },
+          "enabled": {
+            "label": "Aktivera översättning",
+            "tooltip": "Visa en översatt rad under varje originell textrad."
+          },
+          "label": "Översättning av sångtexter",
+          "provider": {
+            "label": "Leverantör",
+            "tooltip": "Vilken tjänst som ska användas för översättning."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Använder det inbyggda Anthropic Messages API:et.",
+              "prompt-title": "Anthropic-inställningar"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Använder Googles Generative Language API (generateContent).",
+              "prompt-title": "Gemini-inställningar"
+            },
+            "google-translate": {
+              "host": "Värd",
+              "name": "Google Översätt",
+              "prompt-label": "Använder den inofficiella kostnadsfria Google Translate-ändpunkten. Ingen API-nyckel krävs, men Google kan hastighetsbegränsa den.",
+              "prompt-title": "Google Översätt-inställningar"
+            },
+            "local-cli": {
+              "command": "Kommando",
+              "engine": "Lokal CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokal CLI",
+              "prompt-label": "Använd en lokalt inloggad Claude Code, Codex eller Gemini CLI. Kommandot och modellen är automatiska; CLI:n använder sin egen inloggade standard.",
+              "prompt-title": "Lokala CLI-inställningar",
+              "timeout": "Tidsgräns i sekunder (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API-läge (responses / auto / chat-completions)",
+              "base-url": "Bas-URL",
+              "name": "OpenAI-kompatibel",
+              "prompt-label": "Använd OpenAI-kompatibla servrar, inklusive Ollama (bas-URL http://127.0.0.1:11434/v1, API-läge auto eller chat-completions).",
+              "prompt-title": "OpenAI-kompatibla inställningar"
+            },
+            "shared": {
+              "api-key": "API-nyckel",
+              "model": "Modell"
+            }
+          },
+          "target-language": {
+            "label": "Målspråk",
+            "options": {
+              "ar": "العربية",
+              "auto": "Följ appens språk",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Språket att översätta sångtexter till."
+          },
+          "tooltip": "Översätt sångtexter och visa det översatta resultatet rad för rad."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Använd YTM-text utan proxy",
+          "tooltip": "Hoppa över YTM-webbläsarproxy och anropa YouTube Music direkt med appens autentiserade session. Användbart om du litar på att ditt nätverk/region tillåter direkta anrop."
+        },
+        "show-custom-search-button": {
+          "label": "Visa anpassad sökknapp",
+          "tooltip": "Visa en sökknapp i textväljaren som låter dig åsidosätta sökfrågan och artisten för den aktuella låten."
         }
       },
       "name": "Synkroniserade låttexter",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Typ av visualiserare"
       },
       "name": "Visualiserare"
+    },
+    "audio-only": {
+      "description": "Tvingar ljudläge — blockerar alla videoströmmar på nätverks- och spelarnivå för att spara RAM och bandbredd",
+      "name": "Endast Ljud"
+    },
+    "playback-recovery": {
+      "description": "Återställer automatiskt från fastnade, avstannade eller döda uppspelningstillstånd",
+      "menu": {
+        "log-to-console": "Logga återställningshändelser till konsolen"
+      },
+      "name": "Uppspelningsåterställning"
+    },
+    "playlist-search": {
+      "description": "Lägger till en sökruta för att filtrera spellistor i sidofältet och dialogrutan Lägg till i spellista",
+      "name": "Spellista Sök",
+      "templates": {
+        "search-placeholder": "Sök spellistor",
+        "no-results": "Inga spellistor hittades"
+      }
     }
   }
 }

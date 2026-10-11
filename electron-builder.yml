@@ -11,6 +11,7 @@ files:
   - 'node_modules/@ffmpeg.wasm/core-mt/**'
   - '!node_modules/**/*.map'
   - '!node_modules/**/*.ts'
+  - '!node_modules/node-smtc'
 asarUnpack:
   - assets
 mac:
@@ -24,6 +25,8 @@ mac:
   compression: maximum
 win:
   icon: assets/generated/icons/win/icon.ico
+  files:
+    - 'node_modules/node-smtc/**'
   target:
     - target: nsis-web
       arch:
@@ -38,6 +41,8 @@ win:
   compression: maximum
 nsisWeb:
   runAfterFinish: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
 linux:
   icon: assets/generated/icons/png
   category: AudioVideo
@@ -54,6 +59,7 @@ linux:
     - target: flatpak
       arch:
         - x64
+        - arm64
     - target: deb
       arch:
         - x64

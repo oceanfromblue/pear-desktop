@@ -109,7 +109,8 @@
                   "title": "Задати проксі"
                 }
               },
-              "toggle-dev-tools": "Перемкнути DevTools"
+              "toggle-dev-tools": "Перемкнути DevTools",
+              "force-smtc": "Примусово використовувати зовнішній SMTC"
             }
           },
           "always-on-top": "Завжди зверху",
@@ -144,7 +145,9 @@
               "disabled": "Вимкнено",
               "enabled-and-hide-app": "Запустити та приховати програму",
               "enabled-and-show-app": "Запустити та відобразити додаток",
-              "play-pause-on-click": "Відтворення/Пауза за натисканням"
+              "play-pause-on-click": "Відтворення/Пауза за натисканням",
+              "move-to-current-desktop": "Перемістити на поточний віртуальний робочий стіл при показі",
+              "force-white-icons": "Примусове використання білих іконок"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Вподобати",
+      "dislike": "Не подобається",
+      "unlike": "На відміну від",
+      "undislike": "Нелайк"
     }
   },
   "plugins": {
@@ -682,7 +689,8 @@
           "submenu": {
             "hide-button-text": "Сховати текст кнопки",
             "refresh-on-play-pause": "Оновлення при відтворенні/паузі",
-            "tray-controls": "Відкриття/закриття при натисканні на значок в області повідомлень (tray)"
+            "tray-controls": "Відкриття/закриття при натисканні на значок в області повідомлень (tray)",
+            "hover-controls": "Показувати міні-плеєр при наведенні на трей"
           }
         },
         "priority": "Пріоритет повідомлень",
@@ -820,10 +828,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Пропускає пісні що не сподобались",
-      "name": "Пропускати пісні що не сподобались"
-    },
     "skip-silences": {
       "description": "Автоматично пропускати тишу в піснях",
       "name": "Пропуск тиші"
@@ -883,6 +887,24 @@
           },
           "tooltip": "Виберіть ефект, який потрібно застосувати до поточної лінії"
         },
+        "lyrics-font-size": {
+          "label": "Розмір шрифту тексту пісні",
+          "submenu": {
+            "large": {
+              "label": "Великий",
+              "tooltip": "Використовувати оригінальний більший розмір тексту"
+            },
+            "medium": {
+              "label": "Середній",
+              "tooltip": "Використовувати збалансований розмір тексту"
+            },
+            "small": {
+              "label": "Малий",
+              "tooltip": "Використовувати більш компактний розмір тексту"
+            }
+          },
+          "tooltip": "Виберіть, наскільки великим має бути текст пісні"
+        },
         "precise-timing": {
           "label": "Зробити текст пісні ідеально синхронізованим",
           "tooltip": "Обчисли до мілісекунд відображення наступного рядка (може мати невеликий вплив на продуктивність)"
@@ -906,6 +928,125 @@
         "show-time-codes": {
           "label": "Відображати часові коди",
           "tooltip": "Відображати часові коди біля тексту"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Очистити кеш перекладів",
+            "tooltip": "Видалити всі кешовані переклади, збережені на диску"
+          },
+          "configure": {
+            "label": "Налаштувати API ключ і модель…",
+            "tooltip": "Встановити параметри перекладу для конкретного провайдера"
+          },
+          "enabled": {
+            "label": "Увімкнути переклад",
+            "tooltip": "Показувати перекладений рядок під кожним оригінальним рядком тексту"
+          },
+          "label": "Переклад тексту пісні",
+          "provider": {
+            "label": "Провайдер",
+            "tooltip": "Який сервіс використовувати для перекладу"
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Використовує нативний Anthropic Messages API.",
+              "prompt-title": "Налаштування Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Використовує Google Generative Language API (generateContent).",
+              "prompt-title": "Налаштування Gemini"
+            },
+            "google-translate": {
+              "host": "Хост",
+              "name": "Google Translate",
+              "prompt-label": "Використовує неофіційний безкоштовний Google Translate. API ключ не потрібен, але Google може обмежувати частоту запитів.",
+              "prompt-title": "Налаштування Google Translate"
+            },
+            "local-cli": {
+              "command": "Команда",
+              "engine": "Локальний CLI",
+              "engine-claude": "Код Клода",
+              "engine-codex": "Кодекс",
+              "engine-gemini": "Gemini CLI",
+              "name": "Локальний CLI",
+              "prompt-label": "Використовувати локально авторизований Claude Code, Codex або Gemini CLI. Команда та модель автоматичні; CLI використовує власні налаштування за замовчуванням.",
+              "prompt-title": "Налаштування локального CLI",
+              "timeout": "Час очікування в секундах (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Режим API (responses / auto / chat-completions)",
+              "base-url": "Базова URL",
+              "name": "Сумісний з OpenAI",
+              "prompt-label": "Використовувати сервери, сумісні з OpenAI, включаючи Ollama (базова URL http://127.0.0.1:11434/v1, режим API auto або chat-completions).",
+              "prompt-title": "Налаштування OpenAI-сумісного"
+            },
+            "shared": {
+              "api-key": "API ключ",
+              "model": "Модель"
+            }
+          },
+          "target-language": {
+            "label": "Цільова мова",
+            "options": {
+              "ar": "العربية",
+              "auto": "Відповідно до мови додатку",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Мова, на яку перекладати текст пісні"
+          },
+          "tooltip": "Перекладати текст пісні та показувати результат перекладу порядково"
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Використовувати тексти YTM без проксі",
+          "tooltip": "Пропустити проксі YTM і звертатися до YouTube Music безпосередньо через автентифікований сеанс програми. Корисно, якщо ви довіряєте своїй мережі/регіону дозволяти прямі виклики."
+        },
+        "show-custom-search-button": {
+          "label": "Показати кнопку власного пошуку",
+          "tooltip": "Показати кнопку пошуку в виборі текстів пісень, яка дозволяє змінити пошуковий запит та виконавця для поточної пісні."
         }
       },
       "name": "Синхронізовані тексти",
@@ -994,6 +1135,25 @@
         "visualizer-type": "Тип візуалізації"
       },
       "name": "Візуалізація"
+    },
+    "audio-only": {
+      "description": "Примусовий режим лише аудіо — блокує всі відеопотоки на рівні мережі та плеєра для економії ОЗП і пропускної здатності",
+      "name": "Лише аудіо"
+    },
+    "playback-recovery": {
+      "description": "Автоматично відновлює роботу після зависання, зупинки або збою відтворення",
+      "menu": {
+        "log-to-console": "Записувати події відновлення в консоль"
+      },
+      "name": "Відновлення відтворення"
+    },
+    "playlist-search": {
+      "description": "Додає поле пошуку для фільтрації плейлистів у бічній панелі та діалозі додавання до плейлиста",
+      "name": "Пошук плейлистів",
+      "templates": {
+        "search-placeholder": "Шукати плейлисти",
+        "no-results": "Плейлистів не знайдено"
+      }
     }
   }
 }

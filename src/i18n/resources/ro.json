@@ -109,7 +109,8 @@
                   "title": "Seteaza proxy"
                 }
               },
-              "toggle-dev-tools": "Deschide uneltele de dezvoltator"
+              "toggle-dev-tools": "Deschide uneltele de dezvoltator",
+              "force-smtc": "Forțează utilizarea SMTC extern"
             }
           },
           "always-on-top": "Mereu deasupra",
@@ -144,7 +145,9 @@
               "disabled": "Dezactivat",
               "enabled-and-hide-app": "Activează și ascunde fereastra aplicației",
               "enabled-and-show-app": "Activează și arata fereastra aplicației",
-              "play-pause-on-click": "Start/Pauza la click"
+              "play-pause-on-click": "Start/Pauza la click",
+              "move-to-current-desktop": "Mutare pe desktopul virtual curent la afișare",
+              "force-white-icons": "Forțează utilizarea pictogramelor albe"
             }
           },
           "visual-tweaks": {
@@ -158,7 +161,7 @@
                 }
               },
               "like-buttons": {
-                "default": "Default",
+                "default": "Implicit",
                 "force-show": "Forțează randarea",
                 "hide": "Ascunde",
                 "label": "Butoane de like",
@@ -186,7 +189,7 @@
       },
       "plugins": {
         "enabled": "Activat",
-        "label": "Plugins",
+        "label": "Plugin-uri",
         "new": "NOU"
       },
       "view": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Apreciază",
+      "dislike": "Nu-mi place",
+      "unlike": "Spre deosebire de",
+      "undislike": "Nu mai displac"
     }
   },
   "plugins": {
@@ -231,7 +238,8 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Activează tematica barei de căutare"
       },
       "name": "Tema de culori a albumului"
     },
@@ -323,6 +331,10 @@
             },
             "enable-https": {
               "label": "Activează HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Selectează fișierul cheii private HTTPS",
+              "label": "Fișier cheie privată (.key/.pem)"
             }
           }
         },
@@ -402,8 +414,11 @@
       }
     },
     "clock": {
+      "description": "Adaugă un ceas în bara de navigare",
       "menu": {
         "format": {
+          "24-hour-format": "Format 24 de ore",
+          "display-seconds": "Afișează secundele",
           "label": "Format"
         }
       },
@@ -670,7 +685,8 @@
           "submenu": {
             "hide-button-text": "Ascunde textul butoanelor",
             "refresh-on-play-pause": "Reîmprospătează la Redă/Pauză",
-            "tray-controls": "Deschide/Închide la apăsarea iconiței pentru meniul Tray"
+            "tray-controls": "Deschide/Închide la apăsarea iconiței pentru meniul Tray",
+            "hover-controls": "Arată mini-player la trecerea peste tavă"
           }
         },
         "priority": "Prioritatea notificărilor",
@@ -808,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Sari peste melodiile neplăcute",
-      "name": "Treci peste melodiile neplăcute"
-    },
     "skip-silences": {
       "description": "Treci automat peste secțiunile de liniște din melodii",
       "name": "Treci peste liniște"
@@ -828,11 +840,22 @@
       },
       "menu": {
         "convert-chinese-character": {
+          "label": "Convertește caracterele chinezești",
           "submenu": {
             "disabled": {
-              "label": "Dezactivat"
+              "label": "Dezactivat",
+              "tooltip": "Dezactivează conversia caracterelor chinezești"
+            },
+            "simplified-to-traditional": {
+              "label": "Simplificat la Tradițional",
+              "tooltip": "Convertește chineza simplificată în chineză tradițională"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradițional la Simplificat",
+              "tooltip": "Convertește chineza tradițională în chineză simplificată"
             }
-          }
+          },
+          "tooltip": "Convertește caracterele chinezești în tradițional sau simplificat"
         },
         "default-text-string": {
           "label": "Caracter implicit între versuri",
@@ -860,6 +883,24 @@
           },
           "tooltip": "Alege efectul aplicat liniei curente"
         },
+        "lyrics-font-size": {
+          "label": "Dimensiune font versuri",
+          "submenu": {
+            "large": {
+              "label": "Mare",
+              "tooltip": "Folosește dimensiunea originală mai mare a versurilor"
+            },
+            "medium": {
+              "label": "Mediu",
+              "tooltip": "Folosește o dimensiune echilibrată a versurilor"
+            },
+            "small": {
+              "label": "Mic",
+              "tooltip": "Folosește o dimensiune mai compactă a versurilor"
+            }
+          },
+          "tooltip": "Alege cât de mari să fie versurile"
+        },
         "precise-timing": {
           "label": "Sincronizează versurile perfect",
           "tooltip": "Calculează afisarea următoarei linii până la milisecundă (poate afecta performanța)"
@@ -883,6 +924,125 @@
         "show-time-codes": {
           "label": "Afișează codurile de timp",
           "tooltip": "Afișează codurile de timp lângă versuri"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Șterge cache-ul de traduceri",
+            "tooltip": "Șterge toate traducerile stocate în cache pe disc."
+          },
+          "configure": {
+            "label": "Configurează cheia API și modelul…",
+            "tooltip": "Setează opțiunile de traducere specifice furnizorului."
+          },
+          "enabled": {
+            "label": "Activează traducerea",
+            "tooltip": "Arată o linie tradusă sub fiecare linie originală a versurilor."
+          },
+          "label": "Traducerea versurilor",
+          "provider": {
+            "label": "Furnizor",
+            "tooltip": "Ce serviciu să folosești pentru traducere."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Folosește API-ul nativ Anthropic Messages.",
+              "prompt-title": "Setări Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Folosește API-ul Google Generative Language (generateContent).",
+              "prompt-title": "Setări Gemini"
+            },
+            "google-translate": {
+              "host": "Gazdă",
+              "name": "Google Traducere",
+              "prompt-label": "Folosește punctul final neoficial gratuit Google Translate. Nu este necesară o cheie API, dar Google poate limita rata.",
+              "prompt-title": "Setări Google Translate"
+            },
+            "local-cli": {
+              "command": "Comandă",
+              "engine": "CLI Local",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI Local",
+              "prompt-label": "Folosește un Claude Code, Codex sau Gemini CLI autentificat local. Comanda și modelul sunt automate; CLI-ul folosește implicitul său autentificat.",
+              "prompt-title": "Setări CLI Local",
+              "timeout": "Timeout secunde (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Mod API (responses / auto / chat-completions)",
+              "base-url": "URL de bază",
+              "name": "Compatibil OpenAI",
+              "prompt-label": "Folosește servere compatibile OpenAI, inclusiv Ollama (URL de bază http://127.0.0.1:11434/v1, mod API auto sau chat-completions).",
+              "prompt-title": "Setări compatibile OpenAI"
+            },
+            "shared": {
+              "api-key": "Cheie API",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Limba țintă",
+            "options": {
+              "ar": "العربية",
+              "auto": "Urmează limba aplicației",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Limba în care să fie traduse versurile."
+          },
+          "tooltip": "Tradu versurile și arată rezultatul tradus linie cu linie."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Folosește versurile YTM fără proxy",
+          "tooltip": "Omite proxy-ul de navigare YTM și apelează direct YouTube Music folosind sesiunea autentificată a aplicației. Util dacă ai încredere în rețeaua/regiunea ta pentru a permite apeluri directe de navigare."
+        },
+        "show-custom-search-button": {
+          "label": "Afișează butonul personalizat de căutare",
+          "tooltip": "Afișează un buton de căutare în selectorul de versuri care îți permite să suprascrii interogarea de căutare și artistul pentru melodia curentă."
         }
       },
       "name": "Versuri Sincronizate",
@@ -966,6 +1126,25 @@
         "visualizer-type": "Tip de vizualizator"
       },
       "name": "Vizualizator"
+    },
+    "audio-only": {
+      "description": "Forțează modul doar audio — blochează toate fluxurile video la nivel de rețea și player pentru a economisi RAM și lățime de bandă",
+      "name": "Doar Audio"
+    },
+    "playback-recovery": {
+      "description": "Recuperează automat din stări de redare blocate, blocate sau moarte",
+      "menu": {
+        "log-to-console": "Înregistrează evenimentele de recuperare în consolă"
+      },
+      "name": "Recuperare Redare"
+    },
+    "playlist-search": {
+      "description": "Adaugă un câmp de căutare pentru a filtra listele de redare din bara laterală și din dialogul Adăugare în lista de redare",
+      "name": "Căutare în playlist",
+      "templates": {
+        "search-placeholder": "Caută liste de redare",
+        "no-results": "Nicio listă de redare găsită."
+      }
     }
   }
 }

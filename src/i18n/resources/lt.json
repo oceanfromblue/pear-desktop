@@ -109,7 +109,8 @@
                   "title": "Nustatyti ‚proxy‘ serverį"
                 }
               },
-              "toggle-dev-tools": "Įjungti/Išjungti „DevTools“"
+              "toggle-dev-tools": "Įjungti/Išjungti „DevTools“",
+              "force-smtc": "Priversti naudoti išorinį SMTC"
             }
           },
           "always-on-top": "Visada viršuje",
@@ -144,7 +145,9 @@
               "disabled": "Išjungta",
               "enabled-and-hide-app": "Įjungta ir slėpti programos langą",
               "enabled-and-show-app": "Įjungta ir rodyti programos langą",
-              "play-pause-on-click": "Paleisti/Pristabdyti ant paspaudimo"
+              "move-to-current-desktop": "Rodant perkelti į dabartinį virtualų darbalaukį",
+              "play-pause-on-click": "Paleisti/Pristabdyti ant paspaudimo",
+              "force-white-icons": "Priversti naudoti baltas piktogramas"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Patinka",
+      "dislike": "Nepatinka",
+      "unlike": "Skirtingai nei",
+      "undislike": "Nepatinka"
     }
   },
   "plugins": {
@@ -235,6 +242,10 @@
         "enable-seekbar": "Įjungti paieškos juostos temavimą"
       },
       "name": "Albumo Spalvų Tema"
+    },
+    "audio-only": {
+      "description": "Priverstinis tik garso režimas — blokuoja visus vaizdo srautus tinklo ir grotuvo lygiu, taupant RAM ir pralaidumą",
+      "name": "Tik Garsas"
     },
     "ambient-mode": {
       "description": "Pritaiko apšvietimo efektą, perteikdamas švelnias vaizdo įrašo spalvas į ekrano foną",
@@ -677,6 +688,7 @@
           "label": "Interaktyvūs nustatymai",
           "submenu": {
             "hide-button-text": "Paslėpti mygtuko tekstą",
+            "hover-controls": "Rodyti mini grotuvą užvedus ant padėklo",
             "refresh-on-play-pause": "Perkrauti po Paleidimo/Pristabdymo",
             "tray-controls": "Atidaryti/Uždaryti po paspaudimo ant padėklo"
           }
@@ -690,6 +702,13 @@
     "performance-improvement": {
       "description": "Pagerinkite našumą įjungdami eksperimentinius scenarijus",
       "name": "Našumo patobulinimas [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Automatiškai atsistato iš užstrigusių, sustojusių ar negyvų atkūrimo būsenų",
+      "menu": {
+        "log-to-console": "Registruoti atkūrimo įvykius konsolėje"
+      },
+      "name": "Atkūrimo Atkūrimas"
     },
     "picture-in-picture": {
       "description": "Leidžia pakeisti programą į „nuotrauka-nuotraukoje“ rėžimą",
@@ -816,10 +835,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Praleidžia nepatinkančias dainas",
-      "name": "Praleisti Nepatinkančias Dainas"
-    },
     "skip-silences": {
       "description": "Automatiškai praleisti tylos dalis dainose",
       "name": "Praleisti Tylumas"
@@ -879,6 +894,24 @@
           },
           "tooltip": "Pasirinkti efektą, kurį pritaikyti dabartinei linijai"
         },
+        "lyrics-font-size": {
+          "label": "Dainų žodžių šrifto dydis",
+          "submenu": {
+            "large": {
+              "label": "Didelis",
+              "tooltip": "Naudoti originalų didesnį dainų žodžių dydį"
+            },
+            "medium": {
+              "label": "Vidutinis",
+              "tooltip": "Naudoti subalansuotą dainų žodžių dydį"
+            },
+            "small": {
+              "label": "Mažas",
+              "tooltip": "Naudoti kompaktiškesnį dainų žodžių dydį"
+            }
+          },
+          "tooltip": "Pasirinkite kokio dydžio turėtų būti dainų žodžių tekstas"
+        },
         "precise-timing": {
           "label": "Tobulai sinchronizuoti dainos žodžius",
           "tooltip": "Apskaičiuoti kitos eilutės rodymą milisekundės tikslumu (gali turėti nedidelę įtaką našumui)"
@@ -902,6 +935,125 @@
         "show-time-codes": {
           "label": "Rodyti laiko žymes",
           "tooltip": "Rodyti laiko žymes kartu su dainos žodžiais"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Išvalyti vertimo talpyklą",
+            "tooltip": "Ištrinti visus talpykloje saugomus vertimus iš disko."
+          },
+          "configure": {
+            "label": "Konfigūruoti API raktą ir modelį…",
+            "tooltip": "Nustatyti tiekėjui būdingus vertimo parinktis."
+          },
+          "enabled": {
+            "label": "Įjungti vertimą",
+            "tooltip": "Rodyti išverstą eilutę po kiekviena originalia dainų žodžių eilute."
+          },
+          "label": "Dainų žodžių vertimas",
+          "provider": {
+            "label": "Tiekėjas",
+            "tooltip": "Kurią paslaugą naudoti vertimui."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Naudoja vietinę Anthropic Messages API.",
+              "prompt-title": "Anthropic nustatymai"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Naudoja Google Generatyvinės Kalbos API (generateContent).",
+              "prompt-title": "Gemini nustatymai"
+            },
+            "google-translate": {
+              "host": "Serveris",
+              "name": "Google Translate",
+              "prompt-label": "Naudoja neoficialų nemokamą Google Translate galinį tašką. API rakto nereikia, bet Google gali taikyti greičio apribojimus.",
+              "prompt-title": "Google Translate nustatymai"
+            },
+            "local-cli": {
+              "command": "Komanda",
+              "engine": "Vietinė CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Vietinė CLI",
+              "prompt-label": "Naudoja vietoje prisijungusį Claude Code, Codex arba Gemini CLI. Komanda ir modelis yra automatiniai; CLI naudoja savo prisijungtą numatytąjį.",
+              "prompt-title": "Vietinės CLI nustatymai",
+              "timeout": "Skirtojo laiko sekundės (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API režimas (responses / auto / chat-completions)",
+              "base-url": "Bazinis URL",
+              "name": "OpenAI suderinamas",
+              "prompt-label": "Naudoja OpenAI suderinamus serverius, įskaitant Ollama (bazinis URL http://127.0.0.1:11434/v1, API režimas auto arba chat-completions).",
+              "prompt-title": "OpenAI suderinami nustatymai"
+            },
+            "shared": {
+              "api-key": "API raktas",
+              "model": "Modelis"
+            }
+          },
+          "target-language": {
+            "label": "Tikslinė kalba",
+            "options": {
+              "ar": "العربية",
+              "auto": "Sekti programos kalbą",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Kalba, į kurią versti dainų žodžius."
+          },
+          "tooltip": "Išversti dainų žodžius ir rodyti išverstą rezultatą eilutė po eilutės."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Naudokite YTM dainų tekstus be proxy",
+          "tooltip": "Praleisti YTM naršymo proxy ir iškviesti YouTube Music tiesiogiai naudojant programos autentifikuotą sesiją. Naudinga, jei pasitikite savo tinklu/regionu, kad leistų tiesioginius naršymo skambučius."
+        },
+        "show-custom-search-button": {
+          "label": "Rodyti pasirinktinį paieškos mygtuką",
+          "tooltip": "Rodyti paieškos mygtuką dainų tekstų parinkiklyje, leidžiantį pakeisti paieškos užklausą ir atlikėją dabartinei dainai."
         }
       },
       "name": "„Synced Lyrics“",
@@ -985,6 +1137,14 @@
         "visualizer-type": "Vizualizatoriaus tipas"
       },
       "name": "Vizualizatorius"
+    },
+    "playlist-search": {
+      "description": "Prideda paieškos įvestį, skirtą filtruoti grojaraščius šoninėje juostoje ir dialogo lange „Pridėti prie grojaraščio“",
+      "name": "Paieškos grojaraštyje",
+      "templates": {
+        "search-placeholder": "Ieškoti grojaraščių",
+        "no-results": "Nerasta grojaraščių"
+      }
     }
   }
 }

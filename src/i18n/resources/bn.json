@@ -109,7 +109,8 @@
                   "title": "প্রক্সি সেট করুন"
                 }
               },
-              "toggle-dev-tools": "ডেভ টুল চালু/বন্ধ"
+              "toggle-dev-tools": "ডেভ টুল চালু/বন্ধ",
+              "force-smtc": "বাহ্যিক SMTC ব্যবহার বাধ্যতামূলক করুন"
             }
           },
           "always-on-top": "সবসময় উপরে রাখুন",
@@ -144,7 +145,9 @@
               "disabled": "ট্রে বন্ধ",
               "enabled-and-hide-app": "ট্রে চালু ও অ্যাপ লুকান",
               "enabled-and-show-app": "ট্রে চালু ও অ্যাপ দেখান",
-              "play-pause-on-click": "ট্রে ক্লিক করলে প্লে/পজ"
+              "play-pause-on-click": "ট্রে ক্লিক করলে প্লে/পজ",
+              "move-to-current-desktop": "প্রদর্শনের সময় বর্তমান ভার্চুয়াল ডেস্কটপে স্থানান্তর করুন",
+              "force-white-icons": "সাদা আইকন ব্যবহার বাধ্যতামূলক করুন"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "পছন্দ",
+      "dislike": "অপছন্দ",
+      "unlike": "ভিন্ন",
+      "undislike": "অপছন্দ বাতিল"
     }
   },
   "plugins": {
@@ -444,10 +451,17 @@
       }
     },
     "custom-output-device": {
+      "description": "গানের জন্য একটি কাস্টম আউটপুট মিডিয়া ডিভাইস কনফিগার করুন",
       "menu": {
         "device-selector": "ডিভাইস নির্বাচন করো"
       },
-      "name": "আউটপুট ডিভাইস নির্বাচন করো"
+      "name": "আউটপুট ডিভাইস নির্বাচন করো",
+      "prompt": {
+        "device-selector": {
+          "label": "ব্যবহার করার জন্য আউটপুট মিডিয়া ডিভাইস নির্বাচন করুন",
+          "title": "আউটপুট ডিভাইস নির্বাচন করুন"
+        }
+      }
     },
     "disable-autoplay": {
       "description": "গান \"পজ\" মোডে শুরু করে",
@@ -472,7 +486,15 @@
         "hide-duration-left": "অবশিষ্ট সময় লুকান",
         "hide-github-button": "গিটহাব লিঙ্ক বাটন লুকান",
         "play-on-application": "ইউটিউব মিউজিকে চালান",
-        "set-inactivity-timeout": "নিষ্ক্রিয়তার সময়সীমা সেট করুন"
+        "set-inactivity-timeout": "নিষ্ক্রিয়তার সময়সীমা সেট করুন",
+        "set-status-display-type": {
+          "label": "স্ট্যাটাস টেক্সট",
+          "submenu": {
+            "application": "{{applicationName}} শুনছেন",
+            "artist": "{artist} শুনছেন",
+            "title": "{গানের শিরোনাম} শুনছেন"
+          }
+        }
       },
       "name": "ডিসকর্ড রিচ প্রেজেন্স",
       "prompt": {
@@ -663,7 +685,8 @@
           "submenu": {
             "hide-button-text": "বাটন টেক্সট লুকান",
             "refresh-on-play-pause": "প্লে/পজে রিফ্রেশ করুন",
-            "tray-controls": "ট্রে ক্লিকে খুলুন/বন্ধ করুন"
+            "tray-controls": "ট্রে ক্লিকে খুলুন/বন্ধ করুন",
+            "hover-controls": "ট্রে হোভারে মিনি-প্লেয়ার দেখান"
           }
         },
         "priority": "বিজ্ঞপ্তি অগ্রাধিকার",
@@ -764,6 +787,7 @@
         "listenbrainz": {
           "token": "ListenBrainz ব্যবহারকারী টোকেন লিখুন"
         },
+        "scrobble-alternative-artist": "বিকল্প শিল্পী ব্যবহার করুন",
         "scrobble-alternative-title": "বিকল্প শিরোনাম ব্যবহার করুন",
         "scrobble-other-media": "অন্যান্য মিডিয়া স্ক্রবল করুন"
       },
@@ -800,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "পছন্দ হয়নি এমন গানগুলো এড়িয়ে যায়",
-      "name": "অপছন্দ গান এড়ান"
-    },
     "skip-silences": {
       "description": "স্বয়ংক্রিয়ভাবে গানের নীরব অংশগুলো এড়িয়ে যান",
       "name": "নীরবতা এড়িয়ে যান"
@@ -820,11 +840,22 @@
       },
       "menu": {
         "convert-chinese-character": {
+          "label": "চীনা অক্ষর রূপান্তর করুন",
           "submenu": {
             "disabled": {
-              "label": "নিষ্ক্রিয়"
+              "label": "নিষ্ক্রিয়",
+              "tooltip": "চীনা অক্ষর রূপান্তর নিষ্ক্রিয় করুন"
+            },
+            "simplified-to-traditional": {
+              "label": "সরলীকৃত থেকে ঐতিহ্যবাহী",
+              "tooltip": "সরলীকৃত চীনা অক্ষরকে ঐতিহ্যবাহী চীনা অক্ষরে রূপান্তর করুন"
+            },
+            "traditional-to-simplified": {
+              "label": "ঐতিহ্যবাহী থেকে সরলীকৃত",
+              "tooltip": "ঐতিহ্যবাহী চীনা অক্ষরকে সরলীকৃত চীনা অক্ষরে রূপান্তর করুন"
             }
-          }
+          },
+          "tooltip": "চীনা অক্ষরকে ঐতিহ্যবাহী বা সরলীকৃত রূপান্তর করুন"
         },
         "default-text-string": {
           "label": "লিরিক্সের মাঝে ডিফল্ট অক্ষর",
@@ -852,6 +883,24 @@
           },
           "tooltip": "বর্তমান লাইনে প্রয়োগ করার জন্য ইফেক্ট নির্বাচন করুন"
         },
+        "lyrics-font-size": {
+          "label": "লিরিক্স ফন্টের আকার",
+          "submenu": {
+            "large": {
+              "label": "বড়",
+              "tooltip": "মূল বড় লিরিক্সের আকার ব্যবহার করুন"
+            },
+            "medium": {
+              "label": "মাঝারি",
+              "tooltip": "একটি সুষম লিরিক্সের আকার ব্যবহার করুন"
+            },
+            "small": {
+              "label": "ছোট",
+              "tooltip": "আরও কম্প্যাক্ট লিরিক্সের আকার ব্যবহার করুন"
+            }
+          },
+          "tooltip": "লিরিক্স টেক্সট কত বড় হবে তা নির্বাচন করুন"
+        },
         "precise-timing": {
           "label": "লিরিক্স পুরোপুরি সিঙ্ক করুন",
           "tooltip": "পরবর্তী লাইন প্রদর্শনের মিলিসেকেন্ড পর্যন্ত গণনা করুন (পারফরম্যান্সে সামান্য প্রভাব পড়তে পারে)"
@@ -875,6 +924,125 @@
         "show-time-codes": {
           "label": "টাইম কোড দেখান",
           "tooltip": "লিরিক্সের পাশে টাইম কোড দেখান"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "অনুবাদ ক্যাশ সাফ করুন",
+            "tooltip": "ডিস্কে সংরক্ষিত সব ক্যাশ করা অনুবাদ মুছে ফেলুন।"
+          },
+          "configure": {
+            "label": "API কী ও মডেল কনফিগার করুন…",
+            "tooltip": "প্রোভাইডার-নির্দিষ্ট অনুবাদ অপশন সেট করুন।"
+          },
+          "enabled": {
+            "label": "অনুবাদ সক্রিয় করুন",
+            "tooltip": "প্রতিটি মূল লিরিক্স লাইনের নিচে একটি অনুবাদিত লাইন দেখান।"
+          },
+          "label": "লিরিক্স অনুবাদ",
+          "provider": {
+            "label": "প্রোভাইডার",
+            "tooltip": "অনুবাদের জন্য কোন পরিষেবা ব্যবহার করতে হবে।"
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "নেটিভ Anthropic Messages API ব্যবহার করে।",
+              "prompt-title": "Anthropic সেটিংস"
+            },
+            "gemini": {
+              "name": "গুগল জেমিনি",
+              "prompt-label": "Google's Generative Language API (generateContent) ব্যবহার করে।",
+              "prompt-title": "Gemini সেটিংস"
+            },
+            "google-translate": {
+              "host": "হোস্ট",
+              "name": "গুগল অনুবাদ",
+              "prompt-label": "অনানুষ্ঠানিক বিনামূল্যের Google Translate এন্ডপয়েন্ট ব্যবহার করে। কোন API কী প্রয়োজন নেই, তবে Google এটিকে রেট-লিমিট করতে পারে।",
+              "prompt-title": "Google Translate সেটিংস"
+            },
+            "local-cli": {
+              "command": "কমান্ড",
+              "engine": "লোকাল CLI",
+              "engine-claude": "ক্লদ কোড",
+              "engine-codex": "কোডেক্স",
+              "engine-gemini": "জেমিনি সিএলআই",
+              "name": "লোকাল CLI",
+              "prompt-label": "লোকালি লগইন করা Claude Code, Codex, বা Gemini CLI ব্যবহার করুন। কমান্ড এবং মডেল স্বয়ংক্রিয়; CLI তার নিজস্ব লগইন করা ডিফল্ট ব্যবহার করে।",
+              "prompt-title": "লোকাল CLI সেটিংস",
+              "timeout": "টাইমআউট সেকেন্ড (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API মোড (responses / auto / chat-completions)",
+              "base-url": "বেস URL",
+              "name": "OpenAI সামঞ্জস্যপূর্ণ",
+              "prompt-label": "OpenAI-সামঞ্জস্যপূর্ণ সার্ভার ব্যবহার করুন, যার মধ্যে Ollama (বেস URL http://127.0.0.1:11434/v1, API মোড auto বা chat-completions)।",
+              "prompt-title": "OpenAI-সামঞ্জস্যপূর্ণ সেটিংস"
+            },
+            "shared": {
+              "api-key": "API কী",
+              "model": "মডেল"
+            }
+          },
+          "target-language": {
+            "label": "লক্ষ্য ভাষা",
+            "options": {
+              "ar": "العربية",
+              "auto": "অ্যাপ ভাষা অনুসরণ করুন",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "লিরিক্স অনুবাদ করার ভাষা।"
+          },
+          "tooltip": "লিরিক্স অনুবাদ করুন এবং প্রদর্শনের জন্য লাইন বাই লাইন অনুবাদিত ফলাফল দেখান।"
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "YTM লিরিক্স ব্যবহার করুন কোনো প্রক্সি ছাড়াই",
+          "tooltip": "YTM ব্রাউজ প্রক্সি এড়িয়ে যান এবং অ্যাপের প্রমাণীকৃত সেশন ব্যবহার করে সরাসরি YouTube Music-এ কল করুন। আপনার নেটওয়ার্ক/অঞ্চল সরাসরি ব্রাউজ কলের অনুমতি দেয় বলে বিশ্বাস করলে এটি কার্যকর।"
+        },
+        "show-custom-search-button": {
+          "label": "কাস্টম সার্চ বাটন দেখান",
+          "tooltip": "গানের লিরিক্স পিকার-এ একটি সার্চ বাটন দেখান যা বর্তমান গানের জন্য সার্চ কোয়েরি এবং শিল্পী ওভাররাইড করতে দেয়।"
         }
       },
       "name": "সিঙ্ক করা লিরিক্স",
@@ -900,7 +1068,10 @@
       "description": "অ্যাপ উইন্ডো স্বচ্ছ করে",
       "menu": {
         "opacity": {
-          "label": "স্বচ্ছতা"
+          "label": "স্বচ্ছতা",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
         },
         "type": {
           "label": "ধরণ",
@@ -955,6 +1126,25 @@
         "visualizer-type": "ভিজ্যুয়ালাইজার প্রকার"
       },
       "name": "ভিজ্যুয়ালাইজার"
+    },
+    "audio-only": {
+      "description": "শুধুমাত্র অডিও মোড জোর করে — RAM এবং ব্যান্ডউইথ বাঁচাতে নেটওয়ার্ক এবং প্লেয়ার স্তরে সমস্ত ভিডিও স্ট্রিম ব্লক করে",
+      "name": "শুধুমাত্র অডিও"
+    },
+    "playback-recovery": {
+      "description": "আটকে যাওয়া, স্থগিত বা অকার্যকর প্লেব্যাক অবস্থা থেকে স্বয়ংক্রিয়ভাবে পুনরুদ্ধার করে",
+      "menu": {
+        "log-to-console": "পুনরুদ্ধার ইভেন্ট কনসোলে লগ করুন"
+      },
+      "name": "প্লেব্যাক পুনরুদ্ধার"
+    },
+    "playlist-search": {
+      "description": "সাইডবার এবং প্লেলিস্টে যোগ করুন ডায়ালগে প্লেলিস্ট ফিল্টার করার জন্য একটি সার্চ ইনপুট যোগ করে",
+      "name": "প্লেলিস্ট অনুসন্ধান",
+      "templates": {
+        "search-placeholder": "প্লেলিস্ট খুঁজুন",
+        "no-results": "কোনো প্লেলিস্ট পাওয়া যায়নি"
+      }
     }
   }
 }

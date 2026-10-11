@@ -109,7 +109,8 @@
                   "title": "Nastavit proxy"
                 }
               },
-              "toggle-dev-tools": "Přepínat vývojářské nástroje"
+              "toggle-dev-tools": "Přepínat vývojářské nástroje",
+              "force-smtc": "Vynutit použití externího SMTC"
             }
           },
           "always-on-top": "Vždy na vrchu",
@@ -144,7 +145,9 @@
               "disabled": "Vypnuto",
               "enabled-and-hide-app": "Povolit a skrýt aplikaci",
               "enabled-and-show-app": "Enabled a show aplikaci",
-              "play-pause-on-click": "Přehrát/Pozastavit na kliknutí"
+              "play-pause-on-click": "Přehrát/Pozastavit na kliknutí",
+              "move-to-current-desktop": "Přesunout na aktuální virtuální plochu při zobrazení",
+              "force-white-icons": "Vynutit použití bílých ikon"
             }
           },
           "visual-tweaks": {
@@ -161,7 +164,8 @@
                 "default": "Výchozí",
                 "force-show": "Vynutit zobrazení",
                 "hide": "Skrýt",
-                "label": "Like tlačítka"
+                "label": "Like tlačítka",
+                "swap": "Prohodit pořadí like tlačítek"
               },
               "remove-upgrade-button": "Odebrat upgrade tlačítko",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "To se mi líbí",
+      "dislike": "Nelíbí se",
+      "unlike": "Na rozdíl od",
+      "undislike": "Zrušit nelíbí"
     }
   },
   "plugins": {
@@ -230,7 +238,8 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Povolit motivování posuvníku"
       },
       "name": "Motiv podle barvy Alba"
     },
@@ -313,6 +322,22 @@
         "hostname": {
           "label": "Hostname"
         },
+        "https": {
+          "label": "HTTPS a certifikáty",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "Vybrat soubor HTTPS certifikátu",
+              "label": "Soubor certifikátu (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "Povolit HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Vybrat soubor soukromého klíče HTTPS",
+              "label": "Soubor soukromého klíče (.key/.pem)"
+            }
+          }
+        },
         "port": {
           "label": "Port"
         }
@@ -388,6 +413,17 @@
         "no-captions": "K této skladbě nejsou titulky dostupné"
       }
     },
+    "clock": {
+      "description": "Přidat hodiny do navigačního panelu",
+      "menu": {
+        "format": {
+          "24-hour-format": "24hodinový formát",
+          "display-seconds": "Zobrazovat sekundy",
+          "label": "Formát"
+        }
+      },
+      "name": "Hodiny"
+    },
     "compact-sidebar": {
       "description": "Vždy nastavit postranní panel do kompaktního režimu",
       "name": "Kompaktní postranní panel"
@@ -454,8 +490,8 @@
         "set-status-display-type": {
           "label": "Text statusu",
           "submenu": {
-            "artist": "Poslouchám: {artist}",
             "application": "Poslouchám {{applicationName}}",
+            "artist": "Poslouchám: {artist}",
             "title": "Poslouchám {song title}"
           }
         }
@@ -649,7 +685,8 @@
           "submenu": {
             "hide-button-text": "Skrýt text tlačítka",
             "refresh-on-play-pause": "Refresh na Přehrát/Pozastavit",
-            "tray-controls": "Otevřít/Zavřít aplikaci na kliknutí na tray ikonu"
+            "tray-controls": "Otevřít/Zavřít aplikaci na kliknutí na tray ikonu",
+            "hover-controls": "Zobrazit mini přehrávač při najetí na tray"
           }
         },
         "priority": "Priorita Oznámení",
@@ -787,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Přeskakovat disliked písničky",
-      "name": "Přeskočit Disliked písničky"
-    },
     "skip-silences": {
       "description": "Automaticky přeskakovat tichá místa v písničkách",
       "name": "Přeskakovat Tichá místa"
@@ -806,6 +839,24 @@
         "not-found": "⚠️ Pro tuto skladbu nebyl nalezen žádný text."
       },
       "menu": {
+        "convert-chinese-character": {
+          "label": "Převést čínské znaky",
+          "submenu": {
+            "disabled": {
+              "label": "Vypnuto",
+              "tooltip": "Vypnout převod čínských znaků"
+            },
+            "simplified-to-traditional": {
+              "label": "Zjednodušené na Tradiční",
+              "tooltip": "Převést zjednodušenou čínštinu na tradiční"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradiční na Zjednodušené",
+              "tooltip": "Převést tradiční čínštinu na zjednodušenou"
+            }
+          },
+          "tooltip": "Převést čínské znaky na tradiční nebo zjednodušené"
+        },
         "default-text-string": {
           "label": "Výchozí znak mezi texty",
           "tooltip": "Vyberte výchozí znak pro mezeru mezi texty"
@@ -832,6 +883,24 @@
           },
           "tooltip": "Vyberte efekt pro aktuální řádek"
         },
+        "lyrics-font-size": {
+          "label": "Velikost písma textů",
+          "submenu": {
+            "large": {
+              "label": "Velká",
+              "tooltip": "Použít původní větší velikost textu"
+            },
+            "medium": {
+              "label": "Střední",
+              "tooltip": "Použít vyváženou velikost textu"
+            },
+            "small": {
+              "label": "Malá",
+              "tooltip": "Použít kompaktnější velikost textu"
+            }
+          },
+          "tooltip": "Zvolte, jak velký má být text textů"
+        },
         "precise-timing": {
           "label": "Dokonale synchronizovat texty",
           "tooltip": "Vypočítat zobrazení dalšího řádku na milisekundu (může mít menší dopad na výkon)"
@@ -855,6 +924,125 @@
         "show-time-codes": {
           "label": "Zobrazit časové kódy",
           "tooltip": "Zobrazit časové kódy vedle textu"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Vymazat překladovou mezipaměť",
+            "tooltip": "Smazat všechny uložené překlady na disku."
+          },
+          "configure": {
+            "label": "Nastavit API klíč a model…",
+            "tooltip": "Nastavit možnosti překladu specifické pro poskytovatele."
+          },
+          "enabled": {
+            "label": "Povolit překlad",
+            "tooltip": "Zobrazit přeložený řádek pod každým původním řádkem textu."
+          },
+          "label": "Překlad textů",
+          "provider": {
+            "label": "Poskytovatel",
+            "tooltip": "Kterou službu použít pro překlad."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Používá nativní API Anthropic Messages.",
+              "prompt-title": "Nastavení Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Používá Google Generative Language API (generateContent).",
+              "prompt-title": "Nastavení Gemini"
+            },
+            "google-translate": {
+              "host": "Hostitel",
+              "name": "Překladač Google",
+              "prompt-label": "Používá neoficiální bezplatný endpoint Google Translate. Není vyžadován API klíč, ale Google může omezit rychlost.",
+              "prompt-title": "Nastavení Google Translate"
+            },
+            "local-cli": {
+              "command": "Příkaz",
+              "engine": "Lokální CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokální CLI",
+              "prompt-label": "Použít lokálně přihlášené Claude Code, Codex nebo Gemini CLI. Příkaz a model jsou automatické; CLI používá své vlastní přihlášené výchozí.",
+              "prompt-title": "Nastavení Lokálního CLI",
+              "timeout": "Timeout v sekundách (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Režim API (responses / auto / chat-completions)",
+              "base-url": "Základní URL",
+              "name": "Kompatibilní s OpenAI",
+              "prompt-label": "Použít servery kompatibilní s OpenAI, včetně Ollamy (základní URL http://127.0.0.1:11434/v1, režim API auto nebo chat-completions).",
+              "prompt-title": "Nastavení kompatibilní s OpenAI"
+            },
+            "shared": {
+              "api-key": "API klíč",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Cílový jazyk",
+            "options": {
+              "ar": "العربية",
+              "auto": "Podle jazyka aplikace",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文 (zjednodušená čínština)",
+              "zh-TW": "繁體中文 (tradiční čínština)"
+            },
+            "tooltip": "Jazyk, do kterého se mají texty přeložit."
+          },
+          "tooltip": "Přeložit texty a zobrazit výsledek překladu řádek po řádku pro zobrazení."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Používat texty YTM bez proxy",
+          "tooltip": "Přeskočit YTM browse proxy a volat YouTube Music přímo pomocí autentizované relace aplikace. Užitečné, pokud důvěřujete své síti/oblasti, že umožňuje přímá volání procházení."
+        },
+        "show-custom-search-button": {
+          "label": "Zobrazit vlastní tlačítko vyhledávání",
+          "tooltip": "Zobrazit tlačítko vyhledávání ve výběru textů, které umožňuje přepsat vyhledávací dotaz a interpreta pro aktuální skladbu."
         }
       },
       "name": "Synchronizované texty",
@@ -938,6 +1126,25 @@
         "visualizer-type": "Typ vizualizéru"
       },
       "name": "Vizualizér"
+    },
+    "audio-only": {
+      "description": "Vynutí režim pouze zvuk — blokuje všechny videostreamy na úrovni sítě a přehrávače, aby se šetřila RAM a šířka pásma",
+      "name": "Pouze zvuk"
+    },
+    "playback-recovery": {
+      "description": "Automaticky obnovuje přehrávání ze zaseknutých, zastavených nebo mrtvých stavů",
+      "name": "Obnova přehrávání",
+      "menu": {
+        "log-to-console": "Zaznamenávat události obnovení do konzole"
+      }
+    },
+    "playlist-search": {
+      "description": "Přidá vyhledávací pole pro filtrování playlistů v postranním panelu a v dialogu Přidat do playlistu",
+      "name": "Hledání v seznamu skladeb",
+      "templates": {
+        "search-placeholder": "Hledat seznamy skladeb",
+        "no-results": "Nebyly nalezeny žádné playlisty"
+      }
     }
   }
 }

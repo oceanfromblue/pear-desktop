@@ -109,7 +109,8 @@
                   "title": "ตั้งค่าพร็อกซี่"
                 }
               },
-              "toggle-dev-tools": "เปิด/ปิดเครื่องมือสำหรับนักพัฒนา"
+              "toggle-dev-tools": "เปิด/ปิดเครื่องมือสำหรับนักพัฒนา",
+              "force-smtc": "บังคับใช้ SMTC ภายนอก"
             }
           },
           "always-on-top": "อยู่ด้านบนหน้าต่างอื่นตลอดเวลา",
@@ -144,7 +145,9 @@
               "disabled": "ปิดการใช้งาน",
               "enabled-and-hide-app": "เปิดใช้งานและซ่อนแอป",
               "enabled-and-show-app": "เปิดใช้งานและแสดงแอป",
-              "play-pause-on-click": "เล่น/หยุดเล่น เมื่อคลิก"
+              "play-pause-on-click": "เล่น/หยุดเล่น เมื่อคลิก",
+              "move-to-current-desktop": "ย้ายไปยังเดสก์ท็อปเสมือนปัจจุบันเมื่อแสดง",
+              "force-white-icons": "บังคับใช้ไอคอนสีขาว"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "ถูกใจ",
+      "dislike": "ไม่ชอบ",
+      "unlike": "ไม่เหมือน",
+      "undislike": "เลิกไม่ชอบ"
     }
   },
   "plugins": {
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "ซ่อนข้อความปุ่ม",
             "refresh-on-play-pause": "รีเฟรชเมื่อเล่น/หยุดชั่วคราว",
-            "tray-controls": "เปิด/ปิดเมื่อคลิกถาด"
+            "tray-controls": "เปิด/ปิดเมื่อคลิกถาด",
+            "hover-controls": "แสดงมินิเพลเยอร์เมื่อวางเมาส์บนถาด"
           }
         },
         "priority": "ลำดับความสำคัญของการแจ้งเตือน",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "ข้ามเพลงที่ไม่ถูกใจ",
-      "name": "ข้ามเพลงที่ไม่ถูกใจ"
-    },
     "skip-silences": {
       "description": "ข้ามช่วงที่เงียบในเพลงโดยอัตโนมัติ",
       "name": "ข้ามช่วงเงียบ"
@@ -886,6 +890,24 @@
           },
           "tooltip": "เลือกเอฟเฟกต์ที่จะใช้กับบรรทัดปัจจุบัน"
         },
+        "lyrics-font-size": {
+          "label": "ขนาดตัวอักษรเนื้อเพลง",
+          "submenu": {
+            "large": {
+              "label": "ใหญ่",
+              "tooltip": "ใช้ขนาดเนื้อเพลงดั้งเดิมที่ใหญ่ขึ้น"
+            },
+            "medium": {
+              "label": "กลาง",
+              "tooltip": "ใช้ขนาดเนื้อเพลงที่สมดุล"
+            },
+            "small": {
+              "label": "เล็ก",
+              "tooltip": "ใช้ขนาดเนื้อเพลงที่กะทัดรัดขึ้น"
+            }
+          },
+          "tooltip": "เลือกขนาดตัวอักษรของเนื้อเพลง"
+        },
         "precise-timing": {
           "label": "ให้เนื้อเพลงตรงกับเพลงเป๊ะๆ",
           "tooltip": "คำนวณมิลิวินาทีในการแสดงบรรทัดถัดไป (มีผลเล็กน้อยกับประสิทธิภาพการทำงาน)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "แสดงตำแหน่งเวลา",
           "tooltip": "แสดงตำแหน่งเวลาข้างๆเนื้อเพลง"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "ล้างแคชการแปล",
+            "tooltip": "ลบการแปลที่แคชไว้ทั้งหมดในดิสก์"
+          },
+          "configure": {
+            "label": "กำหนดค่า API key และโมเดล…",
+            "tooltip": "ตั้งค่าตัวเลือกการแปลเฉพาะผู้ให้บริการ"
+          },
+          "enabled": {
+            "label": "เปิดใช้งานการแปล",
+            "tooltip": "แสดงบรรทัดที่แปลใต้บรรทัดเนื้อเพลงต้นฉบับแต่ละบรรทัด"
+          },
+          "label": "แปลเนื้อเพลง",
+          "provider": {
+            "label": "ผู้ให้บริการ",
+            "tooltip": "เลือกบริการที่ใช้ในการแปล"
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "ใช้ Anthropic Messages API ดั้งเดิม",
+              "prompt-title": "การตั้งค่า Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "ใช้ Google Generative Language API (generateContent)",
+              "prompt-title": "การตั้งค่า Gemini"
+            },
+            "google-translate": {
+              "host": "โฮสต์",
+              "name": "Google แปลภาษา",
+              "prompt-label": "ใช้ปลายทาง Google Translate ฟรีที่ไม่เป็นทางการ ไม่ต้องใช้ API key แต่อาจถูก Google จำกัดอัตรา",
+              "prompt-title": "การตั้งค่า Google Translate"
+            },
+            "local-cli": {
+              "command": "คำสั่ง",
+              "engine": "CLI ท้องถิ่น",
+              "engine-claude": "Claude Code",
+              "engine-codex": "โคเด็กซ์",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI ท้องถิ่น",
+              "prompt-label": "ใช้ Claude Code, Codex หรือ Gemini CLI ที่ล็อกอินในเครื่อง คำสั่งและโมเดลเป็นแบบอัตโนมัติ CLI จะใช้ค่าเริ่มต้นที่ล็อกอินไว้",
+              "prompt-title": "การตั้งค่า Local CLI",
+              "timeout": "หมดเวลาเป็นวินาที (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "โหมด API (responses / auto / chat-completions)",
+              "base-url": "URL ฐาน",
+              "name": "เข้ากันได้กับ OpenAI",
+              "prompt-label": "ใช้เซิร์ฟเวอร์ที่เข้ากันได้กับ OpenAI รวมถึง Ollama (base URL http://127.0.0.1:11434/v1, โหมด API auto หรือ chat-completions)",
+              "prompt-title": "การตั้งค่า OpenAI-compatible"
+            },
+            "shared": {
+              "api-key": "คีย์ API",
+              "model": "โมเดล"
+            }
+          },
+          "target-language": {
+            "label": "ภาษาเป้าหมาย",
+            "options": {
+              "ar": "العربية",
+              "auto": "ตามภาษาแอป",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "ภาษาที่จะใช้แปลเนื้อเพลง"
+          },
+          "tooltip": "แปลเนื้อเพลงและแสดงผลลัพธ์ทีละบรรทัด"
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "ใช้เนื้อเพลง YTM โดยไม่ต้องใช้พร็อกซี",
+          "tooltip": "ข้ามพร็อกซีการเรียกดู YTM และเรียก YouTube Music โดยตรงโดยใช้เซสชันที่รับรองความถูกต้องของแอป มีประโยชน์หากคุณเชื่อถือเครือข่าย/ภูมิภาคของคุณให้อนุญาตการเรียกดูโดยตรง"
+        },
+        "show-custom-search-button": {
+          "label": "แสดงปุ่มค้นหาแบบกำหนดเอง",
+          "tooltip": "แสดงปุ่มค้นหาในตัวเลือกเนื้อเพลงที่ให้คุณแทนที่คำค้นหาและศิลปินสำหรับเพลงปัจจุบัน"
         }
       },
       "name": "เนื้อเพลงตรงกับเพลง",
@@ -997,6 +1138,25 @@
         "visualizer-type": "ประเภทวิชวลไลเซอร์"
       },
       "name": "วิชวลไลเซอร์"
+    },
+    "audio-only": {
+      "description": "บังคับโหมดเสียงเท่านั้น — บล็อกสตรีมวิดีโอทั้งหมดในระดับเครือข่ายและเครื่องเล่นเพื่อประหยัด RAM และแบนด์วิธ",
+      "name": "เสียงเท่านั้น"
+    },
+    "playback-recovery": {
+      "description": "กู้คืนอัตโนมัติจากสถานะการเล่นที่ติดขัด หยุดทำงาน หรือค้าง",
+      "menu": {
+        "log-to-console": "บันทึกเหตุการณ์การกู้คืนไปยังคอนโซล"
+      },
+      "name": "การกู้คืนการเล่น"
+    },
+    "playlist-search": {
+      "description": "เพิ่มช่องค้นหาเพื่อกรองเพลย์ลิสต์ในแถบด้านข้างและในกล่องโต้ตอบเพิ่มลงในเพลย์ลิสต์",
+      "name": "ค้นหาเพลย์ลิสต์",
+      "templates": {
+        "search-placeholder": "ค้นหาเพลย์ลิสต์",
+        "no-results": "ไม่พบเพลย์ลิสต์"
+      }
     }
   }
 }

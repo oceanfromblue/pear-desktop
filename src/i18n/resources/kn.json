@@ -1,7 +1,1157 @@
 {
+  "common": {
+    "console": {
+      "plugins": {
+        "execute-failed": "ಪ್ಲಗಿನ್ ಅನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ {{pluginName}}::{{contextName}}",
+        "executed-at-ms": "ಪ್ಲಗಿನ್ {{pluginName}}::{{contextName}} {{ms}}ms ನಲ್ಲಿ ಕಾರ್ಯಗತಗೊಂಡಿದೆ",
+        "initialize-failed": "ಪ್ಲಗಿನ್ \"{{pluginName}}\" ಅನ್ನು ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ",
+        "load-all": "ಎಲ್ಲಾ ಪ್ಲಗಿನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+        "load-failed": "ಪ್ಲಗಿನ್ \"{{pluginName}}\" ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
+        "loaded": "ಪ್ಲಗಿನ್ \"{{pluginName}}\" ಲೋಡ್ ಆಗಿದೆ",
+        "unload-failed": "ಪ್ಲಗಿನ್ \"{{pluginName}}\" ಅನ್ನು ಅನ್‌ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
+        "unloaded": "ಪ್ಲಗಿನ್ \"{{pluginName}}\" ಅನ್‌ಲೋಡ್ ಆಗಿದೆ"
+      }
+    }
+  },
   "language": {
     "code": "kn",
     "local-name": "ಕನ್ನಡ",
     "name": "Kannada"
+  },
+  "main": {
+    "console": {
+      "did-finish-load": {
+        "dev-tools": "ಲೋಡಿಂಗ್ ಮುಗಿದಿದೆ. DevTools ತೆರೆಯಲಾಗಿದೆ"
+      },
+      "i18n": {
+        "loaded": "i18n ಲೋಡ್ ಆಗಿದೆ"
+      },
+      "second-instance": {
+        "receive-command": "ಪ್ರೋಟೋಕಾಲ್ ಮೂಲಕ ಆದೇಶ ಸ್ವೀಕರಿಸಲಾಗಿದೆ: \"{{command}}\""
+      },
+      "theme": {
+        "css-file-not-found": "CSS ಫೈಲ್ \"{{cssFile}}\" ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ, ನಿರ್ಲಕ್ಷಿಸಲಾಗುತ್ತಿದೆ"
+      },
+      "unresponsive": {
+        "details": "ಪ್ರತಿಕ್ರಿಯಿಸದ ದೋಷ!\n{{error}}"
+      },
+      "when-ready": {
+        "clearing-cache-after-20s": "ಅಪ್ಲಿಕೇಶನ್ ಕ್ಯಾಶ್ ತೆರವುಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
+      },
+      "window": {
+        "tried-to-render-offscreen": "ವಿಂಡೋ ಪರದೆಯ ಹೊರಗೆ ರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿದೆ, windowSize={{windowSize}}, displaySize={{displaySize}}, position={{position}}"
+      }
+    },
+    "dialog": {
+      "hide-menu-enabled": {
+        "detail": "ಮೆನು ಮರೆಮಾಡಲಾಗಿದೆ, ತೋರಿಸಲು 'Alt' ಬಳಸಿ (ಅಥವಾ In-App ಮೆನು ಬಳಸುತ್ತಿದ್ದರೆ 'Escape')",
+        "message": "ಮೆನು ಮರೆಮಾಡುವಿಕೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ",
+        "title": "ಮೆನು ಮರೆಮಾಡುವಿಕೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ"
+      },
+      "need-to-restart": {
+        "buttons": {
+          "later": "ನಂತರ",
+          "restart-now": "ಈಗ ಮರುಪ್ರಾರಂಭಿಸಿ"
+        },
+        "detail": "\"{{pluginName}}\" ಪ್ಲಗಿನ್ ಪರಿಣಾಮಕಾರಿಯಾಗಲು ಮರುಪ್ರಾರಂಭದ ಅಗತ್ಯವಿದೆ",
+        "message": "\"{{pluginName}}\" ಮರುಪ್ರಾರಂಭಿಸಬೇಕಾಗಿದೆ",
+        "title": "ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿದೆ"
+      },
+      "unresponsive": {
+        "buttons": {
+          "quit": "ನಿರ್ಗಮಿಸಿ",
+          "relaunch": "ಮರುಪ್ರಾರಂಭಿಸಿ",
+          "wait": "ನಿರೀಕ್ಷಿಸಿ"
+        },
+        "detail": "ಅನಾನುಕೂಲಕ್ಕೆ ಕ್ಷಮಿಸಿ! ದಯವಿಟ್ಟು ಏನು ಮಾಡಬೇಕೆಂದು ಆಯ್ಕೆಮಾಡಿ:",
+        "message": "ಅಪ್ಲಿಕೇಶನ್ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತಿಲ್ಲ",
+        "title": "ವಿಂಡೋ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತಿಲ್ಲ"
+      },
+      "update-available": {
+        "buttons": {
+          "disable": "ನವೀಕರಣಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+          "download": "ಡೌನ್‌ಲೋಡ್",
+          "ok": "ಸರಿ"
+        },
+        "detail": "ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ ಮತ್ತು {{downloadLink}} ನಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದು",
+        "message": "ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ",
+        "title": "ನವೀಕರಣ ಲಭ್ಯವಿದೆ"
+      }
+    },
+    "menu": {
+      "about": "ಕುರಿತು",
+      "navigation": {
+        "label": "ನ್ಯಾವಿಗೇಷನ್",
+        "submenu": {
+          "copy-current-url": "ಪ್ರಸ್ತುತ URL ನಕಲಿಸಿ",
+          "go-back": "ಹಿಂದೆ ಹೋಗಿ",
+          "go-forward": "ಮುಂದೆ ಹೋಗಿ",
+          "quit": "ನಿರ್ಗಮಿಸಿ",
+          "restart": "ಅಪ್ಲಿಕೇಶನ್ ಮರುಪ್ರಾರಂಭಿಸಿ"
+        }
+      },
+      "options": {
+        "label": "ಆಯ್ಕೆಗಳು",
+        "submenu": {
+          "advanced-options": {
+            "label": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು",
+            "submenu": {
+              "auto-reset-app-cache": "ಅಪ್ಲಿಕೇಶನ್ ಪ್ರಾರಂಭವಾದಾಗ ಕ್ಯಾಶ್ ಮರುಹೊಂದಿಸಿ",
+              "disable-hardware-acceleration": "ಹಾರ್ಡ್‌ವೇರ್ ವೇಗವರ್ಧನೆ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+              "edit-config-json": "config.json ಸಂಪಾದಿಸಿ",
+              "override-user-agent": "User-Agent ಅತಿಕ್ರಮಿಸಿ",
+              "restart-on-config-changes": "ಕಾನ್ಫಿಗ್ ಬದಲಾವಣೆಗಳ ಮೇಲೆ ಮರುಪ್ರಾರಂಭಿಸಿ",
+              "set-proxy": {
+                "label": "ಪ್ರಾಕ್ಸಿ ಹೊಂದಿಸಿ",
+                "prompt": {
+                  "label": "ಪ್ರಾಕ್ಸಿ ವಿಳಾಸ ನಮೂದಿಸಿ: (ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ಖಾಲಿ ಬಿಡಿ)",
+                  "placeholder": "ಉದಾಹರಣೆ: SOCKS5://127.0.0.1:9999",
+                  "title": "ಪ್ರಾಕ್ಸಿ ಹೊಂದಿಸಿ"
+                }
+              },
+              "toggle-dev-tools": "DevTools ಟಾಗಲ್ ಮಾಡಿ",
+              "force-smtc": "ಬಾಹ್ಯ SMTC ಬಳಕೆಯನ್ನು ಬಲವಂತಪಡಿಸಿ"
+            }
+          },
+          "always-on-top": "ಯಾವಾಗಲೂ ಮೇಲಿರಲಿ",
+          "auto-update": "ಸ್ವಯಂ ನವೀಕರಣ",
+          "hide-menu": {
+            "dialog": {
+              "message": "ಮುಂದಿನ ಲಾಂಚ್‌ನಲ್ಲಿ ಮೆನು ಮರೆಮಾಡಲಾಗುವುದು, ತೋರಿಸಲು [Alt] ಬಳಸಿ (ಅಥವಾ in-app-menu ಬಳಸುತ್ತಿದ್ದರೆ [`])",
+              "title": "ಮೆನು ಮರೆಮಾಡುವಿಕೆ ಸಕ್ರಿಯಗೊಂಡಿದೆ"
+            },
+            "label": "ಮೆನು ಮರೆಮಾಡಿ"
+          },
+          "language": {
+            "dialog": {
+              "message": "ಮರುಪ್ರಾರಂಭದ ನಂತರ ಭಾಷೆ ಬದಲಾಗುತ್ತದೆ",
+              "title": "ಭಾಷೆ ಬದಲಾಗಿದೆ"
+            },
+            "label": "ಭಾಷೆ",
+            "submenu": {
+              "to-help-translate": "ಅನುವಾದಿಸಲು ಸಹಾಯ ಮಾಡಲು ಬಯಸುವಿರಾ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ"
+            }
+          },
+          "resume-on-start": "ಅಪ್ಲಿಕೇಶನ್ ಪ್ರಾರಂಭವಾದಾಗ ಕೊನೆಯ ಹಾಡನ್ನು ಮುಂದುವರಿಸಿ",
+          "single-instance-lock": "ಏಕ ನಿದರ್ಶನ ಲಾಕ್",
+          "start-at-login": "ಲಾಗಿನ್ ಆದಾಗ ಪ್ರಾರಂಭಿಸಿ",
+          "starting-page": {
+            "label": "ಪ್ರಾರಂಭ ಪುಟ",
+            "unset": "ಅನ್‌ಸೆಟ್ ಮಾಡಿ"
+          },
+          "tray": {
+            "label": "ಟ್ರೇ",
+            "submenu": {
+              "disabled": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+              "enabled-and-hide-app": "ಸಕ್ರಿಯಗೊಳಿಸಿ ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ ಮರೆಮಾಡಿ",
+              "enabled-and-show-app": "ಸಕ್ರಿಯಗೊಳಿಸಿ ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ ತೋರಿಸಿ",
+              "move-to-current-desktop": "ತೋರಿಸುವಾಗ ಪ್ರಸ್ತುತ ವರ್ಚುವಲ್ ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ ಸರಿಸಿ",
+              "play-pause-on-click": "ಕ್ಲಿಕ್ ಮಾಡಿದಾಗ ಪ್ಲೇ/ವಿರಾಮ",
+              "force-white-icons": "ಬಿಳಿ ಐಕಾನ್ಗಳ ಬಳಕೆಯನ್ನು ಒತ್ತಾಯಿಸಿ"
+            }
+          },
+          "visual-tweaks": {
+            "label": "ದೃಶ್ಯ ಬದಲಾವಣೆಗಳು",
+            "submenu": {
+              "like-buttons": {
+                "default": "ಡೀಫಾಲ್ಟ್",
+                "force-show": "ಬಲವಂತವಾಗಿ ತೋರಿಸಿ",
+                "hide": "ಮರೆಮಾಡಿ",
+                "swap": "ಲೈಕ್ ಬಟನ್‌ಗಳ ಕ್ರಮ ಬದಲಿಸಿ",
+                "label": "ಲೈಕ್ ಬಟನ್‌ಗಳು"
+              },
+              "custom-window-title": {
+                "label": "ಕಸ್ಟಮ್ ವಿಂಡೋ ಶೀರ್ಷಿಕೆ",
+                "prompt": {
+                  "label": "ಕಸ್ಟಮ್ ವಿಂಡೋ ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ: (ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ಖಾಲಿ ಬಿಡಿ)",
+                  "placeholder": "ಉದಾಹರಣೆ: {{applicationName}}"
+                }
+              },
+              "remove-upgrade-button": "ಅಪ್‌ಗ್ರೇಡ್ ಬಟನ್ ತೆಗೆದುಹಾಕಿ",
+              "theme": {
+                "dialog": {
+                  "button": {
+                    "cancel": "ರದ್ದುಮಾಡಿ",
+                    "remove": "ತೆಗೆದುಹಾಕಿ"
+                  },
+                  "remove-theme": "ನೀವು ಕಸ್ಟಮ್ ಥೀಮ್ ತೆಗೆದುಹಾಕಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?",
+                  "remove-theme-message": "ಇದು ಕಸ್ಟಮ್ ಥೀಮ್ ಅನ್ನು ತೆಗೆದುಹಾಕುತ್ತದೆ"
+                },
+                "label": "ಥೀಮ್",
+                "submenu": {
+                  "import-css-file": "ಕಸ್ಟಮ್ CSS ಫೈಲ್ ಆಮದು ಮಾಡಿ",
+                  "no-theme": "ಯಾವುದೇ ಥೀಮ್ ಇಲ್ಲ"
+                }
+              }
+            }
+          }
+        }
+      },
+      "plugins": {
+        "enabled": "ಸಕ್ರಿಯಗೊಂಡಿದೆ",
+        "label": "ಪ್ಲಗಿನ್‌ಗಳು",
+        "new": "ಹೊಸದು"
+      },
+      "view": {
+        "label": "ವೀಕ್ಷಿಸಿ",
+        "submenu": {
+          "force-reload": "ಬಲವಂತವಾಗಿ ಮರುಲೋಡ್ ಮಾಡಿ",
+          "reload": "ಮರುಲೋಡ್ ಮಾಡಿ",
+          "reset-zoom": "ನಿಜವಾದ ಗಾತ್ರ",
+          "toggle-fullscreen": "ಪೂರ್ಣ ಪರದೆ ಟಾಗಲ್ ಮಾಡಿ",
+          "zoom-in": "ದೊಡ್ಡದಾಗಿಸಿ",
+          "zoom-out": "ಚಿಕ್ಕದಾಗಿಸಿ"
+        }
+      }
+    },
+    "tray": {
+      "next": "ಮುಂದಿನದು",
+      "play-pause": "ಪ್ಲೇ/ವಿರಾಮ",
+      "previous": "ಹಿಂದಿನದು",
+      "quit": "ನಿರ್ಗಮಿಸಿ",
+      "restart": "ಅಪ್ಲಿಕೇಶನ್ ಮರುಪ್ರಾರಂಭಿಸಿ",
+      "show": "ವಿಂಡೋ ತೋರಿಸಿ",
+      "tooltip": {
+        "default": "{{applicationName}}",
+        "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
+      },
+      "like": "ಲೈಕ್",
+      "dislike": "ಇಷ್ಟವಿಲ್ಲ",
+      "unlike": "ಭಿನ್ನವಾಗಿ",
+      "undislike": "ಅನಿಷ್ಟ"
+    }
+  },
+  "plugins": {
+    "ad-speedup": {
+      "description": "ಜಾಹೀರಾತು ಪ್ಲೇ ಆದರೆ ಆಡಿಯೋ ಮ್ಯೂಟ್ ಮಾಡಿ ಮತ್ತು ಪ್ಲೇಬ್ಯಾಕ್ ವೇಗವನ್ನು 16x ಗೆ ಹೊಂದಿಸುತ್ತದೆ",
+      "name": "ಜಾಹೀರಾತು ವೇಗವರ್ಧನೆ"
+    },
+    "adblocker": {
+      "description": "ಎಲ್ಲಾ ಜಾಹೀರಾತುಗಳು ಮತ್ತು ಟ್ರ್ಯಾಕಿಂಗ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತದೆ",
+      "menu": {
+        "blocker": "ನಿರ್ಬಂಧಕ"
+      },
+      "name": "ಜಾಹೀರಾತು ನಿರ್ಬಂಧಕ"
+    },
+    "album-actions": {
+      "description": "ಎಲ್ಲಾ ಹಾಡುಗಳಿಗೆ ಅನ್‌ಡಿಸ್‌ಲೈಕ್, ಡಿಸ್‌ಲೈಕ್, ಲೈಕ್ ಮತ್ತು ಅನ್‌ಲೈಕ್ ಬಟನ್‌ಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಆಲ್ಬಮ್ ಕ್ರಿಯೆಗಳು"
+    },
+    "album-color-theme": {
+      "description": "ಆಲ್ಬಮ್ ಬಣ್ಣದ ಪ್ಯಾಲೆಟ್ ಆಧರಿಸಿ ಡೈನಾಮಿಕ್ ಥೀಮ್ ಮತ್ತು ದೃಶ್ಯ ಪರಿಣಾಮಗಳನ್ನು ಅನ್ವಯಿಸುತ್ತದೆ",
+      "menu": {
+        "color-mix-ratio": {
+          "label": "ಬಣ್ಣ ಮಿಶ್ರಣ ಅನುಪಾತ",
+          "submenu": {
+            "percent": "{{ratio}}%"
+          }
+        },
+        "enable-seekbar": "ಸೀಕ್‌ಬಾರ್ ಥೀಮಿಂಗ್ ಸಕ್ರಿಯಗೊಳಿಸಿ"
+      },
+      "name": "ಆಲ್ಬಮ್ ಬಣ್ಣ ಥೀಮ್"
+    },
+    "audio-only": {
+      "description": "ಕೇವಲ-ಆಡಿಯೋ ಮೋಡ್ ಅನ್ನು ಒತ್ತಾಯಿಸುತ್ತದೆ — RAM ಮತ್ತು ಬ್ಯಾಂಡ್‌ವಿಡ್ತ್ ಉಳಿಸಲು ನೆಟ್‌ವರ್ಕ್ ಮತ್ತು ಪ್ಲೇಯರ್ ಮಟ್ಟದಲ್ಲಿ ಎಲ್ಲಾ ವೀಡಿಯೊ ಸ್ಟ್ರೀಮ್‌ಗಳನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತದೆ",
+      "name": "ಕೇವಲ ಆಡಿಯೋ"
+    },
+    "ambient-mode": {
+      "description": "ವೀಡಿಯೊದಿಂದ ನಿಮ್ಮ ಪರದೆಯ ಹಿನ್ನೆಲೆಗೆ ಮೃದುವಾದ ಬಣ್ಣಗಳನ್ನು ಬಿತ್ತರಿಸುವ ಮೂಲಕ ಬೆಳಕಿನ ಪರಿಣಾಮವನ್ನು ಅನ್ವಯಿಸುತ್ತದೆ",
+      "menu": {
+        "blur-amount": {
+          "label": "ಮಸುಕು ಪ್ರಮಾಣ",
+          "submenu": {
+            "pixels": "{{blurAmount}} ಪಿಕ್ಸೆಲ್‌ಗಳು"
+          }
+        },
+        "buffer": {
+          "label": "ಬಫರ್",
+          "submenu": {
+            "buffer": "ಬಫರ್"
+          }
+        },
+        "opacity": {
+          "label": "ಅಪಾರದರ್ಶಕತೆ",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "quality": {
+          "label": "ಗುಣಮಟ್ಟ",
+          "submenu": {
+            "pixels": "{{quality}} ಪಿಕ್ಸೆಲ್‌ಗಳು"
+          }
+        },
+        "size": {
+          "label": "ಗಾತ್ರ",
+          "submenu": {
+            "percent": "{{size}}%"
+          }
+        },
+        "smoothness-transition": {
+          "label": "ಸಂಕ್ರಮಣದ ಮೃದುತ್ವ",
+          "submenu": {
+            "during": "{{interpolationTime}} ಸೆ. ಸಮಯದಲ್ಲಿ"
+          }
+        },
+        "use-fullscreen": {
+          "label": "ಪೂರ್ಣಪರದೆ ಬಳಸುತ್ತಿದೆ"
+        }
+      },
+      "name": "ಪರಿಸರ ಮೋಡ್"
+    },
+    "amuse": {
+      "description": "6K Labs ನ Amuse ಈಗ ಪ್ಲೇ ಆಗುತ್ತಿರುವ ವಿಜೆಟ್‌ಗೆ {{applicationName}} ಬೆಂಬಲವನ್ನು ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಅಮ್ಯೂಸ್",
+      "response": {
+        "query": "Amuse API ಸರ್ವರ್ ಚಾಲನೆಯಲ್ಲಿದೆ. ಹಾಡಿನ ಮಾಹಿತಿ ಪಡೆಯಲು GET /query."
+      }
+    },
+    "api-server": {
+      "description": "ಪ್ಲೇಯರ್ ನಿಯಂತ್ರಿಸಲು API ಸರ್ವರ್ ಸೇರಿಸುತ್ತದೆ",
+      "dialog": {
+        "request": {
+          "buttons": {
+            "allow": "ಅನುಮತಿಸಿ",
+            "deny": "ನಿರಾಕರಿಸಿ"
+          },
+          "message": "{{ID}} ({{origin}}) API ಪ್ರವೇಶಿಸಲು ಅನುಮತಿಸುವುದೇ?",
+          "title": "API ಅಧಿಕಾರ ವಿನಂತಿ"
+        }
+      },
+      "menu": {
+        "auth-strategy": {
+          "label": "ಅಧಿಕಾರ ತಂತ್ರ",
+          "submenu": {
+            "auth-at-first": {
+              "label": "ಮೊದಲ ವಿನಂತಿಯಲ್ಲಿ ಅಧಿಕೃತಗೊಳಿಸಿ"
+            },
+            "none": {
+              "label": "ಯಾವುದೇ ಅಧಿಕಾರವಿಲ್ಲ"
+            }
+          }
+        },
+        "hostname": {
+          "label": "ಹೋಸ್ಟ್‌ನೇಮ್"
+        },
+        "port": {
+          "label": "ಪೋರ್ಟ್"
+        },
+        "https": {
+          "label": "HTTPS ಮತ್ತು ಪ್ರಮಾಣಪತ್ರಗಳು",
+          "submenu": {
+            "enable-https": {
+              "label": "HTTPS ಸಕ್ರಿಯಗೊಳಿಸಿ"
+            },
+            "cert": {
+              "label": "ಪ್ರಮಾಣಪತ್ರ ಫೈಲ್ (.crt/.pem)",
+              "dialogTitle": "HTTPS ಪ್ರಮಾಣಪತ್ರ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"
+            },
+            "key": {
+              "label": "ಖಾಸಗಿ ಕೀ ಫೈಲ್ (.key/.pem)",
+              "dialogTitle": "HTTPS ಖಾಸಗಿ ಕೀ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ"
+            }
+          }
+        }
+      },
+      "name": "API ಸರ್ವರ್ [Beta]",
+      "prompt": {
+        "hostname": {
+          "label": "API ಸರ್ವರ್‌ಗಾಗಿ ಹೋಸ್ಟ್‌ನೇಮ್ ನಮೂದಿಸಿ (ಉದಾ. 0.0.0.0):",
+          "title": "ಹೋಸ್ಟ್‌ನೇಮ್"
+        },
+        "port": {
+          "label": "API ಸರ್ವರ್‌ಗಾಗಿ ಪೋರ್ಟ್ ನಮೂದಿಸಿ:",
+          "title": "ಪೋರ್ಟ್"
+        }
+      }
+    },
+    "audio-compressor": {
+      "description": "ಆಡಿಯೋಗೆ ಸಂಕೋಚನ ಅನ್ವಯಿಸುತ್ತದೆ (ಸಿಗ್ನಲ್‌ನ ಹೆಚ್ಚಿನ ಧ್ವನಿಯ ಭಾಗಗಳನ್ನು ಕಡಿಮೆ ಮಾಡುತ್ತದೆ ಮತ್ತು ಕಡಿಮೆ ಧ್ವನಿಯ ಭಾಗಗಳನ್ನು ಹೆಚ್ಚಿಸುತ್ತದೆ)",
+      "name": "ಆಡಿಯೋ ಸಂಕೋಚಕ"
+    },
+    "auth-proxy-adapter": {
+      "description": "ದೃಢೀಕರಣ ಪ್ರಾಕ್ಸಿ ಸೇವೆಗಳ ಬಳಕೆಗೆ ಬೆಂಬಲ",
+      "menu": {
+        "disable": "ಪ್ರಾಕ್ಸಿ ಅಡಾಪ್ಟರ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+        "enable": "ಪ್ರಾಕ್ಸಿ ಅಡಾಪ್ಟರ್ ಸಕ್ರಿಯಗೊಳಿಸಿ",
+        "hostname": {
+          "label": "ಹೋಸ್ಟ್‌ನೇಮ್"
+        },
+        "port": {
+          "label": "ಪೋರ್ಟ್"
+        }
+      },
+      "name": "ಅಧಿಕೃತ ಪ್ರಾಕ್ಸಿ ಅಡಾಪ್ಟರ್",
+      "prompt": {
+        "hostname": {
+          "title": "ಪ್ರಾಕ್ಸಿ ಹೋಸ್ಟ್‌ನೇಮ್",
+          "label": "ಸ್ಥಳೀಯ ಪ್ರಾಕ್ಸಿ ಸರ್ವರ್‌ಗಾಗಿ ಹೋಸ್ಟ್‌ನೇಮ್ ನಮೂದಿಸಿ (ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿದೆ):"
+        },
+        "port": {
+          "title": "ಪ್ರಾಕ್ಸಿ ಪೋರ್ಟ್",
+          "label": "ಸ್ಥಳೀಯ ಪ್ರಾಕ್ಸಿ ಸರ್ವರ್‌ಗಾಗಿ ಪೋರ್ಟ್ ನಮೂದಿಸಿ (ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿದೆ):"
+        }
+      }
+    },
+    "blur-nav-bar": {
+      "description": "ನ್ಯಾವಿಗೇಷನ್ ಬಾರ್ ಅನ್ನು ಪಾರದರ್ಶಕ ಮತ್ತು ಮಸುಕಾಗಿಸುತ್ತದೆ",
+      "name": "ನ್ಯಾವಿಗೇಷನ್ ಬಾರ್ ಮಸುಕು"
+    },
+    "bypass-age-restrictions": {
+      "description": "ಸಂಗೀತ ಪ್ಲೇಯರ್‌ನ ವಯಸ್ಸಿನ ಪರಿಶೀಲನೆಯನ್ನು ಬೈಪಾಸ್ ಮಾಡುತ್ತದೆ",
+      "name": "ವಯಸ್ಸಿನ ನಿರ್ಬಂಧಗಳನ್ನು ಬೈಪಾಸ್ ಮಾಡಿ"
+    },
+    "captions-selector": {
+      "description": "{{applicationName}} ಆಡಿಯೋ ಟ್ರ್ಯಾಕ್‌ಗಳಿಗಾಗಿ ಶೀರ್ಷಿಕೆ ಆಯ್ಕೆಗಾರ",
+      "menu": {
+        "autoload": "ಕೊನೆಯದಾಗಿ ಬಳಸಿದ ಶೀರ್ಷಿಕೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಆಯ್ಕೆಮಾಡಿ",
+        "disable-captions": "ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಶೀರ್ಷಿಕೆಗಳಿಲ್ಲ"
+      },
+      "name": "ಶೀರ್ಷಿಕೆ ಆಯ್ಕೆಗಾರ",
+      "prompt": {
+        "selector": {
+          "label": "ಪ್ರಸ್ತುತ ಶೀರ್ಷಿಕೆ ಭಾಷೆ: {{language}}",
+          "none": "ಯಾವುದೂ ಇಲ್ಲ",
+          "title": "ಶೀರ್ಷಿಕೆ ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ"
+        }
+      },
+      "templates": {
+        "title": "ಶೀರ್ಷಿಕೆ ಆಯ್ಕೆಗಾರ ತೆರೆಯಿರಿ"
+      },
+      "toast": {
+        "caption-changed": "ಶೀರ್ಷಿಕೆ {{language}} ಗೆ ಬದಲಾಗಿದೆ",
+        "caption-disabled": "ಶೀರ್ಷಿಕೆಗಳು ನಿಷ್ಕ್ರಿಯಗೊಂಡಿವೆ",
+        "no-captions": "ಈ ಹಾಡಿಗೆ ಯಾವುದೇ ಶೀರ್ಷಿಕೆಗಳು ಲಭ್ಯವಿಲ್ಲ"
+      }
+    },
+    "clock": {
+      "description": "ನ್ಯಾವಿಗೇಷನ್ ಬಾರ್‌ಗೆ ಗಡಿಯಾರ ಸೇರಿಸಿ",
+      "name": "ಗಡಿಯಾರ",
+      "menu": {
+        "format": {
+          "label": "ಸ್ವರೂಪ",
+          "display-seconds": "ಸೆಕೆಂಡುಗಳನ್ನು ತೋರಿಸಿ",
+          "24-hour-format": "24-ಗಂಟೆಗಳ ಸ್ವರೂಪ"
+        }
+      }
+    },
+    "compact-sidebar": {
+      "description": "ಸೈಡ್‌ಬಾರ್ ಅನ್ನು ಯಾವಾಗಲೂ ಕಾಂಪ್ಯಾಕ್ಟ್ ಮೋಡ್‌ನಲ್ಲಿ ಇರಿಸಿ",
+      "name": "ಕಾಂಪ್ಯಾಕ್ಟ್ ಸೈಡ್‌ಬಾರ್"
+    },
+    "crossfade": {
+      "description": "ಹಾಡುಗಳ ನಡುವೆ ಕ್ರಾಸ್‌ಫೇಡ್",
+      "menu": {
+        "advanced": "ಸುಧಾರಿತ"
+      },
+      "name": "ಕ್ರಾಸ್‌ಫೇಡ್ [Beta]",
+      "prompt": {
+        "options": {
+          "multi-input": {
+            "fade-in-duration": "ಫೇಡ್ ಇನ್ ಅವಧಿ (ms)",
+            "fade-out-duration": "ಫೇಡ್ ಔಟ್ ಅವಧಿ (ms)",
+            "fade-scaling": {
+              "label": "ಫೇಡ್ ಸ್ಕೇಲಿಂಗ್",
+              "linear": "ರೇಖೀಯ",
+              "logarithmic": "ಲಾಗರಿಥಮಿಕ್"
+            },
+            "seconds-before-end": "ಮುಗಿಯುವ N ಸೆಕೆಂಡುಗಳ ಮೊದಲು ಕ್ರಾಸ್‌ಫೇಡ್"
+          },
+          "title": "ಕ್ರಾಸ್‌ಫೇಡ್ ಆಯ್ಕೆಗಳು"
+        }
+      }
+    },
+    "custom-output-device": {
+      "description": "ಹಾಡುಗಳಿಗಾಗಿ ಕಸ್ಟಮ್ ಔಟ್‌ಪುಟ್ ಮೀಡಿಯಾ ಸಾಧನ ಕಾನ್ಫಿಗರ್ ಮಾಡಿ",
+      "menu": {
+        "device-selector": "ಸಾಧನ ಆಯ್ಕೆಮಾಡಿ"
+      },
+      "name": "ಕಸ್ಟಮ್ ಔಟ್‌ಪುಟ್ ಸಾಧನ",
+      "prompt": {
+        "device-selector": {
+          "label": "ಬಳಸಬೇಕಾದ ಔಟ್‌ಪುಟ್ ಮೀಡಿಯಾ ಸಾಧನ ಆಯ್ಕೆಮಾಡಿ",
+          "title": "ಔಟ್‌ಪುಟ್ ಸಾಧನ ಆಯ್ಕೆಮಾಡಿ"
+        }
+      }
+    },
+    "disable-autoplay": {
+      "description": "ಹಾಡನ್ನು \"ವಿರಾಮ\" ಮೋಡ್‌ನಲ್ಲಿ ಪ್ರಾರಂಭಿಸುತ್ತದೆ",
+      "menu": {
+        "apply-once": "ಪ್ರಾರಂಭದಲ್ಲಿ ಮಾತ್ರ ಅನ್ವಯಿಸುತ್ತದೆ"
+      },
+      "name": "ಸ್ವಯಂಪ್ಲೇ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
+    },
+    "discord": {
+      "backend": {
+        "already-connected": "ಸಕ್ರಿಯ ಸಂಪರ್ಕದೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ",
+        "connected": "Discord ಗೆ ಸಂಪರ್ಕಿಸಲಾಗಿದೆ",
+        "disconnected": "Discord ನಿಂದ ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ"
+      },
+      "description": "Rich Presence ಮೂಲಕ ನೀವು ಏನು ಕೇಳುತ್ತಿದ್ದೀರಿ ಎಂದು ನಿಮ್ಮ ಸ್ನೇಹಿತರಿಗೆ ತೋರಿಸಿ",
+      "menu": {
+        "auto-reconnect": "ಸ್ವಯಂ ಮರುಸಂಪರ್ಕ",
+        "clear-activity": "ಚಟುವಟಿಕೆ ತೆರವುಗೊಳಿಸಿ",
+        "clear-activity-after-timeout": "ಟೈಮ್‌ಔಟ್ ನಂತರ ಚಟುವಟಿಕೆ ತೆರವುಗೊಳಿಸಿ",
+        "connected": "ಸಂಪರ್ಕಿತವಾಗಿದೆ",
+        "disconnected": "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ",
+        "hide-duration-left": "ಉಳಿದ ಅವಧಿಯನ್ನು ಮರೆಮಾಡಿ",
+        "hide-github-button": "GitHub ಲಿಂಕ್ ಬಟನ್ ಮರೆಮಾಡಿ",
+        "play-on-application": "{{applicationName}} ನಲ್ಲಿ ಪ್ಲೇ ಮಾಡಿ",
+        "set-inactivity-timeout": "ನಿಷ್ಕ್ರಿಯತೆಯ ಟೈಮ್‌ಔಟ್ ಹೊಂದಿಸಿ",
+        "set-status-display-type": {
+          "label": "ಸ್ಥಿತಿ ಪಠ್ಯ",
+          "submenu": {
+            "application": "{{applicationName}} ಕೇಳುತ್ತಿದ್ದಾರೆ",
+            "artist": "{{artist}} ಕೇಳುತ್ತಿದ್ದಾರೆ",
+            "title": "{{song title}} ಕೇಳುತ್ತಿದ್ದಾರೆ"
+          }
+        }
+      },
+      "name": "ಡಿಸ್ಕಾರ್ಡ್ ರಿಚ್ ಪ್ರೆಸೆನ್ಸ್",
+      "prompt": {
+        "set-inactivity-timeout": {
+          "label": "ನಿಷ್ಕ್ರಿಯತೆಯ ಟೈಮ್‌ಔಟ್ ಸೆಕೆಂಡುಗಳಲ್ಲಿ ನಮೂದಿಸಿ:",
+          "title": "ನಿಷ್ಕ್ರಿಯತೆಯ ಟೈಮ್‌ಔಟ್ ಹೊಂದಿಸಿ"
+        }
+      }
+    },
+    "downloader": {
+      "backend": {
+        "dialog": {
+          "error": {
+            "buttons": {
+              "ok": "ಸರಿ"
+            },
+            "message": "ಕ್ಷಮಿಸಿ, ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ...",
+            "title": "ಡೌನ್‌ಲೋಡ್‌ನಲ್ಲಿ ದೋಷ!"
+          },
+          "start-download-playlist": {
+            "buttons": {
+              "ok": "ಸರಿ"
+            },
+            "detail": "({{playlistSize}} ಹಾಡುಗಳು)",
+            "message": "ಪ್ಲೇಲಿಸ್ಟ್ ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ {{playlistTitle}}",
+            "title": "ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭವಾಗಿದೆ"
+          }
+        },
+        "feedback": {
+          "conversion-progress": "ಪರಿವರ್ತನೆ: {{percent}}%",
+          "converting": "ಪರಿವರ್ತಿಸಲಾಗುತ್ತಿದೆ...",
+          "done": "ಮುಗಿದಿದೆ: {{filePath}}",
+          "download-info": "ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ {{artist}} - {{title}} [{{videoId}}",
+          "download-progress": "ಡೌನ್‌ಲೋಡ್: {{percent}}%",
+          "downloading": "ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+          "downloading-counter": "ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ {{current}}/{{total}}...",
+          "downloading-playlist": "ಪ್ಲೇಲಿಸ್ಟ್ \"{{playlistTitle}}\" ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ - {{playlistSize}} ಹಾಡುಗಳು ({{playlistId}})",
+          "error-while-downloading": "\"{{author}} - {{title}}\" ಡೌನ್‌ಲೋಡ್‌ನಲ್ಲಿ ದೋಷ: {{error}}",
+          "folder-already-exists": "{{playlistFolder}} ಫೋಲ್ಡರ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ",
+          "getting-playlist-info": "ಪ್ಲೇಲಿಸ್ಟ್ ಮಾಹಿತಿ ಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+          "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+          "playlist-has-only-one-song": "ಪ್ಲೇಲಿಸ್ಟ್‌ನಲ್ಲಿ ಒಂದೇ ಐಟಂ ಇದೆ, ನೇರವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+          "playlist-id-not-found": "ಯಾವುದೇ ಪ್ಲೇಲಿಸ್ಟ್ ID ಕಂಡುಬಂದಿಲ್ಲ",
+          "playlist-is-empty": "ಪ್ಲೇಲಿಸ್ಟ್ ಖಾಲಿಯಾಗಿದೆ",
+          "playlist-is-mix-or-private": "ಪ್ಲೇಲಿಸ್ಟ್ ಮಾಹಿತಿ ಪಡೆಯುವಲ್ಲಿ ದೋಷ: ಇದು ಖಾಸಗಿ ಅಥವಾ \"ನಿಮಗಾಗಿ ಮಿಶ್ರಿತ\" ಪ್ಲೇಲಿಸ್ಟ್ ಅಲ್ಲ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ\n\n{{error}}",
+          "preparing-file": "ಫೈಲ್ ತಯಾರಿಸಲಾಗುತ್ತಿದೆ...",
+          "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+          "trying-to-get-playlist-id": "ಪ್ಲೇಲಿಸ್ಟ್ ID ಪಡೆಯಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ: {{playlistId}}",
+          "video-id-not-found": "ವೀಡಿಯೊ ಕಂಡುಬಂದಿಲ್ಲ",
+          "writing-id3": "ID3 ಟ್ಯಾಗ್‌ಗಳನ್ನು ಬರೆಯಲಾಗುತ್ತಿದೆ..."
+        }
+      },
+      "description": "ಇಂಟರ್‌ಫೇಸ್‌ನಿಂದ ನೇರವಾಗಿ MP3 / ಮೂಲ ಆಡಿಯೋ ಡೌನ್‌ಲೋಡ್ ಮಾಡುತ್ತದೆ",
+      "menu": {
+        "choose-download-folder": "ಡೌನ್‌ಲೋಡ್ ಫೋಲ್ಡರ್ ಆಯ್ಕೆಮಾಡಿ",
+        "download-finish-settings": {
+          "label": "ಮುಗಿದಾಗ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+          "prompt": {
+            "last-percent": "x ಶೇಕಡಾ ನಂತರ",
+            "last-seconds": "ಕೊನೆಯ x ಸೆಕೆಂಡುಗಳು",
+            "title": "ಯಾವಾಗ ಡೌನ್‌ಲೋಡ್ ಮಾಡಬೇಕೆಂದು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
+          },
+          "submenu": {
+            "advanced": "ಸುಧಾರಿತ",
+            "enabled": "ಸಕ್ರಿಯಗೊಂಡಿದೆ",
+            "mode": "ಸಮಯ ಮೋಡ್",
+            "percent": "ಶೇಕಡಾ",
+            "seconds": "ಸೆಕೆಂಡುಗಳು"
+          }
+        },
+        "download-playlist": "ಪ್ಲೇಲಿಸ್ಟ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+        "presets": "ಪ್ರೀಸೆಟ್‌ಗಳು",
+        "skip-existing": "ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಫೈಲ್‌ಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ"
+      },
+      "name": "ಡೌನ್‌ಲೋಡರ್",
+      "renderer": {
+        "can-not-update-progress": "ಪ್ರಗತಿಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
+      },
+      "templates": {
+        "button": "ಡೌನ್‌ಲೋಡ್"
+      }
+    },
+    "equalizer": {
+      "description": "ಪ್ಲೇಯರ್‌ಗೆ ಈಕ್ವಲೈಜರ್ ಸೇರಿಸುತ್ತದೆ",
+      "menu": {
+        "presets": {
+          "label": "ಪ್ರೀಸೆಟ್‌ಗಳು",
+          "list": {
+            "bass-booster": "ಬಾಸ್ ಬೂಸ್ಟರ್"
+          }
+        }
+      },
+      "name": "ಈಕ್ವಲೈಜರ್"
+    },
+    "exponential-volume": {
+      "description": "ವಾಲ್ಯೂಮ್ ಸ್ಲೈಡರ್ ಅನ್ನು ಘಾತೀಯವಾಗಿಸುತ್ತದೆ ಇದರಿಂದ ಕಡಿಮೆ ವಾಲ್ಯೂಮ್‌ಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡುವುದು ಸುಲಭ.",
+      "name": "ಘಾತೀಯ ವಾಲ್ಯೂಮ್"
+    },
+    "in-app-menu": {
+      "description": "ಮೆನು-ಬಾರ್‌ಗಳಿಗೆ ಆಕರ್ಷಕ, ಡಾರ್ಕ್ ಅಥವಾ ಆಲ್ಬಮ್-ಬಣ್ಣದ ನೋಟ ನೀಡುತ್ತದೆ",
+      "menu": {
+        "hide-dom-window-controls": "DOM ವಿಂಡೋ ನಿಯಂತ್ರಣಗಳನ್ನು ಮರೆಮಾಡಿ"
+      },
+      "name": "ಇನ್-ಆಪ್ ಮೆನು"
+    },
+    "lumiastream": {
+      "description": "Lumia Stream ಬೆಂಬಲವನ್ನು ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಲುಮಿಯಾ ಸ್ಟ್ರೀಮ್ [ಬೀಟಾ]"
+    },
+    "lyrics-genius": {
+      "description": "ಹೆಚ್ಚಿನ ಹಾಡುಗಳಿಗೆ ಸಾಹಿತ್ಯ ಬೆಂಬಲವನ್ನು ಸೇರಿಸುತ್ತದೆ",
+      "menu": {
+        "romanized-lyrics": "ರೋಮನೈಸ್ಡ್ ಸಾಹಿತ್ಯ"
+      },
+      "name": "ಲಿರಿಕ್ಸ್ ಜೀನಿಯಸ್",
+      "renderer": {
+        "fetched-lyrics": "Genius ಗಾಗಿ ಸಾಹಿತ್ಯ ಪಡೆಯಲಾಗಿದೆ"
+      }
+    },
+    "music-together": {
+      "description": "ಇತರರೊಂದಿಗೆ ಪ್ಲೇಲಿಸ್ಟ್ ಹಂಚಿಕೊಳ್ಳಿ. ಹೋಸ್ಟ್ ಹಾಡನ್ನು ಪ್ಲೇ ಮಾಡಿದಾಗ, ಎಲ್ಲರೂ ಅದೇ ಹಾಡನ್ನು ಕೇಳುತ್ತಾರೆ",
+      "dialog": {
+        "enter-host": "ಹೋಸ್ಟ್ ID ನಮೂದಿಸಿ"
+      },
+      "internal": {
+        "save": "ಉಳಿಸಿ",
+        "track-source": "ಟ್ರ್ಯಾಕ್ ಮೂಲ",
+        "unknown-user": "ಅಜ್ಞಾತ ಬಳಕೆದಾರ"
+      },
+      "menu": {
+        "click-to-copy-id": "ಹೋಸ್ಟ್ ID ನಕಲಿಸಿ",
+        "close": "Music Together ಮುಚ್ಚಿ",
+        "connected-users": "ಸಂಪರ್ಕಿತ ಬಳಕೆದಾರರು",
+        "disconnect": "Music Together ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ",
+        "empty-user": "ಯಾವುದೇ ಸಂಪರ್ಕಿತ ಬಳಕೆದಾರರಿಲ್ಲ",
+        "host": "Music Together ಹೋಸ್ಟ್",
+        "join": "Music Together ಸೇರಿ",
+        "permission": {
+          "all": "ಅತಿಥಿಗಳಿಗೆ ಪ್ಲೇಲಿಸ್ಟ್ ಮತ್ತು ಪ್ಲೇಯರ್ ನಿಯಂತ್ರಿಸಲು ಅನುಮತಿಸಿ",
+          "host-only": "ಹೋಸ್ಟ್ ಮಾತ್ರ ಪ್ಲೇಲಿಸ್ಟ್ ಮತ್ತು ಪ್ಲೇಯರ್ ನಿಯಂತ್ರಿಸಬಹುದು",
+          "playlist": "ಅತಿಥಿಗಳಿಗೆ ಪ್ಲೇಲಿಸ್ಟ್ ನಿಯಂತ್ರಿಸಲು ಅನುಮತಿಸಿ"
+        },
+        "set-permission": "ನಿಯಂತ್ರಣ ಅನುಮತಿ ಬದಲಾಯಿಸಿ",
+        "status": {
+          "disconnected": "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ",
+          "guest": "ಅತಿಥಿಯಾಗಿ ಸಂಪರ್ಕಿತವಾಗಿದೆ",
+          "host": "ಹೋಸ್ಟ್ ಆಗಿ ಸಂಪರ್ಕಿತವಾಗಿದೆ"
+        }
+      },
+      "name": "ಸಂಗೀತ ಒಟ್ಟಿಗೆ [ಬೀಟಾ]",
+      "toast": {
+        "add-song-failed": "ಹಾಡು ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ",
+        "closed": "Music Together ಮುಚ್ಚಲಾಗಿದೆ",
+        "disconnected": "Music Together ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ",
+        "host-failed": "Music Together ಹೋಸ್ಟ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
+        "id-copied": "ಹೋಸ್ಟ್ ID ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ",
+        "id-copy-failed": "ಹೋಸ್ಟ್ ID ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲು ವಿಫಲವಾಗಿದೆ",
+        "join-failed": "Music Together ಸೇರಲು ವಿಫಲವಾಗಿದೆ",
+        "joined": "Music Together ಸೇರಿದ್ದೀರಿ",
+        "permission-changed": "Music Together ಅನುಮತಿಯನ್ನು \"{{permission}}\" ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ",
+        "remove-song-failed": "ಹಾಡು ತೆಗೆದುಹಾಕಲು ವಿಫಲವಾಗಿದೆ",
+        "user-connected": "{{name}} Music Together ಸೇರಿದ್ದಾರೆ",
+        "user-disconnected": "{{name}} Music Together ನಿಂದ ನಿರ್ಗಮಿಸಿದ್ದಾರೆ"
+      }
+    },
+    "navigation": {
+      "description": "ನಿಮ್ಮ ಮೆಚ್ಚಿನ ಬ್ರೌಸರ್‌ನಲ್ಲಿರುವಂತೆ, ಇಂಟರ್‌ಫೇಸ್‌ನಲ್ಲಿ ನೇರವಾಗಿ ಸಂಯೋಜಿತವಾದ ಮುಂದಿನ/ಹಿಂದಿನ ನ್ಯಾವಿಗೇಷನ್ ಬಾಣಗಳು",
+      "name": "ನ್ಯಾವಿಗೇಷನ್",
+      "templates": {
+        "back": {
+          "title": "ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
+        },
+        "forward": {
+          "title": "ಮುಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "ಇಂಟರ್‌ಫೇಸ್‌ನಿಂದ Google ಲಾಗಿನ್ ಬಟನ್‌ಗಳು ಮತ್ತು ಲಿಂಕ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ",
+      "name": "Google ಲಾಗಿನ್ ಇಲ್ಲ"
+    },
+    "notifications": {
+      "description": "ಹಾಡು ಪ್ಲೇ ಆಗಲು ಪ್ರಾರಂಭಿಸಿದಾಗ ಅಧಿಸೂಚನೆ ತೋರಿಸಿ (ಸಂವಾದಾತ್ಮಕ ಅಧಿಸೂಚನೆಗಳು Windows ನಲ್ಲಿ ಲಭ್ಯವಿದೆ)",
+      "menu": {
+        "interactive": "ಸಂವಾದಾತ್ಮಕ ಅಧಿಸೂಚನೆಗಳು",
+        "interactive-settings": {
+          "label": "ಸಂವಾದಾತ್ಮಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+          "submenu": {
+            "hide-button-text": "ಬಟನ್ ಪಠ್ಯ ಮರೆಮಾಡಿ",
+            "hover-controls": "ಟ್ರೇ ಮೇಲೆ ಹೋವರ್ ಮಾಡಿದಾಗ ಮಿನಿ-ಪ್ಲೇಯರ್ ತೋರಿಸಿ",
+            "refresh-on-play-pause": "ಪ್ಲೇ/ವಿರಾಮದಲ್ಲಿ ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+            "tray-controls": "ಟ್ರೇ ಕ್ಲಿಕ್‌ನಲ್ಲಿ ತೆರೆಯಿರಿ/ಮುಚ್ಚಿ"
+          }
+        },
+        "priority": "ಅಧಿಸೂಚನೆ ಆದ್ಯತೆ",
+        "toast-style": "ಟೋಸ್ಟ್ ಶೈಲಿ",
+        "unpause-notification": "ಅನ್‌ಪಾಸ್‌ನಲ್ಲಿ ಅಧಿಸೂಚನೆ ತೋರಿಸಿ"
+      },
+      "name": "ಅಧಿಸೂಚನೆಗಳು"
+    },
+    "performance-improvement": {
+      "description": "ಪ್ರಾಯೋಗಿಕ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವ ಮೂಲಕ ಕಾರ್ಯಕ್ಷಮತೆ ಸುಧಾರಿಸಿ",
+      "name": "ಕಾರ್ಯಕ್ಷಮತೆ ಸುಧಾರಣೆ [ಬೀಟಾ]"
+    },
+    "playback-recovery": {
+      "description": "ಸಿಕ್ಕಿಹಾಕಿಕೊಂಡ, ಸ್ಥಗಿತಗೊಂಡ ಅಥವಾ ಡೆಡ್ ಪ್ಲೇಬ್ಯಾಕ್ ಸ್ಥಿತಿಗಳಿಂದ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಚೇತರಿಸಿಕೊಳ್ಳುತ್ತದೆ",
+      "menu": {
+        "log-to-console": "ಚೇತರಿಕೆ ಘಟನೆಗಳನ್ನು ಕನ್ಸೋಲ್‌ಗೆ ಲಾಗ್ ಮಾಡಿ"
+      },
+      "name": "ಪ್ಲೇಬ್ಯಾಕ್ ಚೇತರಿಕೆ"
+    },
+    "picture-in-picture": {
+      "description": "ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಲು ಅನುಮತಿಸುತ್ತದೆ",
+      "menu": {
+        "always-on-top": "ಯಾವಾಗಲೂ ಮೇಲಿರಲಿ",
+        "hotkey": {
+          "label": "ಹಾಟ್‌ಕೀ",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "ಹಾಟ್‌ಕೀ"
+            },
+            "label": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್ ಟಾಗಲ್ ಮಾಡಲು ಹಾಟ್‌ಕೀ ಆಯ್ಕೆಮಾಡಿ",
+            "title": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್ ಹಾಟ್‌ಕೀ"
+          }
+        },
+        "save-window-position": "ವಿಂಡೋ ಸ್ಥಾನ ಉಳಿಸಿ",
+        "save-window-size": "ವಿಂಡೋ ಗಾತ್ರ ಉಳಿಸಿ",
+        "use-native-pip": "ಬ್ರೌಸರ್ ನೇಟಿವ್ PiP ಬಳಸಿ"
+      },
+      "name": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್",
+      "templates": {
+        "button": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್"
+      }
+    },
+    "playback-speed": {
+      "description": "ವೇಗವಾಗಿ ಕೇಳಿ, ನಿಧಾನವಾಗಿ ಕೇಳಿ! ಹಾಡಿನ ವೇಗವನ್ನು ನಿಯಂತ್ರಿಸುವ ಸ್ಲೈಡರ್ ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಪ್ಲೇಬ್ಯಾಕ್ ವೇಗ",
+      "templates": {
+        "button": "ವೇಗ"
+      }
+    },
+    "precise-volume": {
+      "description": "ಮೌಸ್‌ವೀಲ್/ಹಾಟ್‌ಕೀಗಳನ್ನು ಬಳಸಿ, ಕಸ್ಟಮ್ HUD ಮತ್ತು ಕಸ್ಟಮೈಸ್ ಮಾಡಬಹುದಾದ ವಾಲ್ಯೂಮ್ ಹಂತಗಳೊಂದಿಗೆ ವಾಲ್ಯೂಮ್ ಅನ್ನು ನಿಖರವಾಗಿ ನಿಯಂತ್ರಿಸಿ",
+      "menu": {
+        "arrows-shortcuts": "ಸ್ಥಳೀಯ ಬಾಣ-ಕೀಗಳ ನಿಯಂತ್ರಣಗಳು",
+        "custom-volume-steps": "ಕಸ್ಟಮ್ ವಾಲ್ಯೂಮ್ ಹಂತಗಳನ್ನು ಹೊಂದಿಸಿ",
+        "global-shortcuts": "ಜಾಗತಿಕ ಹಾಟ್‌ಕೀಗಳು"
+      },
+      "name": "ನಿಖರ ವಾಲ್ಯೂಮ್",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "ವಾಲ್ಯೂಮ್ ಕಡಿಮೆ ಮಾಡಿ",
+            "increase": "ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸಿ"
+          },
+          "label": "ಜಾಗತಿಕ ವಾಲ್ಯೂಮ್ ಕೀಬೈಂಡ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
+          "title": "ಜಾಗತಿಕ ವಾಲ್ಯೂಮ್ ಕೀಬೈಂಡ್‌ಗಳು"
+        },
+        "volume-steps": {
+          "label": "ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವ/ಕಡಿಮೆ ಮಾಡುವ ಹಂತಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+          "title": "ವಾಲ್ಯೂಮ್ ಹಂತಗಳು"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "ಪ್ರಸ್ತುತ ಗುಣಮಟ್ಟ: {{quality}}",
+            "message": "ವೀಡಿಯೊ ಗುಣಮಟ್ಟ ಆಯ್ಕೆಮಾಡಿ:",
+            "title": "ವೀಡಿಯೊ ಗುಣಮಟ್ಟ ಆಯ್ಕೆಮಾಡಿ"
+          }
+        }
+      },
+      "description": "ವೀಡಿಯೊ ಓವರ್‌ಲೇ ಮೇಲಿನ ಬಟನ್‌ನೊಂದಿಗೆ ವೀಡಿಯೊ ಗುಣಮಟ್ಟ ಬದಲಾಯಿಸಲು ಅನುಮತಿಸುತ್ತದೆ",
+      "name": "ವೀಡಿಯೊ ಗುಣಮಟ್ಟ ಬದಲಾವಣೆಗಾರ",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "ಪ್ಲೇಯರ್ ಗುಣಮಟ್ಟ ಬದಲಾವಣೆಗಾರ ತೆರೆಯಿರಿ"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "ಸ್ಕ್ರಾಬ್ಲಿಂಗ್ ಬೆಂಬಲವನ್ನು ಸೇರಿಸಿ (ಉದಾ. last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "Last.fm ನೊಂದಿಗೆ ದೃಢೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ\nಮುಂದಿನ ಮರುಪ್ರಾರಂಭದವರೆಗೆ ಪಾಪ್‌ಅಪ್ ಮರೆಮಾಡಿ.",
+            "title": "ದೃಢೀಕರಣ ವಿಫಲವಾಗಿದೆ"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "Last.fm API ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+        },
+        "listenbrainz": {
+          "token": "ListenBrainz ಬಳಕೆದಾರ ಟೋಕನ್ ನಮೂದಿಸಿ"
+        },
+        "scrobble-alternative-title": "ಪರ್ಯಾಯ ಶೀರ್ಷಿಕೆಗಳನ್ನು ಬಳಸಿ",
+        "scrobble-alternative-artist": "ಪರ್ಯಾಯ ಕಲಾವಿದರನ್ನು ಬಳಸಿ",
+        "scrobble-other-media": "ಇತರ ಮಾಧ್ಯಮವನ್ನು ಸ್ಕ್ರಾಬಲ್ ಮಾಡಿ"
+      },
+      "name": "ಸ್ಕ್ರಾಬ್ಲರ್",
+      "prompt": {
+        "lastfm": {
+          "api-key": "Last.fm API ಕೀ",
+          "api-secret": "Last.fm API ಸೀಕ್ರೆಟ್"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "ನಿಮ್ಮ ListenBrainz ಬಳಕೆದಾರ ಟೋಕನ್ ನಮೂದಿಸಿ:",
+            "title": "ListenBrainz ಟೋಕನ್"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "ಪ್ಲೇಬ್ಯಾಕ್‌ಗಾಗಿ ಜಾಗತಿಕ ಹಾಟ್‌ಕೀಗಳನ್ನು ಹೊಂದಿಸಲು (ಪ್ಲೇ/ವಿರಾಮ/ಮುಂದಿನ/ಹಿಂದಿನ) ಮತ್ತು ಮೀಡಿಯಾ ಕೀಗಳನ್ನು ಅತಿಕ್ರಮಿಸುವ ಮೂಲಕ ಮೀಡಿಯಾ OSD ಅನ್ನು ಆಫ್ ಮಾಡಲು, ಹುಡುಕಲು Ctrl/CMD + F ಅನ್ನು ಆನ್ ಮಾಡಲು, ಮೀಡಿಯಾ ಕೀಗಳಿಗಾಗಿ Linux MPRIS ಬೆಂಬಲವನ್ನು ಆನ್ ಮಾಡಲು, ಮತ್ತು ಸುಧಾರಿತ ಬಳಕೆದಾರರಿಗಾಗಿ ಕಸ್ಟಮ್ ಹಾಟ್‌ಕೀಗಳನ್ನು ಅನುಮತಿಸುತ್ತದೆ",
+      "menu": {
+        "override-media-keys": "ಮೀಡಿಯಾ ಕೀಗಳನ್ನು ಅತಿಕ್ರಮಿಸಿ",
+        "set-keybinds": "ಜಾಗತಿಕ ಹಾಡು ನಿಯಂತ್ರಣಗಳನ್ನು ಹೊಂದಿಸಿ"
+      },
+      "name": "ಶಾರ್ಟ್ಕಟ್ಗಳು (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "ಮುಂದಿನ",
+            "play-pause": "ಪ್ಲೇ / ವಿರಾಮ",
+            "previous": "ಹಿಂದಿನ"
+          },
+          "label": "ಹಾಡಿನ ನಿಯಂತ್ರಣಕ್ಕಾಗಿ ಜಾಗತಿಕ ಕೀಬೈಂಡ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ:",
+          "title": "ಜಾಗತಿಕ ಕೀಬೈಂಡ್‌ಗಳು"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "ಹಾಡುಗಳಲ್ಲಿನ ಮೌನ ವಿಭಾಗಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಬಿಟ್ಟುಬಿಡಿ",
+      "name": "ಮೌನಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ"
+    },
+    "sponsorblock": {
+      "description": "ಪರಿಚಯ/ಸಮಾಪ್ತಿ ಅಥವಾ ಹಾಡು ಪ್ಲೇ ಆಗದ ಮ್ಯೂಸಿಕ್ ವೀಡಿಯೊಗಳ ಭಾಗಗಳಂತಹ ಸಂಗೀತವಲ್ಲದ ಭಾಗಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಬಿಟ್ಟುಬಿಡುತ್ತದೆ",
+      "name": "ಸ್ಪಾನ್ಸರ್‌ಬ್ಲಾಕ್"
+    },
+    "synced-lyrics": {
+      "description": "LRClib ನಂತಹ ಪೂರೈಕೆದಾರರನ್ನು ಬಳಸಿಕೊಂಡು ಹಾಡುಗಳಿಗೆ ಸಿಂಕ್ ಮಾಡಿದ ಸಾಹಿತ್ಯವನ್ನು ಒದಗಿಸುತ್ತದೆ.",
+      "errors": {
+        "fetch": "⚠️\tಸಾಹಿತ್ಯ ಪಡೆಯುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ.\n\tದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+        "not-found": "⚠️ ಈ ಹಾಡಿಗೆ ಸಾಹಿತ್ಯ ಕಂಡುಬಂದಿಲ್ಲ."
+      },
+      "menu": {
+        "preferred-provider": {
+          "label": "ಆದ್ಯತೆಯ ಪೂರೈಕೆದಾರ",
+          "tooltip": "ಬಳಸಲು ಪೂರ್ವನಿಯೋಜಿತ ಪೂರೈಕೆದಾರರನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+          "none": {
+            "label": "ಯಾವುದೂ ಇಲ್ಲ",
+            "tooltip": "ಯಾವುದೇ ಆದ್ಯತೆಯ ಪೂರೈಕೆದಾರ ಇಲ್ಲ"
+          }
+        },
+        "default-text-string": {
+          "label": "ಸಾಹಿತ್ಯದ ನಡುವಿನ ಪೂರ್ವನಿಯೋಜಿತ ಅಕ್ಷರ",
+          "tooltip": "ಸಾಹಿತ್ಯದ ನಡುವಿನ ಅಂತರಕ್ಕಾಗಿ ಬಳಸಲು ಪೂರ್ವನಿಯೋಜಿತ ಅಕ್ಷರವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+        },
+        "line-effect": {
+          "label": "ಸಾಲಿನ ಪರಿಣಾಮ",
+          "submenu": {
+            "fancy": {
+              "label": "ಫ್ಯಾನ್ಸಿ",
+              "tooltip": "ಪ್ರಸ್ತುತ ಸಾಲಿನ ಮೇಲೆ ದೊಡ್ಡ, ಅಪ್ಲಿಕೇಶನ್-ರೀತಿಯ ಪರಿಣಾಮಗಳನ್ನು ಬಳಸಿ"
+            },
+            "focus": {
+              "label": "ಫೋಕಸ್",
+              "tooltip": "ಪ್ರಸ್ತುತ ಸಾಲನ್ನು ಮಾತ್ರ ಬಿಳಿಯಾಗಿಸಿ"
+            },
+            "offset": {
+              "label": "ಆಫ್‌ಸೆಟ್",
+              "tooltip": "ಪ್ರಸ್ತುತ ಸಾಲನ್ನು ಬಲಕ್ಕೆ ಆಫ್‌ಸೆಟ್ ಮಾಡಿ"
+            },
+            "scale": {
+              "label": "ಸ್ಕೇಲ್",
+              "tooltip": "ಪ್ರಸ್ತುತ ಸಾಲನ್ನು ಸ್ಕೇಲ್ ಮಾಡಿ"
+            }
+          },
+          "tooltip": "ಪ್ರಸ್ತುತ ಸಾಲಿಗೆ ಅನ್ವಯಿಸಬೇಕಾದ ಪರಿಣಾಮವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+        },
+        "lyrics-font-size": {
+          "label": "ಸಾಹಿತ್ಯ ಫಾಂಟ್ ಗಾತ್ರ",
+          "submenu": {
+            "small": {
+              "label": "ಚಿಕ್ಕದು",
+              "tooltip": "ಹೆಚ್ಚು ಕಾಂಪ್ಯಾಕ್ಟ್ ಸಾಹಿತ್ಯ ಗಾತ್ರವನ್ನು ಬಳಸಿ"
+            },
+            "medium": {
+              "label": "ಮಧ್ಯಮ",
+              "tooltip": "ಸಮತೋಲಿತ ಸಾಹಿತ್ಯ ಗಾತ್ರವನ್ನು ಬಳಸಿ"
+            },
+            "large": {
+              "label": "ದೊಡ್ಡದು",
+              "tooltip": "ಮೂಲ ದೊಡ್ಡ ಸಾಹಿತ್ಯ ಗಾತ್ರವನ್ನು ಬಳಸಿ"
+            }
+          },
+          "tooltip": "ಸಾಹಿತ್ಯ ಪಠ್ಯ ಎಷ್ಟು ದೊಡ್ಡದಾಗಿರಬೇಕೆಂದು ಆಯ್ಕೆಮಾಡಿ"
+        },
+        "precise-timing": {
+          "label": "ಸಾಹಿತ್ಯವನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಸಿಂಕ್ ಮಾಡಿ",
+          "tooltip": "ಮುಂದಿನ ಸಾಲಿನ ಪ್ರದರ್ಶನವನ್ನು ಮಿಲಿಸೆಕೆಂಡ್‌ವರೆಗೆ ಲೆಕ್ಕಹಾಕಿ (ಕಾರ್ಯಕ್ಷಮತೆಯ ಮೇಲೆ ಸಣ್ಣ ಪರಿಣಾಮ ಬೀರಬಹುದು)"
+        },
+        "romanization": {
+          "label": "ಸಾಹಿತ್ಯವನ್ನು ರೋಮನೈಸ್ ಮಾಡಿ",
+          "tooltip": "ಸಾಹಿತ್ಯವು ಬೇರೆ ಭಾಷೆಯಲ್ಲಿದ್ದರೆ, ಲ್ಯಾಟಿನ್ ಆವೃತ್ತಿಯನ್ನು ಪ್ರದರ್ಶಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "ನಿಖರವಲ್ಲದಿದ್ದರೂ ಸಾಹಿತ್ಯ ತೋರಿಸಿ",
+          "tooltip": "ಹಾಡು ಕಂಡುಬರದಿದ್ದರೆ, ಪ್ಲಗಿನ್ ಬೇರೆ ಹುಡುಕಾಟ ಪ್ರಶ್ನೆಯೊಂದಿಗೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸುತ್ತದೆ.\nಎರಡನೇ ಪ್ರಯತ್ನದ ಫಲಿತಾಂಶವು ನಿಖರವಾಗಿಲ್ಲದಿರಬಹುದು."
+        },
+        "show-time-codes": {
+          "label": "ಸಮಯ ಕೋಡ್‌ಗಳನ್ನು ತೋರಿಸಿ",
+          "tooltip": "ಸಾಹಿತ್ಯದ ಪಕ್ಕದಲ್ಲಿ ಸಮಯ ಕೋಡ್‌ಗಳನ್ನು ತೋರಿಸಿ"
+        },
+        "convert-chinese-character": {
+          "label": "ಚೀನೀ ಅಕ್ಷರಗಳನ್ನು ಪರಿವರ್ತಿಸಿ",
+          "submenu": {
+            "disabled": {
+              "label": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+              "tooltip": "ಚೀನೀ ಅಕ್ಷರ ಪರಿವರ್ತನೆ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
+            },
+            "simplified-to-traditional": {
+              "label": "ಸರಳೀಕೃತದಿಂದ ಸಾಂಪ್ರದಾಯಿಕಕ್ಕೆ",
+              "tooltip": "ಸರಳೀಕೃತ ಚೀನೀಯನ್ನು ಸಾಂಪ್ರದಾಯಿಕ ಚೀನೀಯಾಗಿ ಪರಿವರ್ತಿಸಿ"
+            },
+            "traditional-to-simplified": {
+              "label": "ಸಾಂಪ್ರದಾಯಿಕದಿಂದ ಸರಳೀಕೃತಕ್ಕೆ",
+              "tooltip": "ಸಾಂಪ್ರದಾಯಿಕ ಚೀನೀಯನ್ನು ಸರಳೀಕೃತ ಚೀನೀಯಾಗಿ ಪರಿವರ್ತಿಸಿ"
+            }
+          },
+          "tooltip": "ಚೀನೀ ಅಕ್ಷರಗಳನ್ನು ಸಾಂಪ್ರದಾಯಿಕ ಅಥವಾ ಸರಳೀಕೃತಕ್ಕೆ ಪರಿವರ್ತಿಸಿ"
+        },
+        "translation": {
+          "label": "ಸಾಹಿತ್ಯ ಅನುವಾದ",
+          "tooltip": "ಸಾಹಿತ್ಯವನ್ನು ಅನುವಾದಿಸಿ ಮತ್ತು ಅನುವಾದಿತ ಫಲಿತಾಂಶವನ್ನು ಸಾಲು-ಸಾಲಾಗಿ ಪ್ರದರ್ಶಿಸಿ.",
+          "enabled": {
+            "label": "ಅನುವಾದ ಸಕ್ರಿಯಗೊಳಿಸಿ",
+            "tooltip": "ಪ್ರತಿ ಮೂಲ ಸಾಹಿತ್ಯ ಸಾಲಿನ ಕೆಳಗೆ ಅನುವಾದಿತ ಸಾಲನ್ನು ತೋರಿಸಿ."
+          },
+          "provider": {
+            "label": "ಪೂರೈಕೆದಾರ",
+            "tooltip": "ಅನುವಾದಕ್ಕಾಗಿ ಯಾವ ಸೇವೆಯನ್ನು ಬಳಸಬೇಕು."
+          },
+          "target-language": {
+            "label": "ಗುರಿ ಭಾಷೆ",
+            "tooltip": "ಸಾಹಿತ್ಯವನ್ನು ಯಾವ ಭಾಷೆಗೆ ಅನುವಾದಿಸಬೇಕು.",
+            "options": {
+              "auto": "Follow app language",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文",
+              "en": "English",
+              "ja": "日本語",
+              "ko": "한국어",
+              "fr": "Français",
+              "de": "Deutsch",
+              "es": "Español",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "it": "Italiano",
+              "nl": "Nederlands",
+              "ru": "Русский",
+              "uk": "Українська",
+              "pl": "Polski",
+              "tr": "Türkçe",
+              "ar": "العربية",
+              "he": "עברית",
+              "fa": "فارسی",
+              "hi": "हिन्दी",
+              "bn": "বাংলা",
+              "ur": "اردو",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "mr": "मराठी",
+              "id": "Bahasa Indonesia",
+              "ms": "Bahasa Melayu",
+              "vi": "Tiếng Việt",
+              "th": "ไทย",
+              "fil": "Filipino",
+              "sw": "Kiswahili",
+              "sv": "Svenska",
+              "no": "Norsk",
+              "da": "Dansk",
+              "fi": "Suomi",
+              "cs": "Čeština",
+              "ro": "Română",
+              "hu": "Magyar",
+              "el": "Ελληνικά",
+              "bg": "Български",
+              "sr": "Српски",
+              "hr": "Hrvatski",
+              "sk": "Slovenčina",
+              "lt": "Lietuvių"
+            }
+          },
+          "configure": {
+            "label": "API ಕೀ ಮತ್ತು ಮಾದರಿ ಕಾನ್ಫಿಗರ್ ಮಾಡಿ...",
+            "tooltip": "ಪೂರೈಕೆದಾರ-ನಿರ್ದಿಷ್ಟ ಅನುವಾದ ಆಯ್ಕೆಗಳನ್ನು ಹೊಂದಿಸಿ."
+          },
+          "clear-cache": {
+            "label": "ಅನುವಾದ ಕ್ಯಾಶ್ ತೆರವುಗೊಳಿಸಿ",
+            "tooltip": "ಡಿಸ್ಕ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಎಲ್ಲಾ ಕ್ಯಾಶ್ ಮಾಡಿದ ಅನುವಾದಗಳನ್ನು ಅಳಿಸಿ."
+          },
+          "providers": {
+            "shared": {
+              "api-key": "API ಕೀ",
+              "model": "ಮಾದರಿ"
+            },
+            "openai-compatible": {
+              "name": "OpenAI ಹೊಂದಾಣಿಕೆಯ",
+              "prompt-title": "OpenAI-ಹೊಂದಾಣಿಕೆಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+              "prompt-label": "Ollama ಸೇರಿದಂತೆ OpenAI-ಹೊಂದಾಣಿಕೆಯ ಸರ್ವರ್‌ಗಳನ್ನು ಬಳಸಿ (ಮೂಲ URL http://127.0.0.1:11434/v1, API ಮೋಡ್ auto ಅಥವಾ chat-completions).",
+              "base-url": "ಮೂಲ URL",
+              "api-mode": "API ಮೋಡ್ (responses / auto / chat-completions)"
+            },
+            "anthropic": {
+              "name": "ಆಂಥ್ರೊಪಿಕ್ ಕ್ಲಾಡ್",
+              "prompt-title": "ಆಂಥ್ರೊಪಿಕ್ ಸೆಟ್ಟಿಂಗ್ಗಳು",
+              "prompt-label": "ಮೂಲ ಆಂಥ್ರೋಪಿಕ್ ಮೆಸೇಜಸ್ API ಅನ್ನು ಬಳಸುತ್ತದೆ."
+            },
+            "gemini": {
+              "name": "ಗೂಗಲ್ ಜೆಮಿನಿ",
+              "prompt-title": "ಗೆಮಿನಿ ಸೆಟ್ಟಿಂಗ್ಗಳು",
+              "prompt-label": "ಗೂಗಲ್ನ ಜನರೇಟಿವ್ ಲ್ಯಾಂಗ್ವೇಜ್ API (generateContent) ಅನ್ನು ಬಳಸುತ್ತದೆ."
+            },
+            "local-cli": {
+              "name": "ಸ್ಥಳೀಯ CLI",
+              "prompt-title": "ಸ್ಥಳೀಯ CLI ಸೆಟ್ಟಿಂಗ್ಗಳು",
+              "prompt-label": "ಸ್ಥಳೀಯವಾಗಿ ಲಾಗಿನ್ ಆಗಿರುವ Claude Code, Codex, ಅಥವಾ Gemini CLI ಅನ್ನು ಬಳಸಿ. ಆಜ್ಞೆ ಮತ್ತು ಮಾದರಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿರುತ್ತವೆ; CLI ತನ್ನದೇ ಆದ ಲಾಗಿನ್ ಆದ ಡೀಫಾಲ್ಟ್ ಅನ್ನು ಬಳಸುತ್ತದೆ.",
+              "engine": "ಸ್ಥಳೀಯ CLI",
+              "engine-claude": "ಕ್ಲಾಡ್ ಕೋಡ್",
+              "engine-codex": "ಕೋಡೆಕ್ಸ್",
+              "engine-gemini": "ಗೆಮಿನಿ CLI",
+              "command": "ಆಜ್ಞೆ",
+              "timeout": "ಟೈಮೌಟ್ ಸೆಕೆಂಡುಗಳು (15-600)"
+            },
+            "google-translate": {
+              "name": "ಗೂಗಲ್ ಅನುವಾದ",
+              "prompt-title": "ಗೂಗಲ್ ಅನುವಾದ ಸೆಟ್ಟಿಂಗ್ಗಳು",
+              "prompt-label": "ಅನಧಿಕೃತ ಉಚಿತ Google Translate ಎಂಡ್ಪಾಯಿಂಟ್ ಅನ್ನು ಬಳಸುತ್ತದೆ. API ಕೀ ಅಗತ್ಯವಿಲ್ಲ, ಆದರೆ Google ದರ ಮಿತಿಯನ್ನು ವಿಧಿಸಬಹುದು.",
+              "host": "ಆತಿಥೇಯ"
+            }
+          }
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "ಪ್ರಾಕ್ಸಿ ಇಲ್ಲದೆ YTM ಸಾಹಿತ್ಯವನ್ನು ಬಳಸಿ",
+          "tooltip": "YTM ಬ್ರೌಸ್ ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಿಟ್ಟುಬಿಡಿ ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ನ ದೃಢೀಕೃತ ಸೆಷನ್ ಬಳಸಿ ನೇರವಾಗಿ YouTube Music ಗೆ ಕರೆ ಮಾಡಿ. ನಿಮ್ಮ ನೆಟ್ವರ್ಕ್/ಪ್ರದೇಶವು ನೇರ ಬ್ರೌಸ್ ಕರೆಗಳನ್ನು ಅನುಮತಿಸುತ್ತದೆ ಎಂದು ನೀವು ನಂಬಿದರೆ ಉಪಯುಕ್ತವಾಗಿದೆ."
+        },
+        "show-custom-search-button": {
+          "label": "ಕಸ್ಟಮ್ ಹುಡುಕಾಟ ಬಟನ್ ತೋರಿಸು",
+          "tooltip": "ಗೀತೆ ಪಿಕ್ಕರ್ನಲ್ಲಿ ಹುಡುಕಾಟ ಬಟನ್ ತೋರಿಸಿ, ಅದು ಪ್ರಸ್ತುತ ಹಾಡಿಗಾಗಿ ಹುಡುಕಾಟ ಪ್ರಶ್ನೆ ಮತ್ತು ಕಲಾವಿದರನ್ನು ಬದಲಾಯಿಸಲು ಅನುಮತಿಸುತ್ತದೆ."
+        }
+      },
+      "name": "ಸಿಂಕ್ ಮಾಡಿದ ಸಾಹಿತ್ಯ",
+      "refetch-btn": {
+        "fetching": "ಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+        "normal": "ಸಾಹಿತ್ಯ ಮರುಪಡೆಯಿರಿ"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - ಅವಧಿಯ ಹೊಂದಾಣಿಕೆಯಿಲ್ಲದ ಕಾರಣ ಸಾಹಿತ್ಯವು ಸಿಂಕ್‌ನಿಂದ ಹೊರಗಿರಬಹುದು.",
+        "inexact": "⚠️ - ಈ ಹಾಡಿನ ಸಾಹಿತ್ಯವು ನಿಖರವಾಗಿಲ್ಲದಿರಬಹುದು",
+        "instrumental": "⚠️ - ಇದು ವಾದ್ಯ ಸಂಗೀತದ ಹಾಡು"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "ನಿಮ್ಮ Windows ಟಾಸ್ಕ್‌ಬಾರ್‌ನಿಂದ ಪ್ಲೇಬ್ಯಾಕ್ ನಿಯಂತ್ರಿಸಿ",
+      "name": "ಟಾಸ್ಕ್‌ಬಾರ್ ಮೀಡಿಯಾ ನಿಯಂತ್ರಣ"
+    },
+    "touchbar": {
+      "description": "macOS ಬಳಕೆದಾರರಿಗಾಗಿ TouchBar ವಿಜೆಟ್ ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಟಚ್‌ಬಾರ್"
+    },
+    "transparent-player": {
+      "description": "ಅಪ್ಲಿಕೇಶನ್ ವಿಂಡೋವನ್ನು ಪಾರದರ್ಶಕವಾಗಿಸುತ್ತದೆ",
+      "name": "ಪಾರದರ್ಶಕ ಪ್ಲೇಯರ್",
+      "menu": {
+        "opacity": {
+          "label": "ಅಪಾರದರ್ಶಕತೆ",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "ಪ್ರಕಾರ",
+          "submenu": {
+            "acrylic": "ಅಕ್ರಿಲಿಕ್",
+            "mica": "ಮೈಕಾ",
+            "tabbed": "ಟ್ಯಾಬ್ಡ್",
+            "none": "ಯಾವುದೂ ಇಲ್ಲ"
+          }
+        }
+      }
+    },
+    "tuna-obs": {
+      "description": "OBS ನ ಪ್ಲಗಿನ್ Tuna ಜೊತೆ ಏಕೀಕರಣ",
+      "name": "ಟ್ಯೂನಾ OBS"
+    },
+    "unobtrusive-player": {
+      "description": "ಹಾಡು ಪ್ಲೇ ಆಗುವಾಗ ಪ್ಲೇಯರ್ ಪಾಪ್ ಅಪ್ ಆಗುವುದನ್ನು ತಡೆಯುತ್ತದೆ",
+      "name": "ಅಡೆತಡೆಯಿಲ್ಲದ ಪ್ಲೇಯರ್"
+    },
+    "video-toggle": {
+      "description": "ವೀಡಿಯೊ/ಹಾಡು ಮೋಡ್ ನಡುವೆ ಬದಲಾಯಿಸಲು ಬಟನ್ ಸೇರಿಸುತ್ತದೆ. ಸಂಪೂರ್ಣ ವೀಡಿಯೊ ಟ್ಯಾಬ್ ಅನ್ನು ಸಹ ತೆಗೆದುಹಾಕಬಹುದು",
+      "menu": {
+        "align": {
+          "label": "ಜೋಡಣೆ",
+          "submenu": {
+            "left": "ಎಡ",
+            "middle": "ಮಧ್ಯ",
+            "right": "ಬಲ"
+          }
+        },
+        "force-hide": "ವೀಡಿಯೊ ಟ್ಯಾಬ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ತೆಗೆದುಹಾಕಿ",
+        "mode": {
+          "label": "ಮೋಡ್",
+          "submenu": {
+            "custom": "ಕಸ್ಟಮ್ ಟಾಗಲ್",
+            "disabled": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+            "native": "ನೇಟಿವ್ ಟಾಗಲ್"
+          }
+        }
+      },
+      "name": "ವೀಡಿಯೊ ಟಾಗಲ್",
+      "templates": {
+        "button-song": "ಹಾಡು",
+        "button-video": "ವೀಡಿಯೊ"
+      }
+    },
+    "visualizer": {
+      "description": "ಪ್ಲೇಯರ್‌ಗೆ ವಿಷುವಲೈಜರ್ ಸೇರಿಸುತ್ತದೆ",
+      "menu": {
+        "visualizer-type": "ವಿಷುವಲೈಜರ್ ಪ್ರಕಾರ"
+      },
+      "name": "ವಿಷುವಲೈಜರ್"
+    },
+    "playlist-search": {
+      "description": "ಸೈಡ್ಬಾರ್ ಮತ್ತು ಪ್ಲೇಲಿಸ್ಟ್‌ಗೆ ಸೇರಿಸು ಸಂವಾದದಲ್ಲಿ ಪ್ಲೇಲಿಸ್ಟ್‌ಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಲು ಹುಡುಕಾಟ ಇನ್‌ಪುಟ್ ಅನ್ನು ಸೇರಿಸುತ್ತದೆ",
+      "name": "ಪ್ಲೇಲಿಸ್ಟ್ ಹುಡುಕು",
+      "templates": {
+        "search-placeholder": "ಪ್ಲೇಲಿಸ್ಟ್ಗಳನ್ನು ಹುಡುಕಿ",
+        "no-results": "ಪ್ಲೇಲಿಸ್ಟ್ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"
+      }
+    }
   }
 }

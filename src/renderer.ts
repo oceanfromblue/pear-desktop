@@ -7,6 +7,7 @@ import 'mdui/components/button-icon.js';
 import 'mdui/components/tooltip.js';
 
 import { loadI18n, setLanguage, t as i18t } from '@/i18n';
+import { bootStandaloneSettings } from '@/plugins/settings-ui/standalone';
 import {
   defaultTrustedTypePolicy,
   registerWindowDefaultTrustedTypePolicy,
@@ -26,9 +27,12 @@ import {
 } from './providers/audio-only';
 import { startingPages } from './providers/extracted-data';
 import { getMediaElement } from './providers/media-element';
+import { createShareUrlRewriter } from './providers/share-url';
 import { setupSongInfo } from './providers/song-info-front';
 import { setupVideoQualityManager } from './providers/video-quality';
+import { initThemes } from './themes/renderer';
 
+import type { NextData } from './plugins/synced-lyrics/providers/YTMusic';
 import type { MusicPlayer } from '@/types/music-player';
 import type { MusicPlayerAppElement } from '@/types/music-player-app-element';
 import type { QueueResponse } from '@/types/music-player-desktop-internal';
@@ -51,18 +55,19 @@ let firstDataLoaded = false;
 
 registerWindowDefaultTrustedTypePolicy();
 
-async function listenForApiLoad() {
+function listenForApiLoad() {
   if (!isApiLoaded) {
     api = document.querySelector('#movie_player');
     if (api) {
-      await onApiLoaded();
+      isApiLoaded = true;
+      onApiLoaded();
 
       return;
     }
   }
 }
 
-async function onApiLoaded() {
+function onApiLoaded() {
   // Workaround for macOS traffic lights
   {
     let osType = 'Unknown';
@@ -324,8 +329,108 @@ async function onApiLoaded() {
     },
   );
 
+  window.ipcRenderer.on('peard:load-video', async (_, videoId: string) => {
+    const app = document.querySelector<MusicPlayerAppElement>('ytmusic-app');
+    const queue = document.querySelector<QueueElement>('#queue');
+
+    if (!app || !api || !queue) return;
+
+    api.stopVideo();
+    const data = await app.networkManager.fetch<NextData, { videoId: string }>(
+      '/next?prettyPrint=false',
+      {
+        videoId,
+      },
+    );
+
+    queue.dispatch({ type: 'CLEAR' });
+    queue.dispatch({
+      type: 'SET_QUEUE_CONTEXT_PARAMS',
+      payload: data.queueContextParams,
+    });
+    queue.dispatch({
+      type: 'SET_PLAYER_PAGE_WATCH_NEXT_RESPONSE',
+      payload: data,
+    });
+    queue.dispatch({
+      type: 'SET_PLAYER_OVERLAY',
+      payload: data.playerOverlays,
+    });
+    queue.dispatch({
+      type: 'SET_PLAYER_PAGE_TABS',
+      payload:
+        data.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer
+          .watchNextTabbedResultsRenderer.tabs,
+    });
+    queue.dispatch({ type: 'SET_PLAYER_PAGE_TABS_CONTENT', payload: {} });
+    queue.dispatch({
+      type: 'ADD_ITEMS',
+      payload: {
+        index: 0,
+        items:
+          data.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0].tabRenderer.content.musicQueueRenderer.content.playlistPanelRenderer.contents.filter(
+            (a) => a.playlistPanelVideoRenderer,
+          ),
+        nextQueueItemId: 0,
+        shouldAssignIds: true,
+      },
+    });
+  });
+  window.ipcRenderer.on(
+    'peard:load-playlist',
+    async (_, playlistId: string) => {
+      const app = document.querySelector<MusicPlayerAppElement>('ytmusic-app');
+      const queue = document.querySelector<QueueElement>('#queue');
+
+      if (!app || !api || !queue) return;
+
+      api.stopVideo();
+      const data = await app.networkManager.fetch<
+        NextData,
+        { playlistId: string }
+      >('/next?prettyPrint=false', {
+        playlistId,
+      });
+
+      queue.dispatch({ type: 'CLEAR' });
+      queue.dispatch({
+        type: 'SET_QUEUE_CONTEXT_PARAMS',
+        payload: data.queueContextParams,
+      });
+      queue.dispatch({
+        type: 'SET_PLAYER_PAGE_WATCH_NEXT_RESPONSE',
+        payload: data,
+      });
+      queue.dispatch({
+        type: 'SET_PLAYER_OVERLAY',
+        payload: data.playerOverlays,
+      });
+      queue.dispatch({
+        type: 'SET_PLAYER_PAGE_TABS',
+        payload:
+          data.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer
+            .watchNextTabbedResultsRenderer.tabs,
+      });
+      queue.dispatch({ type: 'SET_PLAYER_PAGE_TABS_CONTENT', payload: {} });
+      queue.dispatch({
+        type: 'ADD_ITEMS',
+        payload: {
+          index: 0,
+          items:
+            data.contents.singleColumnMusicWatchNextResultsRenderer
+              .tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0].tabRenderer
+              .content.musicQueueRenderer.content.playlistPanelRenderer
+              .contents,
+          nextQueueItemId: 0,
+          shouldAssignIds: true,
+        },
+      });
+    },
+  );
+
   // A <video>, or an <audio> in audio only mode
-  const video = getMediaElement()!;
+  const video = getMediaElement();
+  if (!video) return;
   const audioContext = new AudioContext();
   const audioSource = audioContext.createMediaElementSource(video);
   audioSource.connect(audioContext.destination);
@@ -341,7 +446,7 @@ async function onApiLoaded() {
 
   for (const [id, plugin] of Object.entries(getAllLoadedRendererPlugins())) {
     if (typeof plugin.renderer !== 'function') {
-      await plugin.renderer?.onPlayerApiReady?.call(
+      plugin.renderer?.onPlayerApiReady?.call(
         plugin.renderer,
         api!,
         createContext(id),
@@ -391,22 +496,11 @@ async function onApiLoaded() {
 
   // Remove upgrade button
   if (window.mainConfig.get('options.removeUpgradeButton')) {
-    const itemsSelector = 'ytmusic-guide-section-renderer #items';
-    let selector = 'ytmusic-guide-entry-renderer:last-child';
-
-    const upgradeBtnIcon = document.querySelector<SVGGElement>(
-      'iron-iconset-svg[name="yt-sys-icons"] #\u0079\u006f\u0075\u0074\u0075\u0062\u0065_music_monochrome',
+    const sectionBtns = document.querySelectorAll(
+      '#sections ytmusic-guide-section-renderer[is-primary] #items ytmusic-guide-entry-renderer:not(.pear-settings-btn)',
     );
-    if (upgradeBtnIcon) {
-      const path = upgradeBtnIcon.firstChild as SVGPathElement;
-      const data = path.getAttribute('d')!.substring(0, 15);
-      selector = `ytmusic-guide-entry-renderer:has(> tp-yt-paper-item > yt-icon path[d^="${data}"])`;
-    }
-
-    const styles = document.createElement('style');
-    styles.textContent = `${itemsSelector} ${selector} { display: none; }`;
-
-    document.head.appendChild(styles);
+    const upgradeBtn = sectionBtns[sectionBtns.length - 1] as HTMLElement;
+    upgradeBtn.style.display = 'none';
   }
 
   // Hide / Force show like buttons
@@ -473,8 +567,35 @@ const preload = async () => {
 };
 
 const main = async () => {
+  const shareUrlRewriter = createShareUrlRewriter();
+  const setShareUrlRewriterEnabled = (enabled: boolean) => {
+    if (enabled) shareUrlRewriter.start();
+    else shareUrlRewriter.stop();
+  };
+
+  setShareUrlRewriterEnabled(
+    window.mainConfig.get('options.stripMusicFromSharedLinks') ||
+      window.mainConfig.get('options.stripSIFromSharedLinks'),
+  );
+  window.ipcRenderer.on(
+    'peard:strip-music-from-shared-links',
+    (_event, enabled: boolean) =>
+      setShareUrlRewriterEnabled(
+        enabled || window.mainConfig.get('options.stripSIFromSharedLinks'),
+      ),
+  );
+  window.ipcRenderer.on(
+    'peard:strip-si-from-shared-links',
+    (_event, enabled: boolean) =>
+      setShareUrlRewriterEnabled(
+        enabled || window.mainConfig.get('options.stripMusicFromSharedLinks'),
+      ),
+  );
+
   await loadAllRendererPlugins();
   isPluginLoaded = true;
+
+  await initThemes();
 
   window.ipcRenderer.on('plugin:unload', async (_event, id: string) => {
     await forceUnloadRendererPlugin(id);
@@ -504,10 +625,19 @@ const main = async () => {
   );
 
   // Wait for complete load of the api
-  await listenForApiLoad();
+  listenForApiLoad();
 
   // Blocks the "Are You Still There?" popup by setting the last active time to Date.now every 15min
   setInterval(() => (window._lact = Date.now()), 900_000);
+  Object.defineProperties(document, {
+    hidden: { value: false },
+    visibilityState: { value: 'visible' },
+  });
+  addEventListener(
+    'visibilitychange',
+    (e) => e.stopImmediatePropagation(),
+    true,
+  );
 
   // Setup back to front logger
   if (window.electronIs.dev()) {
@@ -529,12 +659,15 @@ const initObserver = async () => {
     }
   });
 
-  const observer = new MutationObserver(() => {
+  let rafId: number | undefined;
+  let observer: MutationObserver | undefined;
+
+  const checkForApi = () => {
     const playerApi = document.querySelector<Element & MusicPlayer>(
       '#movie_player',
     );
     if (playerApi) {
-      observer.disconnect();
+      observer?.disconnect();
 
       // Inject song-info provider
       setupSongInfo(playerApi);
@@ -553,12 +686,33 @@ const initObserver = async () => {
         onApiLoaded();
       }
     }
-  });
+    rafId = undefined;
+  };
 
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
+  // Try immediately first (may already be in DOM)
+  checkForApi();
+
+  // If not found, observe with rAF throttling to avoid querying on every DOM mutation
+  if (!isApiLoaded) {
+    observer = new MutationObserver(() => {
+      if (rafId !== undefined) return; // Already queued
+      rafId = requestAnimationFrame(checkForApi);
+    });
+
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  }
 };
 
-initObserver().then(preload).then(main);
+if (new URLSearchParams(window.location.search).has('settings')) {
+  bootStandaloneSettings();
+} else {
+  initObserver()
+    .then(preload)
+    .then(main)
+    .catch((err) => {
+      console.error('Failed to initialize renderer:', err);
+    });
+}

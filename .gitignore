@@ -1,6 +1,7 @@
 node_modules
 /dist
 /pack
+/test-results
 .vscode/settings.json
 .idea
 
@@ -13,5 +14,7 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 .vite-inspect
+/test-results
+/playwright-report
 
 .DS_Store

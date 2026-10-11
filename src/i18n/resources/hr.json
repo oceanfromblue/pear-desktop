@@ -109,7 +109,8 @@
                   "title": "Postavi proxy"
                 }
               },
-              "toggle-dev-tools": "Uključi/isključi DevTools"
+              "toggle-dev-tools": "Uključi/isključi DevTools",
+              "force-smtc": "Prisilno koristi vanjski SMTC"
             }
           },
           "always-on-top": "Uvijek na vrhu",
@@ -144,7 +145,9 @@
               "disabled": "Isključeno",
               "enabled-and-hide-app": "Uključena i skrivena aplikacija",
               "enabled-and-show-app": "Uključena i prikaži aplikaciju",
-              "play-pause-on-click": "Reproduciraj/Pauziraj na klik"
+              "play-pause-on-click": "Reproduciraj/Pauziraj na klik",
+              "move-to-current-desktop": "Premjesti na trenutnu virtualnu radnu površinu pri prikazu",
+              "force-white-icons": "Prisilno korištenje bijelih ikona"
             }
           },
           "visual-tweaks": {
@@ -161,7 +164,8 @@
                 "default": "Zadano",
                 "force-show": "Prisilno prikaži",
                 "hide": "Sakrij",
-                "label": "\"Sviđa mi se\" gumbi"
+                "label": "\"Sviđa mi se\" gumbi",
+                "swap": "Zamijeni redoslijed gumba za sviđanje"
               },
               "remove-upgrade-button": "Ukloni gumb za nadogradnju",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Sviđa mi se",
+      "dislike": "Ne sviđa mi se",
+      "unlike": "Za razliku od",
+      "undislike": "Ukloni nesviđanje"
     }
   },
   "plugins": {
@@ -404,6 +412,17 @@
         "caption-disabled": "Titlovi su isključeni",
         "no-captions": "Za ovu pjesmu nisu dostupni titlovi"
       }
+    },
+    "clock": {
+      "description": "Dodaj sat u navigacijsku traku",
+      "menu": {
+        "format": {
+          "24-hour-format": "24-satni format",
+          "display-seconds": "Prikaži sekunde",
+          "label": "Format"
+        }
+      },
+      "name": "Sat"
     },
     "compact-sidebar": {
       "description": "Uvijek postavi bočnu traku na kompaktni način rada",
@@ -666,7 +685,8 @@
           "submenu": {
             "hide-button-text": "Sakrij tekst gumba",
             "refresh-on-play-pause": "Osvježi pri Reprodukciji/Pauzi",
-            "tray-controls": "Otvori/Zatvori klikom na traku"
+            "tray-controls": "Otvori/Zatvori klikom na traku",
+            "hover-controls": "Prikaži mini-player pri lebdjenju iznad trake"
           }
         },
         "priority": "Prioritet Obavijesti",
@@ -804,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Preskače pjesme koje vam se ne sviđaju",
-      "name": "Preskočite pjesme koje vam se ne sviđaju"
-    },
     "skip-silences": {
       "description": "Automatski preskočite dijelove pjesama gdje nema zvuka",
       "name": "Preskoči tišine"
@@ -823,6 +839,24 @@
         "not-found": "⚠️ Tekst ove pjesme nije pronađen."
       },
       "menu": {
+        "convert-chinese-character": {
+          "label": "Pretvori kineske znakove",
+          "submenu": {
+            "disabled": {
+              "label": "Onemogućeno",
+              "tooltip": "Onemogući pretvorbu kineskih znakova"
+            },
+            "simplified-to-traditional": {
+              "label": "Pojednostavljeno u Tradicionalno",
+              "tooltip": "Pretvori pojednostavljene kineske u tradicionalne kineske"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradicionalno u Pojednostavljeno",
+              "tooltip": "Pretvori tradicionalne kineske u pojednostavljene kineske"
+            }
+          },
+          "tooltip": "Pretvori kineske znakove u tradicionalne ili pojednostavljene"
+        },
         "default-text-string": {
           "label": "Zadani karakteri između stihova pjesama",
           "tooltip": "Odaberi zadane karaktere koji će biti korišteni za razmake između stihova pjesama"
@@ -849,6 +883,24 @@
           },
           "tooltip": "Odaberi efekt koji će biti primijenjen na trenutnoj crti"
         },
+        "lyrics-font-size": {
+          "label": "Veličina fonta teksta",
+          "submenu": {
+            "large": {
+              "label": "Veliko",
+              "tooltip": "Koristi izvornu veću veličinu teksta"
+            },
+            "medium": {
+              "label": "Srednje",
+              "tooltip": "Koristi uravnoteženu veličinu teksta"
+            },
+            "small": {
+              "label": "Malo",
+              "tooltip": "Koristi kompaktniju veličinu teksta"
+            }
+          },
+          "tooltip": "Odaberi koliko velik tekst stihova treba biti"
+        },
         "precise-timing": {
           "label": "Napravi da tekst pjesme bude izvrsno usklađen",
           "tooltip": "Izračunaj do milisekunde prikaz sljedeće crteteksta (može malo utjecati na učinak)"
@@ -872,6 +924,125 @@
         "show-time-codes": {
           "label": "Prikaži vremenske oznake",
           "tooltip": "Prikaži vremenske oznake pored teksta pjesme"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Očisti predmemoriju prijevoda",
+            "tooltip": "Izbriši sve predmemorirane prijevode pohranjene na disku."
+          },
+          "configure": {
+            "label": "Konfiguriraj API ključ i model…",
+            "tooltip": "Postavi opcije prijevoda specifične za pružatelja."
+          },
+          "enabled": {
+            "label": "Omogući prijevod",
+            "tooltip": "Prikaži prevedenu liniju ispod svake izvorne linije stihova."
+          },
+          "label": "Prijevod stihova",
+          "provider": {
+            "label": "Pružatelj",
+            "tooltip": "Koju uslugu koristiti za prijevod."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Koristi izvorni Anthropic Messages API.",
+              "prompt-title": "Anthropic postavke"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Koristi Googleov Generative Language API (generateContent).",
+              "prompt-title": "Postavke Gemini"
+            },
+            "google-translate": {
+              "host": "Domaćin",
+              "name": "Google Prevoditelj",
+              "prompt-label": "Koristi neslužbeni besplatni Google Translate krajnji uređaj. Nije potreban API ključ, ali Google može ograničiti brzinu.",
+              "prompt-title": "Postavke Google Prevoditelja"
+            },
+            "local-cli": {
+              "command": "Naredba",
+              "engine": "Lokalni CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokalni CLI",
+              "prompt-label": "Koristite lokalno prijavljeni Claude Code, Codex ili Gemini CLI. Naredba i model su automatski; CLI koristi vlastitu prijavljenu zadanu vrijednost.",
+              "prompt-title": "Lokalne CLI postavke",
+              "timeout": "Vrijeme isteka u sekundama (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API način (odgovori / automatski / chat-dovršetci)",
+              "base-url": "Osnovni URL",
+              "name": "Kompatibilno s OpenAI",
+              "prompt-label": "Koristite poslužitelje kompatibilne s OpenAI-jem, uključujući Ollamu (osnovni URL http://127.0.0.1:11434/v1, API način rada auto ili chat-completions).",
+              "prompt-title": "Postavke kompatibilne s OpenAI-jem"
+            },
+            "shared": {
+              "api-key": "API ključ",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Ciljni jezik",
+            "options": {
+              "ar": "العربية",
+              "auto": "Follow app language",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Jezik na koji će se prevesti stihovi."
+          },
+          "tooltip": "Prevedi stihove i prikaži prevedeni rezultat redak po redak za prikaz."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Koristi YTM tekstove bez proxyja",
+          "tooltip": "Preskoči YTM proxy pregledavanja i izravno pozovi YouTube Music koristeći autentificiranu sesiju aplikacije. Korisno ako vjeruješ svojoj mreži/regiji da dopušta izravne pozive pregledavanja."
+        },
+        "show-custom-search-button": {
+          "label": "Prikaži prilagođeni gumb za pretraživanje",
+          "tooltip": "Prikaži gumb za pretraživanje u biraču stihova koji omogućuje promjenu upita za pretraživanje i izvođača za trenutnu pjesmu."
         }
       },
       "name": "Sinkronizirani stihovi pjesama",
@@ -955,6 +1126,25 @@
         "visualizer-type": "Tip vizualizacije"
       },
       "name": "Vizualizacija"
+    },
+    "audio-only": {
+      "description": "Prisiljava samo audio način — blokira sve video streamove na razini mreže i playera radi uštede RAM-a i propusnosti",
+      "name": "Samo Audio"
+    },
+    "playback-recovery": {
+      "description": "Automatski se oporavlja od zaglavljenih, zaustavljenih ili mrtvih stanja reprodukcije",
+      "menu": {
+        "log-to-console": "Zabilježi događaje oporavka u konzolu"
+      },
+      "name": "Oporavak Reprodukcije"
+    },
+    "playlist-search": {
+      "description": "Dodaje polje za pretraživanje za filtriranje popisa pjesama u bočnoj traci i dijalogu Dodaj na popis pjesama",
+      "name": "Pretraživanje popisa pjesama",
+      "templates": {
+        "search-placeholder": "Pretraži popise pjesama",
+        "no-results": "Nema pronađenih popisa pjesama"
+      }
     }
   }
 }

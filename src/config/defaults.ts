@@ -26,7 +26,11 @@ export interface DefaultConfig {
     removeUpgradeButton: boolean;
     restartOnConfigChanges: boolean;
     trayClickPlayPause: boolean;
+    trayMoveToCurrentDesktop: boolean;
+    trayForceWhiteIcons: boolean;
+    useYtmIcons: boolean;
     autoResetAppCache: boolean;
+    forceSmtc: boolean;
     resumeOnStart: boolean;
     likeButtons: string;
     swapLikeButtonsOrder: boolean;
@@ -34,7 +38,21 @@ export interface DefaultConfig {
     startingPage: string;
     overrideUserAgent: boolean;
     usePodcastParticipantAsArtist: boolean;
-    themes: string[];
+    stripMusicFromSharedLinks: boolean;
+    stripSIFromSharedLinks: boolean;
+    /** Id of the selected external theme, or '' for no theme. */
+    theme: string;
+    /**
+     * Preset the user picked per theme id: a preset name, `custom` for the
+     * palette they edited themselves, or '' for the theme's own palette.
+     */
+    themePresets: Record<string, string>;
+    /** Per-theme palette overrides, keyed by theme id then palette key. */
+    themeOverrides: Record<string, Record<string, string>>;
+    /** Hash of the theme JS the user consented to run, keyed by theme id. */
+    themeConsent: Record<string, string>;
+    /** Whether the first-run theme has been seeded. */
+    themesSeeded: boolean;
     customWindowTitle?: string;
     // Optional: the stored options of existing users don't contain it (missing = enabled)
     lowerVideoQualityWhenHidden?: boolean;
@@ -67,7 +85,11 @@ export const defaultConfig: DefaultConfig = {
     removeUpgradeButton: false,
     restartOnConfigChanges: false,
     trayClickPlayPause: false,
+    trayMoveToCurrentDesktop: false,
+    trayForceWhiteIcons: false,
+    useYtmIcons: false,
     autoResetAppCache: false,
+    forceSmtc: false,
     resumeOnStart: true,
     likeButtons: '',
     swapLikeButtonsOrder: false,
@@ -75,7 +97,13 @@ export const defaultConfig: DefaultConfig = {
     startingPage: '',
     overrideUserAgent: false,
     usePodcastParticipantAsArtist: false,
-    themes: [],
+    stripMusicFromSharedLinks: false,
+    stripSIFromSharedLinks: true,
+    theme: '',
+    themePresets: {},
+    themeOverrides: {},
+    themeConsent: {},
+    themesSeeded: false,
     lowerVideoQualityWhenHidden: true,
     audioOnly: false,
     lowMemoryMode: false,

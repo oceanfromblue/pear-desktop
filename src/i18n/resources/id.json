@@ -109,7 +109,8 @@
                   "title": "Atur proxy"
                 }
               },
-              "toggle-dev-tools": "Beralih ke DevTools"
+              "toggle-dev-tools": "Beralih ke DevTools",
+              "force-smtc": "Paksa penggunaan SMTC eksternal"
             }
           },
           "always-on-top": "Selalu di atas",
@@ -144,25 +145,27 @@
               "disabled": "Dinonaktifkan",
               "enabled-and-hide-app": "Mengaktifkan dan menyembunyikan aplikasi",
               "enabled-and-show-app": "Mengaktifkan dan menampilkan aplikasi",
-              "play-pause-on-click": "Putar/Jeda dengan klik"
+              "move-to-current-desktop": "Pindah ke desktop virtual saat ini saat ditampilkan",
+              "play-pause-on-click": "Putar/Jeda dengan klik",
+              "force-white-icons": "Paksa penggunaan ikon putih"
             }
           },
           "visual-tweaks": {
             "label": "Penyesuaian Visual",
             "submenu": {
+              "like-buttons": {
+                "default": "Standar",
+                "force-show": "Pertunjukan paksa",
+                "hide": "Sembunyikan",
+                "swap": "Tukar urutan tombol suka",
+                "label": "Tombol suka"
+              },
               "custom-window-title": {
                 "label": "Judul jendela kustom",
                 "prompt": {
                   "label": "Masukkan judul jendela kustom (kosongkan untuk menonaktifkan)",
                   "placeholder": "Contoh: {{applicationName}}"
                 }
-              },
-              "like-buttons": {
-                "default": "Standar",
-                "force-show": "Pertunjukan paksa",
-                "hide": "Sembunyikan",
-                "label": "Tombol suka",
-                "swap": "Tukar urutan tombol suka"
               },
               "remove-upgrade-button": "Hapus tombol peningkatan",
               "theme": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Suka",
+      "dislike": "Tidak suka",
+      "unlike": "Tidak seperti",
+      "undislike": "Batal tidak suka"
     }
   },
   "plugins": {
@@ -315,24 +322,24 @@
         "hostname": {
           "label": "Nama host"
         },
+        "port": {
+          "label": "Port"
+        },
         "https": {
           "label": "HTTPS & Sertifikat",
           "submenu": {
-            "cert": {
-              "dialogTitle": "Pilih berkas sertifikat HTTPS",
-              "label": "Berkas sertifikat (.crt/.pem)"
-            },
             "enable-https": {
               "label": "Aktifkan HTTPS"
             },
+            "cert": {
+              "label": "Berkas sertifikat (.crt/.pem)",
+              "dialogTitle": "Pilih berkas sertifikat HTTPS"
+            },
             "key": {
-              "dialogTitle": "Pilih berkas kunci privat HTTPS",
-              "label": "Berkas kunci privat (.key/.pem)"
+              "label": "Berkas kunci privat (.key/.pem)",
+              "dialogTitle": "Pilih berkas kunci privat HTTPS"
             }
           }
-        },
-        "port": {
-          "label": "Port"
         }
       },
       "name": "API Server [Beta]",
@@ -366,12 +373,12 @@
       "name": "Adapter Proxy Autentikasi",
       "prompt": {
         "hostname": {
-          "label": "Masukkan nama host untuk server proxy lokal (memerlukan restart):",
-          "title": "Proxy Nama host"
+          "title": "Proxy Nama host",
+          "label": "Masukkan nama host untuk server proxy lokal (memerlukan restart):"
         },
         "port": {
-          "label": "Masukkan port untuk server proxy lokal (memerlukan restart):",
-          "title": "Port Proxy"
+          "title": "Port Proxy",
+          "label": "Masukkan port untuk server proxy lokal (memerlukan restart):"
         }
       }
     },
@@ -408,14 +415,14 @@
     },
     "clock": {
       "description": "Tambahkan jam ke bilah navigasi",
+      "name": "Jam",
       "menu": {
         "format": {
-          "24-hour-format": "Format 24 jam",
+          "label": "Format",
           "display-seconds": "Tampilkan detik",
-          "label": "Format"
+          "24-hour-format": "Format 24 jam"
         }
-      },
-      "name": "Jam"
+      }
     },
     "compact-sidebar": {
       "description": "Selalu atur sidebar dalam mode kompak",
@@ -684,6 +691,7 @@
           "label": "Pengaturan Interaktif",
           "submenu": {
             "hide-button-text": "Sembunyikan teks tombol",
+            "hover-controls": "Tampilkan mini-player saat mengarahkan kursor ke baki",
             "refresh-on-play-pause": "Segarkan saat Putar/Jeda",
             "tray-controls": "Buka/Tutup saat baki ditekan"
           }
@@ -786,8 +794,8 @@
         "listenbrainz": {
           "token": "Masukkan token pengguna ListenBrainz"
         },
-        "scrobble-alternative-artist": "Pindah ke artis lain",
         "scrobble-alternative-title": "Gunakan judul alternatif",
+        "scrobble-alternative-artist": "Pindah ke artis lain",
         "scrobble-other-media": "Scrobble media lain"
       },
       "name": "Scrobbler",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Lewati lagu yang tidak disukai",
-      "name": "Lewati Lagu yang Tidak Disukai"
-    },
     "skip-silences": {
       "description": "Otomatis lewati bagian hening dari lagu",
       "name": "Lewati Keheningan"
@@ -842,23 +846,13 @@
         "not-found": "⚠️ Tidak ada lirik yang ditemukan untuk lagu ini."
       },
       "menu": {
-        "convert-chinese-character": {
-          "label": "Konversi karakter Tionghoa",
-          "submenu": {
-            "disabled": {
-              "label": "Dinonaktifkan",
-              "tooltip": "Nonaktifkan konversi karakter Tionghoa"
-            },
-            "simplified-to-traditional": {
-              "label": "Sederhana ke Tradisional",
-              "tooltip": "Konversi Tionghoa Sederhana ke Tionghoa Tradisional"
-            },
-            "traditional-to-simplified": {
-              "label": "Tradisional ke Sederhana",
-              "tooltip": "Konversi Tionghoa Tradisional ke Tionghoa Sederhana"
-            }
-          },
-          "tooltip": "Konversi karakter Tionghoa ke Tradisional atau Sederhana"
+        "preferred-provider": {
+          "label": "Penyedia Pilihan",
+          "tooltip": "Pilih penyedia bawaan untuk dipakai",
+          "none": {
+            "label": "Tidak ada",
+            "tooltip": "Tidak ada penyedia pilihan"
+          }
         },
         "default-text-string": {
           "label": "Karakter default antara lirik",
@@ -886,17 +880,27 @@
           },
           "tooltip": "Pilih efek yang akan diterapkan ke baris saat ini"
         },
+        "lyrics-font-size": {
+          "label": "Ukuran font lirik",
+          "submenu": {
+            "small": {
+              "label": "Kecil",
+              "tooltip": "Gunakan ukuran lirik yang lebih ringkas"
+            },
+            "medium": {
+              "label": "Sedang",
+              "tooltip": "Gunakan ukuran lirik yang seimbang"
+            },
+            "large": {
+              "label": "Besar",
+              "tooltip": "Gunakan ukuran lirik besar asli"
+            }
+          },
+          "tooltip": "Pilih seberapa besar teks lirik"
+        },
         "precise-timing": {
           "label": "Buat liriknya tersinkronisasi dengan sempurna",
           "tooltip": "Hitung hingga milidetik tampilan baris berikutnya (dapat berdampak kecil pada kinerja)"
-        },
-        "preferred-provider": {
-          "label": "Penyedia Pilihan",
-          "none": {
-            "label": "Tidak ada",
-            "tooltip": "Tidak ada penyedia pilihan"
-          },
-          "tooltip": "Pilih penyedia bawaan untuk dipakai"
         },
         "romanization": {
           "label": "Romanize Liriknya",
@@ -909,6 +913,143 @@
         "show-time-codes": {
           "label": "Tampilkan kode waktu",
           "tooltip": "Tampilkan kode waktu di samping lirik"
+        },
+        "convert-chinese-character": {
+          "label": "Konversi karakter Tionghoa",
+          "submenu": {
+            "disabled": {
+              "label": "Dinonaktifkan",
+              "tooltip": "Nonaktifkan konversi karakter Tionghoa"
+            },
+            "simplified-to-traditional": {
+              "label": "Sederhana ke Tradisional",
+              "tooltip": "Konversi Tionghoa Sederhana ke Tionghoa Tradisional"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradisional ke Sederhana",
+              "tooltip": "Konversi Tionghoa Tradisional ke Tionghoa Sederhana"
+            }
+          },
+          "tooltip": "Konversi karakter Tionghoa ke Tradisional atau Sederhana"
+        },
+        "translation": {
+          "label": "Terjemahan lirik",
+          "tooltip": "Terjemahkan lirik dan tampilkan hasil terjemahan baris per baris.",
+          "enabled": {
+            "label": "Aktifkan terjemahan",
+            "tooltip": "Tampilkan baris terjemahan di bawah setiap baris lirik asli."
+          },
+          "provider": {
+            "label": "Penyedia",
+            "tooltip": "Layanan mana yang digunakan untuk terjemahan."
+          },
+          "target-language": {
+            "label": "Bahasa target",
+            "tooltip": "Bahasa untuk menerjemahkan lirik.",
+            "options": {
+              "auto": "Follow app language",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文",
+              "en": "English",
+              "ja": "日本語",
+              "ko": "한국어",
+              "fr": "Français",
+              "de": "Deutsch",
+              "es": "Español",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "it": "Italiano",
+              "nl": "Nederlands",
+              "ru": "Русский",
+              "uk": "Українська",
+              "pl": "Polski",
+              "tr": "Türkçe",
+              "ar": "العربية",
+              "he": "עברית",
+              "fa": "فارسی",
+              "hi": "हिन्दी",
+              "bn": "বাংলা",
+              "ur": "اردو",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "mr": "मराठी",
+              "id": "Bahasa Indonesia",
+              "ms": "Bahasa Melayu",
+              "vi": "Tiếng Việt",
+              "th": "ไทย",
+              "fil": "Filipino",
+              "sw": "Kiswahili",
+              "sv": "Svenska",
+              "no": "Norsk",
+              "da": "Dansk",
+              "fi": "Suomi",
+              "cs": "Čeština",
+              "ro": "Română",
+              "hu": "Magyar",
+              "el": "Ελληνικά",
+              "bg": "Български",
+              "sr": "Српски",
+              "hr": "Hrvatski",
+              "sk": "Slovenčina",
+              "lt": "Lietuvių"
+            }
+          },
+          "configure": {
+            "label": "Konfigurasi kunci API & model...",
+            "tooltip": "Atur opsi terjemahan khusus penyedia."
+          },
+          "clear-cache": {
+            "label": "Hapus cache terjemahan",
+            "tooltip": "Hapus semua terjemahan yang di-cache di disk."
+          },
+          "providers": {
+            "shared": {
+              "api-key": "Kunci API",
+              "model": "Model"
+            },
+            "openai-compatible": {
+              "name": "OpenAI kompatibel",
+              "prompt-title": "Pengaturan OpenAI kompatibel",
+              "prompt-label": "Gunakan server yang kompatibel dengan OpenAI, termasuk Ollama (URL dasar http://127.0.0.1:11434/v1, mode API auto atau chat-completions).",
+              "base-url": "URL Dasar",
+              "api-mode": "Mode API (responses / auto / chat-completions)"
+            },
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-title": "Pengaturan Anthropic",
+              "prompt-label": "Menggunakan API Messages asli Anthropic."
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-title": "Pengaturan Gemini",
+              "prompt-label": "Menggunakan Generative Language API Google (generateContent)."
+            },
+            "local-cli": {
+              "name": "CLI Lokal",
+              "prompt-title": "Pengaturan CLI Lokal",
+              "prompt-label": "Gunakan Claude Code, Codex, atau Gemini CLI yang sudah login secara lokal. Perintah dan model otomatis; CLI menggunakan default login sendiri.",
+              "engine": "CLI Lokal",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Kodeks",
+              "engine-gemini": "Gemini CLI",
+              "command": "Perintah",
+              "timeout": "Batas waktu detik (15-600)"
+            },
+            "google-translate": {
+              "name": "Google Terjemahan",
+              "prompt-title": "Pengaturan Google Translate",
+              "prompt-label": "Menggunakan endpoint gratis tidak resmi Google Translate. Tidak diperlukan kunci API, tetapi Google mungkin membatasi laju.",
+              "host": "Tuan rumah"
+            }
+          }
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Gunakan lirik YTM tanpa proxy",
+          "tooltip": "Lewati proxy YTM dan panggil YouTube Music langsung menggunakan sesi terautentikasi aplikasi. Berguna jika Anda percaya jaringan/wilayah Anda mengizinkan panggilan langsung."
+        },
+        "show-custom-search-button": {
+          "label": "Tampilkan tombol pencarian kustom",
+          "tooltip": "Tampilkan tombol pencarian di pemilih lirik yang memungkinkan Anda mengganti kueri pencarian dan artis untuk lagu saat ini."
         }
       },
       "name": "Lirik yang Disinkronkan",
@@ -932,6 +1073,7 @@
     },
     "transparent-player": {
       "description": "Buat jendela aplikasi transparan",
+      "name": "Pemutar Transparan",
       "menu": {
         "opacity": {
           "label": "Opasitas",
@@ -953,8 +1095,7 @@
             "window": "Layar"
           }
         }
-      },
-      "name": "Pemutar Transparan"
+      }
     },
     "tuna-obs": {
       "description": "Integrasi dengan plugin Tuna OBS",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Tipe Visualisator"
       },
       "name": "Visualisator"
+    },
+    "audio-only": {
+      "description": "Memaksa mode hanya audio — memblokir semua streaming video di tingkat jaringan dan pemutar untuk menghemat RAM dan bandwidth",
+      "name": "Hanya Audio"
+    },
+    "playback-recovery": {
+      "description": "Secara otomatis memulihkan dari status pemutaran yang macet, terhenti, atau mati",
+      "menu": {
+        "log-to-console": "Catat peristiwa pemulihan ke konsol"
+      },
+      "name": "Pemulihan Pemutaran"
+    },
+    "playlist-search": {
+      "description": "Menambahkan input pencarian untuk memfilter daftar putar di sidebar dan dialog Tambah ke daftar putar",
+      "name": "Cari Playlist",
+      "templates": {
+        "search-placeholder": "Cari daftar putar",
+        "no-results": "Tidak ada daftar putar yang ditemukan"
+      }
     }
   }
 }

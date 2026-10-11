@@ -1,5 +1,3 @@
-import { getMediaElement } from '@/providers/media-element';
-
 import type { SkipSilencesPluginConfig } from './index';
 import type { RendererContext } from '@/types/contexts';
 
@@ -8,6 +6,8 @@ let config: SkipSilencesPluginConfig;
 let isSilent = false;
 let hasAudioStarted = false;
 
+let loopTimer: number | undefined;
+
 const smoothing = 0.1;
 const threshold = -100; // DB (-100 = absolute silence, 0 = loudest)
 const interval = 2; // Ms
@@ -15,10 +15,6 @@ const history = 10;
 const speakingHistory = Array.from({ length: history }).fill(0) as number[];
 
 let playOrSeekHandler: (() => void) | undefined;
-// The audio graph is created once and kept for every song, so only set up the analyser once
-let analyserSource: MediaElementAudioSourceNode | undefined;
-let analyser: AnalyserNode | undefined;
-let looperTimeout: number | undefined;
 
 const getMaxVolume = (
   analyser: AnalyserNode,
@@ -36,46 +32,42 @@ const getMaxVolume = (
   return maxVolume;
 };
 
-const stopAnalyser = () => {
-  clearTimeout(looperTimeout);
-  looperTimeout = undefined;
-  try {
-    if (analyser) analyserSource?.disconnect(analyser);
-  } catch {}
-  analyserSource = undefined;
-  analyser = undefined;
-
-  if (playOrSeekHandler) {
-    const video = getMediaElement();
-    video?.removeEventListener('play', playOrSeekHandler);
-    video?.removeEventListener('seeked', playOrSeekHandler);
-    playOrSeekHandler = undefined;
+const stopLoop = () => {
+  if (loopTimer !== undefined) {
+    clearTimeout(loopTimer);
+    loopTimer = undefined;
   }
 };
 
 const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
-  // This event is sent for every song: don't add another analyser, loop and listeners
-  if (analyserSource === e.detail.audioSource) return;
-  stopAnalyser();
-
-  const video = getMediaElement();
+  const video = document.querySelector('video');
   const { audioContext } = e.detail;
   const sourceNode = e.detail.audioSource;
 
-  // Use an audio analyser similar to Hark
-  // https://github.com/otalk/hark/blob/master/hark.bundle.js
-  const songAnalyser = audioContext.createAnalyser();
-  songAnalyser.fftSize = 512;
-  songAnalyser.smoothingTimeConstant = smoothing;
-  const fftBins = new Float32Array(songAnalyser.frequencyBinCount);
+  // A new track started — stop the previous detection loop so timers and
+  // analysers don't accumulate (each `peard:audio-can-play` fires per track).
+  stopLoop();
 
-  sourceNode.connect(songAnalyser);
-  analyserSource = sourceNode;
-  analyser = songAnalyser;
+  const analyser = audioContext.createAnalyser();
+  analyser.fftSize = 512;
+  analyser.smoothingTimeConstant = smoothing;
+  const fftBins = new Float32Array(analyser.frequencyBinCount);
+
+  sourceNode.connect(analyser);
+
+  const skipSilence = () => {
+    if (config.onlySkipBeginning && hasAudioStarted) {
+      return;
+    }
+
+    if (isSilent && video && !video.paused) {
+      video.currentTime += 0.2; // In s
+    }
+  };
 
   const looper = () => {
-    looperTimeout = window.setTimeout(() => {
-      const currentVolume = getMaxVolume(songAnalyser, fftBins);
+    loopTimer = window.setTimeout(() => {
+      const currentVolume = getMaxVolume(analyser, fftBins);
 
       let history = 0;
       if (currentVolume > threshold && isSilent) {
@@ -123,16 +115,6 @@ const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
 
   looper();
 
-  const skipSilence = () => {
-    if (config.onlySkipBeginning && hasAudioStarted) {
-      return;
-    }
-
-    if (isSilent && video && !video.paused) {
-      video.currentTime += 0.2; // In s
-    }
-  };
-
   playOrSeekHandler = () => {
     hasAudioStarted = false;
     skipSilence();
@@ -153,7 +135,13 @@ export const onRendererLoad = async ({
 };
 
 export const onRendererUnload = () => {
+  stopLoop();
+
   document.removeEventListener('peard:audio-can-play', audioCanPlayListener);
 
-  stopAnalyser();
+  if (playOrSeekHandler) {
+    const video = document.querySelector('video');
+    video?.removeEventListener('play', playOrSeekHandler);
+    video?.removeEventListener('seeked', playOrSeekHandler);
+  }
 };

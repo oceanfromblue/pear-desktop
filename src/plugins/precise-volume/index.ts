@@ -43,6 +43,38 @@ export default createPlugin({
     },
     savedVolume: undefined,
   } as PreciseVolumePluginConfig,
+  settings: [
+    {
+      type: 'slider',
+      key: 'steps',
+      label: () => t('plugins.precise-volume.settings.steps'),
+      min: 1,
+      max: 20,
+      unit: '%',
+    },
+    {
+      type: 'switch',
+      key: 'arrowsShortcut',
+      label: () => t('plugins.precise-volume.settings.arrows-shortcut'),
+      // The listeners are wired once, on player API ready.
+      restartNeeded: true,
+    },
+    {
+      type: 'text',
+      key: 'globalShortcuts.volumeUp',
+      label: () => t('plugins.precise-volume.settings.shortcut-up'),
+      placeholder: () => 'e.g. Ctrl+Shift+Up',
+      // Registered by the backend on start, never re-read.
+      restartNeeded: true,
+    },
+    {
+      type: 'text',
+      key: 'globalShortcuts.volumeDown',
+      label: () => t('plugins.precise-volume.settings.shortcut-down'),
+      placeholder: () => 'e.g. Ctrl+Shift+Down',
+      restartNeeded: true,
+    },
+  ],
   stylesheets: [hudStyle],
   menu: async ({ setConfig, getConfig, window }) => {
     const config = await getConfig();
@@ -168,20 +200,33 @@ export default createPlugin({
     ];
   },
 
-  async backend({ getConfig, ipc }) {
-    const config = await getConfig();
+  backend: {
+    async start({ getConfig, ipc }) {
+      const config = await getConfig();
 
-    if (config.globalShortcuts?.volumeUp) {
-      globalShortcut.register(config.globalShortcuts.volumeUp, () =>
-        ipc.send('changeVolume', true),
-      );
-    }
+      if (config.globalShortcuts?.volumeUp) {
+        globalShortcut.register(config.globalShortcuts.volumeUp, () =>
+          ipc.send('changeVolume', true),
+        );
+      }
 
-    if (config.globalShortcuts?.volumeDown) {
-      globalShortcut.register(config.globalShortcuts.volumeDown, () =>
-        ipc.send('changeVolume', false),
-      );
-    }
+      if (config.globalShortcuts?.volumeDown) {
+        globalShortcut.register(config.globalShortcuts.volumeDown, () =>
+          ipc.send('changeVolume', false),
+        );
+      }
+    },
+    async stop({ getConfig }) {
+      const config = await getConfig();
+
+      if (config.globalShortcuts?.volumeUp) {
+        globalShortcut.unregister(config.globalShortcuts.volumeUp);
+      }
+
+      if (config.globalShortcuts?.volumeDown) {
+        globalShortcut.unregister(config.globalShortcuts.volumeDown);
+      }
+    },
   },
 
   renderer: {

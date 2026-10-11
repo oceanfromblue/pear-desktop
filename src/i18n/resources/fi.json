@@ -109,7 +109,8 @@
                   "title": "Aseta välityspalvelin (proxy)"
                 }
               },
-              "toggle-dev-tools": "Ota DevTools käyttöön"
+              "toggle-dev-tools": "Ota DevTools käyttöön",
+              "force-smtc": "Pakota ulkoisen SMTC:n käyttö"
             }
           },
           "always-on-top": "Aina päällä",
@@ -144,7 +145,9 @@
               "disabled": "Pois päältä",
               "enabled-and-hide-app": "Suositukset ovat käytössä ja piilota valikko",
               "enabled-and-show-app": "Päällä ja sovellus näkyvissä",
-              "play-pause-on-click": "Soita/pysäytä klikkaamalla"
+              "move-to-current-desktop": "Siirrä nykyiselle virtuaalityöpöydälle näytettäessä",
+              "play-pause-on-click": "Soita/pysäytä klikkaamalla",
+              "force-white-icons": "Pakota valkoisten kuvakkeiden käyttö"
             }
           },
           "visual-tweaks": {
@@ -161,7 +164,8 @@
                 "default": "Vakio",
                 "force-show": "Pakota näyttämään",
                 "hide": "Piilota",
-                "label": "Tykkäys nappula"
+                "label": "Tykkäys nappula",
+                "swap": "Vaihda tykkäysnappuloiden järjestys"
               },
               "remove-upgrade-button": "Poista päivitys nappula",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Tykkää",
+      "dislike": "En pidä",
+      "unlike": "Toisin kuin",
+      "undislike": "Poista tykkäys"
     }
   },
   "plugins": {
@@ -230,9 +238,14 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Ota käyttöön hakupalkin teemoitus"
       },
       "name": "Albumin Värinen Teema"
+    },
+    "audio-only": {
+      "description": "Pakottaa vain äänitilan — estää kaikki videovirrat verkko- ja soitintasolla säästääkseen RAM-muistia ja kaistaa",
+      "name": "Vain Ääni"
     },
     "ambient-mode": {
       "description": "Antaa valaistustehosteen heittämällä videosta lempeitä värejä näytön taustalle",
@@ -315,6 +328,22 @@
         },
         "port": {
           "label": "Portti"
+        },
+        "https": {
+          "label": "HTTPS ja varmenteet",
+          "submenu": {
+            "enable-https": {
+              "label": "Ota HTTPS käyttöön"
+            },
+            "cert": {
+              "label": "Varmennetiedosto (.crt/.pem)",
+              "dialogTitle": "Valitse HTTPS-varmennetiedosto"
+            },
+            "key": {
+              "label": "Yksityinen avaintiedosto (.key/.pem)",
+              "dialogTitle": "Valitse HTTPS-yksityinen avaintiedosto"
+            }
+          }
         }
       },
       "name": "API Serveri [Beta]",
@@ -388,6 +417,17 @@
         "no-captions": "Tekstityksiä ei ole saatavilla tälle kappaleelle"
       }
     },
+    "clock": {
+      "description": "Lisää kello siirtymäpalkkiin",
+      "name": "Kello",
+      "menu": {
+        "format": {
+          "label": "Muoto",
+          "display-seconds": "Näytä sekunnit",
+          "24-hour-format": "24 tunnin muoto"
+        }
+      }
+    },
     "compact-sidebar": {
       "description": "Asettaa sivupalkin aina kompaktiin tilaan",
       "name": "Kompakti sivupalkki"
@@ -414,6 +454,19 @@
         }
       }
     },
+    "custom-output-device": {
+      "description": "Määritä mukautettu lähtömediatoistolaite kappaleille",
+      "menu": {
+        "device-selector": "Valitse laite"
+      },
+      "name": "Mukautettu Lähtölaite",
+      "prompt": {
+        "device-selector": {
+          "label": "Valitse käytettävä lähtömediatoistolaite",
+          "title": "Valitse Lähtölaite"
+        }
+      }
+    },
     "disable-autoplay": {
       "description": "Kappaleet alkavat \"pysäytetty\" tilassa",
       "menu": {
@@ -437,7 +490,15 @@
         "hide-duration-left": "Piilota kappaleen jäljellä oleva kesto",
         "hide-github-button": "Piilota \"linkki GitHubiin\" -nappi",
         "play-on-application": "Kuuntele palvelussa {{applicationName}}",
-        "set-inactivity-timeout": "Aseta toimettomuuden aikakatkaisu"
+        "set-inactivity-timeout": "Aseta toimettomuuden aikakatkaisu",
+        "set-status-display-type": {
+          "label": "Tilan teksti",
+          "submenu": {
+            "application": "Kuuntelee: {{applicationName}}",
+            "artist": "Kuuntelee: {artist}",
+            "title": "Kuuntelee: {song title}"
+          }
+        }
       },
       "name": "Discord Aktiviteetti (Rich Presence)",
       "prompt": {
@@ -627,6 +688,7 @@
           "label": "Interaktiiviset Asetukset",
           "submenu": {
             "hide-button-text": "Piilota painikkeen teksti",
+            "hover-controls": "Näytä minisoitin tarjottimen päällä viedessä",
             "refresh-on-play-pause": "Päivitä Toistamisen/Tauottamisen yhteydessä",
             "tray-controls": "Avaa/Sulje tehtäväpalkista"
           }
@@ -640,6 +702,13 @@
     "performance-improvement": {
       "description": "Paranna suorituskykyä käyttämällä kokeellisia skriptejä",
       "name": "Suorituskykyparannus [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Automaattisesti palautuu jumiutuneista, pysähtyneistä tai kuolleista toistotiloista",
+      "menu": {
+        "log-to-console": "Kirjaa palautustapahtumat konsoliin"
+      },
+      "name": "Toiston Palautus"
     },
     "picture-in-picture": {
       "description": "Sallii sovelluksen vaihtamisen \"kuva kuvassa\" tilaan",
@@ -730,6 +799,7 @@
           "token": "Syötä ListenBrainz-käyttötunnus (token)"
         },
         "scrobble-alternative-title": "Käytä vaihtoehtoisia otsikoita",
+        "scrobble-alternative-artist": "Käytä vaihtoehtoisia artisteja",
         "scrobble-other-media": "Jaa muuta mediaa"
       },
       "name": "Jakaja",
@@ -747,25 +817,333 @@
       }
     },
     "shortcuts": {
+      "description": "Mahdollistaa yleisten pikanäppäinten asettamisen toistolle (toisto/tauko/seuraava/edellinen) ja media-OSD:n poistamisen ohittamalla medianäppäimet, Ctrl/CMD + F käyttöönoton etsimiseen, Linux MPRIS -tuen käyttöönoton medianäppäimille, ja mukautetut pikanäppäimet edistyneille käyttäjille",
+      "menu": {
+        "override-media-keys": "Ohita medianäppäimet",
+        "set-keybinds": "Aseta yleiset kappaleiden hallintanäppäimet"
+      },
+      "name": "Pikanäppäimet (& MPRIS)",
       "prompt": {
         "keybind": {
           "keybind-options": {
+            "next": "Seuraava",
+            "play-pause": "Toisto / Tauko",
             "previous": "Edellinen"
+          },
+          "label": "Valitse yleiset pikanäppäimet kappaleiden hallintaan:",
+          "title": "Yleiset pikanäppäimet"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "Ohita automaattisesti kappaleiden hiljaiset kohdat",
+      "name": "Ohita Hiljaisuudet"
+    },
+    "sponsorblock": {
+      "description": "Ohittaa automaattisesti epämusikaaliset osat, kuten intron/outron tai musiikkivideoiden osat, joissa kappale ei soi",
+      "name": "SponsorBlock"
+    },
+    "synced-lyrics": {
+      "description": "Tarjoaa synkronoituja sanoituksia kappaleille käyttäen palveluntarjoajia kuten LRClib.",
+      "errors": {
+        "fetch": "⚠️\tSanoituksia haettaessa tapahtui virhe.\n\tYritä myöhemmin uudelleen.",
+        "not-found": "⚠️ Tälle kappaleelle ei löytynyt sanoituksia."
+      },
+      "menu": {
+        "preferred-provider": {
+          "label": "Suositeltu palveluntarjoaja",
+          "tooltip": "Valitse oletusarvoisesti käytettävä palveluntarjoaja",
+          "none": {
+            "label": "Ei mitään",
+            "tooltip": "Ei suositeltua palveluntarjoajaa"
+          }
+        },
+        "default-text-string": {
+          "label": "Oletusmerkki sanoitusten välissä",
+          "tooltip": "Valitse oletusmerkki käytettäväksi sanoitusten väliseen tyhjään tilaan"
+        },
+        "line-effect": {
+          "label": "Riviefekti",
+          "submenu": {
+            "fancy": {
+              "label": "Koristeellinen",
+              "tooltip": "Käytä suuria, sovelluksen kaltaisia efektejä nykyisellä rivillä"
+            },
+            "focus": {
+              "label": "Tarkennus",
+              "tooltip": "Tee vain nykyisestä rivistä valkoinen"
+            },
+            "offset": {
+              "label": "Siirtymä",
+              "tooltip": "Siirrä nykyinen rivi oikealle"
+            },
+            "scale": {
+              "label": "Skaalaus",
+              "tooltip": "Skaalaa nykyinen rivi"
+            }
+          },
+          "tooltip": "Valitse nykyiselle riville käytettävä efekti"
+        },
+        "lyrics-font-size": {
+          "label": "Sanoitusten kirjasinkoko",
+          "submenu": {
+            "small": {
+              "label": "Pieni",
+              "tooltip": "Käytä tiiviimpää sanoituskokoa"
+            },
+            "medium": {
+              "label": "Keskikokoinen",
+              "tooltip": "Käytä tasapainoista sanoituskokoa"
+            },
+            "large": {
+              "label": "Suuri",
+              "tooltip": "Käytä alkuperäistä suurempaa sanoituskokoa"
+            }
+          },
+          "tooltip": "Valitse kuinka suuri sanoitustekstin tulisi olla"
+        },
+        "precise-timing": {
+          "label": "Tee sanoituksista täydellisesti synkronoituja",
+          "tooltip": "Laske millisekunnin tarkkuudella seuraavan rivin näyttö (voi vaikuttaa hieman suorituskykyyn)"
+        },
+        "romanization": {
+          "label": "Romanisoi sanoitukset",
+          "tooltip": "Jos sanoitukset ovat eri kielellä, yritä näyttää latinankielinen versio."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "Näytä sanoitukset vaikka ne olisivat epätarkkoja",
+          "tooltip": "Jos kappaletta ei löydy, lisäosa yrittää uudelleen eri hakukyselyllä.\nToisen yrityksen tulos ei välttämättä ole tarkka."
+        },
+        "show-time-codes": {
+          "label": "Näytä aikakoodit",
+          "tooltip": "Näytä aikakoodit sanoitusten vieressä"
+        },
+        "convert-chinese-character": {
+          "label": "Muunna kiinalaiset merkit",
+          "submenu": {
+            "disabled": {
+              "label": "Pois käytöstä",
+              "tooltip": "Poista kiinalaisten merkkien muunnos käytöstä"
+            },
+            "simplified-to-traditional": {
+              "label": "Yksinkertaistetusta perinteiseen",
+              "tooltip": "Muunna yksinkertaistettu kiina perinteiseksi kiinaksi"
+            },
+            "traditional-to-simplified": {
+              "label": "Perinteisestä yksinkertaistettuun",
+              "tooltip": "Muunna perinteinen kiina yksinkertaistetuksi kiinaksi"
+            }
+          },
+          "tooltip": "Muunna kiinalaiset merkit perinteisiksi tai yksinkertaistetuiksi"
+        },
+        "translation": {
+          "label": "Sanoitusten käännös",
+          "tooltip": "Käännä sanoitukset ja näytä käännetty tulos rivi riviltä.",
+          "enabled": {
+            "label": "Ota käännös käyttöön",
+            "tooltip": "Näytä käännetty rivi jokaisen alkuperäisen sanoitusrivin alla."
+          },
+          "provider": {
+            "label": "Palveluntarjoaja",
+            "tooltip": "Mitä palvelua käytetään kääntämiseen."
+          },
+          "target-language": {
+            "label": "Kohdekieli",
+            "tooltip": "Kieli johon sanoitukset käännetään.",
+            "options": {
+              "auto": "Seuraa sovelluksen kieltä",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文",
+              "en": "English",
+              "ja": "日本語",
+              "ko": "한국어",
+              "fr": "Français",
+              "de": "Deutsch",
+              "es": "Español",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "it": "Italiano",
+              "nl": "Nederlands",
+              "ru": "Русский",
+              "uk": "Українська",
+              "pl": "Polski",
+              "tr": "Türkçe",
+              "ar": "العربية",
+              "he": "עברית",
+              "fa": "فارسی",
+              "hi": "हिन्दी",
+              "bn": "বাংলা",
+              "ur": "اردو",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "mr": "मराठी",
+              "id": "Bahasa Indonesia",
+              "ms": "Bahasa Melayu",
+              "vi": "Tiếng Việt",
+              "th": "ไทย",
+              "fil": "Filipino",
+              "sw": "Kiswahili",
+              "sv": "Svenska",
+              "no": "Norsk",
+              "da": "Dansk",
+              "fi": "Suomi",
+              "cs": "Čeština",
+              "ro": "Română",
+              "hu": "Magyar",
+              "el": "Ελληνικά",
+              "bg": "Български",
+              "sr": "Српски",
+              "hr": "Hrvatski",
+              "sk": "Slovenčina",
+              "lt": "Lietuvių"
+            }
+          },
+          "configure": {
+            "label": "Määritä API-avain ja malli…",
+            "tooltip": "Aseta palveluntarjoajakohtaiset käännösasetukset."
+          },
+          "clear-cache": {
+            "label": "Tyhjennä käännösten välimuisti",
+            "tooltip": "Poista kaikki levylle tallennetut välimuistissa olevat käännökset."
+          },
+          "providers": {
+            "shared": {
+              "api-key": "API-avain",
+              "model": "Malli"
+            },
+            "openai-compatible": {
+              "name": "OpenAI-yhteensopiva",
+              "prompt-title": "OpenAI-yhteensopivat asetukset",
+              "prompt-label": "Käytä OpenAI-yhteensopivia palvelimia, mukaan lukien Ollama (perus-URL http://127.0.0.1:11434/v1, API-tila auto tai chat-completions).",
+              "base-url": "Perus-URL",
+              "api-mode": "API-tila (responses / auto / chat-completions)"
+            },
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-title": "Anthropic-asetukset",
+              "prompt-label": "Käyttää natiivia Anthropic Messages -rajapintaa."
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-title": "Gemini-asetukset",
+              "prompt-label": "Käyttää Googlen Generative Language -rajapintaa (generateContent)."
+            },
+            "local-cli": {
+              "name": "Paikallinen CLI",
+              "prompt-title": "Paikallisen CLI:n asetukset",
+              "prompt-label": "Käytä paikallisesti kirjautunutta Claude Codea, Codexia tai Gemini CLI:tä. Komento ja malli ovat automaattisia; CLI käyttää omaa oletustaan.",
+              "engine": "Paikallinen CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "command": "Komento",
+              "timeout": "Aikakatkaisu sekunteina (15-600)"
+            },
+            "google-translate": {
+              "name": "Google Kääntäjä",
+              "prompt-title": "Google Kääntäjän asetukset",
+              "prompt-label": "Käyttää epävirallista ilmaista Google Kääntäjän päätepistettä. API-avainta ei tarvita, mutta Google voi rajoittaa sitä.",
+              "host": "Isäntä"
+            }
+          }
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Käytä YTM-lyriikoita ilman välityspalvelinta",
+          "tooltip": "Ohita YTM-selausproxy ja kutsu YouTube Musicia suoraan sovelluksen todennetun istunnon kautta. Hyödyllinen, jos luotat verkkoosi/alueeseesi sallimaan suorat selauskutsut."
+        },
+        "show-custom-search-button": {
+          "label": "Näytä mukautettu hakupainike",
+          "tooltip": "Näytä hakupainike sanoitusvalitsimessa, jonka avulla voit ohittaa nykyisen kappaleen hakukyselyn ja artistin."
+        }
+      },
+      "name": "Synkronoidut Sanoitukset",
+      "refetch-btn": {
+        "fetching": "Haetaan...",
+        "normal": "Hae sanoitukset uudelleen"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Sanoitukset voivat olla epäsynkronoituja keston eroavaisuuden vuoksi.",
+        "inexact": "⚠️ - Tämän kappaleen sanoitukset eivät välttämättä ole tarkat",
+        "instrumental": "⚠️ - Tämä on instrumentaalinen kappale"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "Ohjaa toistoa Windowsin tehtäväpalkista",
+      "name": "Tehtäväpalkin Mediatoisto-ohjain"
+    },
+    "touchbar": {
+      "description": "Lisää TouchBar-widgetin macOS-käyttäjille",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "Tekee sovellusikkunasta läpinäkyvän",
+      "name": "Läpinäkyvä Soitin",
+      "menu": {
+        "opacity": {
+          "label": "Läpinäkyvyys",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Tyyppi",
+          "submenu": {
+            "acrylic": "Akryyli",
+            "mica": "Mica",
+            "tabbed": "Välilehdillä",
+            "none": "Ei mitään"
           }
         }
       }
     },
     "tuna-obs": {
+      "description": "Integraatio OBS:n Tuna-lisäosan kanssa",
       "name": "Tuna OBS"
     },
+    "unobtrusive-player": {
+      "description": "Estää soitinta ilmestymästä näkyviin, kun kappale alkaa soida",
+      "name": "Huomaamaton Soitin"
+    },
     "video-toggle": {
+      "description": "Lisää painikkeen Video/Kappale-tilan vaihtamiseen. Voi myös poistaa koko videovälilehden",
       "menu": {
         "align": {
+          "label": "Tasaus",
           "submenu": {
             "left": "Vasen",
+            "middle": "Keskellä",
             "right": "Oikea"
           }
+        },
+        "force-hide": "Pakota videovälilehden poisto",
+        "mode": {
+          "label": "Tila",
+          "submenu": {
+            "custom": "Mukautettu vaihto",
+            "disabled": "Pois käytöstä",
+            "native": "Natiivi vaihto"
+          }
         }
+      },
+      "name": "Videon Vaihto",
+      "templates": {
+        "button-song": "Kappale",
+        "button-video": "Video"
+      }
+    },
+    "visualizer": {
+      "description": "Lisää visualisoijan soittimeen",
+      "menu": {
+        "visualizer-type": "Visualisoijan tyyppi"
+      },
+      "name": "Visualisoija"
+    },
+    "playlist-search": {
+      "description": "Lisää hakukentän suodattaaksesi soittolistoja sivupalkissa ja Lisää soittolistaan -valintaikkunassa",
+      "name": "Soitaulun haku",
+      "templates": {
+        "search-placeholder": "Hae soittolistoja",
+        "no-results": "Soittolistoja ei löytynyt"
       }
     }
   }

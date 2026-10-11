@@ -46,14 +46,24 @@ export interface SongInfo {
 }
 
 // Grab the native image using the src
-export const getImage = async (src: string): Promise<Electron.NativeImage> => {
+export const getImage = async (
+  src: string,
+  depth = 0,
+): Promise<Electron.NativeImage> => {
+  if (depth > 3) {
+    return nativeImage.createEmpty();
+  }
   const result = await net.fetch(src);
   const output = nativeImage.createFromBuffer(
     Buffer.from(await result.arrayBuffer()),
   );
   if (output.isEmpty() && !src.endsWith('.jpg') && src.includes('.jpg')) {
     // Fix hidden webp files (https://github.com/pear-devs/pear-desktop/issues/315)
-    return getImage(src.slice(0, src.lastIndexOf('.jpg') + 4));
+    const nextSrc = src.slice(0, src.lastIndexOf('.jpg') + 4);
+    if (nextSrc === src) {
+      return output;
+    }
+    return getImage(nextSrc, depth + 1);
   }
 
   return output;
@@ -98,7 +108,10 @@ const handleData = async (
       songInfo.artistUrl = `https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com/channel/${microformat.pageOwnerDetails.externalChannelId}`;
     }
     // Used for options.resumeOnStart
-    config.set('url', microformat.urlCanonical);
+    const prevUrl = config.get('url');
+    if (prevUrl !== microformat.urlCanonical) {
+      config.set('url', microformat.urlCanonical);
+    }
     songInfo.alternativeTitle = microformat.linkAlternates.find(
       (link) => link.title,
     )?.title;
@@ -154,14 +167,9 @@ const handleData = async (
     const thumbnails = videoDetails.thumbnail?.thumbnails;
     songInfo.imageSrc = thumbnails?.at(-1)?.url?.split('?')?.at(0);
 
-    if (
-      songInfo.imageSrc &&
-      !(await net.fetch(songInfo.imageSrc, { method: 'HEAD' })).ok
-    ) {
-      songInfo.imageSrc = thumbnails.at(-1)?.url;
+    if (songInfo.imageSrc) {
+      songInfo.image = await getImage(songInfo.imageSrc);
     }
-
-    if (songInfo.imageSrc) songInfo.image = await getImage(songInfo.imageSrc);
 
     // The renderer doesn't use the image, which would be sent as an uncompressed bitmap
     win.webContents.send('peard:update-song-info', {
@@ -189,6 +197,10 @@ const callbacks: Set<SongInfoCallback> = new Set();
 // This function will allow plugins to register callback that will be triggered when data changes
 export const registerCallback = (callback: SongInfoCallback) => {
   callbacks.add(callback);
+};
+
+export const unregisterCallback = (callback: SongInfoCallback) => {
+  callbacks.delete(callback);
 };
 
 const registerProvider = (win: BrowserWindow) => {
@@ -259,18 +271,12 @@ const registerProvider = (win: BrowserWindow) => {
 
 const suffixesToRemove = [
   // Artist names
-  /\s*(- topic)$/i,
-  /\s*vevo$/i,
+  /\s*(- topic)$/gi,
+  /\s*vevo$/gi,
 
-  // Video titles
-  /\s*[(|[]official(.*?)[)|\]]/i, // (Official Music Video), [Official Visualizer], etc...
-  /\s*[(|[]((lyrics?|visualizer|audio)\s*(video)?)[)|\]]/i,
-  /\s*[(|[](performance video)[)|\]]/i,
-  /\s*[(|[](clip official)[)|\]]/i,
-  /\s*[(|[](video version)[)|\]]/i,
-  /\s*[(|[](HD|HQ)\s*?(?:audio)?[)|\]]$/i,
-  /\s*[(|[](live)[)|\]]$/i,
-  /\s*[(|[]4K\s*?(?:upgrade)?[)|\]]$/i,
+  // Video titles — bracket-enclosed tags (combined)
+  /\s*[(|[](official(.*?)|(lyrics?|visualizer|audio)\s*(video)?|performance video|clip official|video version)[)|\]]/gi,
+  /\s*[(|[]((HD|HQ)\s*?(?:audio)?|live|4K\s*?(?:upgrade)?)[)|\]]$/gim,
 ];
 
 export function cleanupName(name: string): string {

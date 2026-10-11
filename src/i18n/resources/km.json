@@ -1,1 +1,1157 @@
-{}
+{
+  "common": {
+    "console": {
+      "plugins": {
+        "execute-failed": "បរាជ័យក្នុងការប្រតិបត្តិកម្មវិធីជំនួយ {{pluginName}}::{{contextName}}",
+        "executed-at-ms": "កម្មវិធីជំនួយ {{pluginName}}::{{contextName}} បានប្រតិបត្តិនៅ {{ms}}ms",
+        "initialize-failed": "បរាជ័យក្នុងការចាប់ផ្តើមកម្មវិធីជំនួយ \"{{pluginName}}\"",
+        "load-all": "កំពុងផ្ទុកកម្មវិធីជំនួយទាំងអស់",
+        "load-failed": "បរាជ័យក្នុងការផ្ទុកកម្មវិធីជំនួយ \"{{pluginName}}\"",
+        "loaded": "កម្មវិធីជំនួយ \"{{pluginName}}\" បានផ្ទុក",
+        "unload-failed": "បរាជ័យក្នុងការដកកម្មវិធីជំនួយ \"{{pluginName}}\"",
+        "unloaded": "កម្មវិធីជំនួយ \"{{pluginName}}\" បានដកចេញ"
+      }
+    }
+  },
+  "language": {
+    "code": "km",
+    "local-name": "ភាសាខ្មែរ",
+    "name": "Khmer (Central)"
+  },
+  "main": {
+    "console": {
+      "did-finish-load": {
+        "dev-tools": "បានបញ្ចប់ការផ្ទុក។ DevTools បានបើក"
+      },
+      "i18n": {
+        "loaded": "i18n បានផ្ទុក"
+      },
+      "second-instance": {
+        "receive-command": "បានទទួលពាក្យបញ្ជាតាមពិធីការ: \"{{command}}\""
+      },
+      "theme": {
+        "css-file-not-found": "ឯកសារ CSS \"{{cssFile}}\" មិនមានទេ កំពុងមិនអើពើ"
+      },
+      "unresponsive": {
+        "details": "កំហុសមិនឆ្លើយតប!\n{{error}}"
+      },
+      "when-ready": {
+        "clearing-cache-after-20s": "កំពុងសម្អាតឃ្លាំងសម្ងាត់កម្មវិធី"
+      },
+      "window": {
+        "tried-to-render-offscreen": "វីនដូបានព្យាយាមបង្ហាញក្រៅអេក្រង់, windowSize={{windowSize}}, displaySize={{displaySize}}, position={{position}}"
+      }
+    },
+    "dialog": {
+      "hide-menu-enabled": {
+        "detail": "ម៉ឺនុយត្រូវបានលាក់ ប្រើ 'Alt' ដើម្បីបង្ហាញវា (ឬ 'Escape' ប្រសិនបើប្រើ In-App Menu)",
+        "message": "ការលាក់ម៉ឺនុយត្រូវបានបើក",
+        "title": "បានបើកការលាក់ម៉ឺនុយ"
+      },
+      "need-to-restart": {
+        "buttons": {
+          "later": "ពេលក្រោយ",
+          "restart-now": "ចាប់ផ្តើមឡើងវិញឥឡូវនេះ"
+        },
+        "detail": "កម្មវិធីជំនួយ \"{{pluginName}}\" ត្រូវការចាប់ផ្តើមឡើងវិញដើម្បីឱ្យមានប្រសិទ្ធភាព",
+        "message": "\"{{pluginName}}\" ត្រូវការចាប់ផ្តើមឡើងវិញ",
+        "title": "ត្រូវការចាប់ផ្តើមឡើងវិញ"
+      },
+      "unresponsive": {
+        "buttons": {
+          "quit": "ចាកចេញ",
+          "relaunch": "បើកឡើងវិញ",
+          "wait": "រង់ចាំ"
+        },
+        "detail": "យើងសូមទោសចំពោះការរអាក់រអួល! សូមជ្រើសរើសអ្វីដែលត្រូវធ្វើ:",
+        "message": "កម្មវិធីមិនឆ្លើយតប",
+        "title": "វីនដូមិនឆ្លើយតប"
+      },
+      "update-available": {
+        "buttons": {
+          "disable": "បិទការធ្វើបច្ចុប្បន្នភាព",
+          "download": "ទាញយក",
+          "ok": "យល់ព្រម"
+        },
+        "detail": "មានកំណែថ្មី ហើយអាចទាញយកបាននៅ {{downloadLink}}",
+        "message": "មានកំណែថ្មី",
+        "title": "មានការធ្វើបច្ចុប្បន្នភាព"
+      }
+    },
+    "menu": {
+      "about": "អំពី",
+      "navigation": {
+        "label": "ការរុករក",
+        "submenu": {
+          "copy-current-url": "ចម្លង URL បច្ចុប្បន្ន",
+          "go-back": "ថយក្រោយ",
+          "go-forward": "ទៅមុខ",
+          "quit": "ចាកចេញ",
+          "restart": "ចាប់ផ្តើមកម្មវិធីឡើងវិញ"
+        }
+      },
+      "options": {
+        "label": "ជម្រើស",
+        "submenu": {
+          "advanced-options": {
+            "label": "ជម្រើសកម្រិតខ្ពស់",
+            "submenu": {
+              "auto-reset-app-cache": "កំណត់ឃ្លាំងសម្ងាត់កម្មវិធីឡើងវិញពេលកម្មវិធីចាប់ផ្តើម",
+              "disable-hardware-acceleration": "បិទការបង្កើនល្បឿនផ្នែករឹង",
+              "edit-config-json": "កែសម្រួល config.json",
+              "override-user-agent": "ជាន់លើ User-Agent",
+              "restart-on-config-changes": "ចាប់ផ្តើមឡើងវិញពេលមានការផ្លាស់ប្តូរការកំណត់",
+              "set-proxy": {
+                "label": "កំណត់ប្រូកស៊ី",
+                "prompt": {
+                  "label": "បញ្ចូលអាសយដ្ឋានប្រូកស៊ី: (ទុកទទេដើម្បីបិទ)",
+                  "placeholder": "ឧទាហរណ៍: SOCKS5://127.0.0.1:9999",
+                  "title": "កំណត់ប្រូកស៊ី"
+                }
+              },
+              "toggle-dev-tools": "បិទ/បើក DevTools",
+              "force-smtc": "បង្ខំឱ្យប្រើ SMTC ខាងក្រៅ"
+            }
+          },
+          "always-on-top": "នៅពីលើជានិច្ច",
+          "auto-update": "ធ្វើបច្ចុប្បន្នភាពស្វ័យប្រវត្តិ",
+          "hide-menu": {
+            "dialog": {
+              "message": "ម៉ឺនុយនឹងត្រូវបានលាក់នៅពេលបើកលើកក្រោយ ប្រើ [Alt] ដើម្បីបង្ហាញវា (ឬ [`] ប្រសិនបើប្រើ in-app-menu)",
+              "title": "បានបើកការលាក់ម៉ឺនុយ"
+            },
+            "label": "លាក់ម៉ឺនុយ"
+          },
+          "language": {
+            "dialog": {
+              "message": "ភាសានឹងផ្លាស់ប្តូរបន្ទាប់ពីចាប់ផ្តើមឡើងវិញ",
+              "title": "បានផ្លាស់ប្តូរភាសា"
+            },
+            "label": "ភាសា",
+            "submenu": {
+              "to-help-translate": "ចង់ជួយបកប្រែ? ចុចទីនេះ"
+            }
+          },
+          "resume-on-start": "បន្តចម្រៀងចុងក្រោយពេលកម្មវិធីចាប់ផ្តើម",
+          "single-instance-lock": "ចាក់សោរតែមួយ",
+          "start-at-login": "ចាប់ផ្តើមពេលចូលប្រើ",
+          "starting-page": {
+            "label": "ទំព័រចាប់ផ្តើម",
+            "unset": "មិនកំណត់"
+          },
+          "tray": {
+            "label": "ថាស",
+            "submenu": {
+              "disabled": "បានបិទ",
+              "enabled-and-hide-app": "បើក និងលាក់កម្មវិធី",
+              "enabled-and-show-app": "បើក និងបង្ហាញកម្មវិធី",
+              "move-to-current-desktop": "ផ្លាស់ទីទៅផ្ទៃតុនិម្មិតបច្ចុប្បន្នពេលបង្ហាញ",
+              "play-pause-on-click": "ចាក់/ផ្អាក ពេលចុច",
+              "force-white-icons": "បង្ខំឱ្យប្រើរូបតំណាងពណ៌ស"
+            }
+          },
+          "visual-tweaks": {
+            "label": "ការកែសម្រួលរូបភាព",
+            "submenu": {
+              "like-buttons": {
+                "default": "លំនាំដើម",
+                "force-show": "បង្ខំបង្ហាញ",
+                "hide": "លាក់",
+                "swap": "ប្តូរលំដាប់ប៊ូតុងចូលចិត្ត",
+                "label": "ប៊ូតុងចូលចិត្ត"
+              },
+              "custom-window-title": {
+                "label": "ចំណងជើងវីនដូផ្ទាល់ខ្លួន",
+                "prompt": {
+                  "label": "បញ្ចូលចំណងជើងវីនដូផ្ទាល់ខ្លួន: (ទុកទទេដើម្បីបិទ)",
+                  "placeholder": "ឧទាហរណ៍: {{applicationName}}"
+                }
+              },
+              "remove-upgrade-button": "លុបប៊ូតុងធ្វើឱ្យប្រសើរ",
+              "theme": {
+                "dialog": {
+                  "button": {
+                    "cancel": "បោះបង់",
+                    "remove": "លុប"
+                  },
+                  "remove-theme": "តើអ្នកប្រាកដថាចង់លុបស្បែកផ្ទាល់ខ្លួនទេ?",
+                  "remove-theme-message": "វានឹងលុបស្បែកផ្ទាល់ខ្លួន"
+                },
+                "label": "ស្បែក",
+                "submenu": {
+                  "import-css-file": "នាំចូលឯកសារ CSS ផ្ទាល់ខ្លួន",
+                  "no-theme": "គ្មានស្បែក"
+                }
+              }
+            }
+          }
+        }
+      },
+      "plugins": {
+        "enabled": "បានបើក",
+        "label": "កម្មវិធីជំនួយ",
+        "new": "ថ្មី"
+      },
+      "view": {
+        "label": "មើល",
+        "submenu": {
+          "force-reload": "ផ្ទុកឡើងវិញដោយបង្ខំ",
+          "reload": "ផ្ទុកឡើងវិញ",
+          "reset-zoom": "ទំហំពិត",
+          "toggle-fullscreen": "បិទ/បើកពេញអេក្រង់",
+          "zoom-in": "ពង្រីក",
+          "zoom-out": "បង្រួម"
+        }
+      }
+    },
+    "tray": {
+      "next": "បន្ទាប់",
+      "play-pause": "ចាក់/ផ្អាក",
+      "previous": "មុន",
+      "quit": "ចាកចេញ",
+      "restart": "ចាប់ផ្តើមកម្មវិធីឡើងវិញ",
+      "show": "បង្ហាញវីនដូ",
+      "tooltip": {
+        "default": "{{applicationName}}",
+        "with-song-info": "កម្មវិធី៖ {{artist}} - {{title}}"
+      },
+      "like": "ចូលចិត្ត",
+      "dislike": "មិនចូលចិត្ត",
+      "unlike": "មិនដូច",
+      "undislike": "មិនចូលចិត្ត"
+    }
+  },
+  "plugins": {
+    "ad-speedup": {
+      "description": "ប្រសិនបើមានការផ្សាយពាណិជ្ជកម្ម វានឹងបិទសំឡេង និងកំណត់ល្បឿនចាក់សារថ្មីទៅ 16x",
+      "name": "ពន្លឿនការផ្សាយពាណិជ្ជកម្ម"
+    },
+    "adblocker": {
+      "description": "ទប់ស្កាត់រាល់ការផ្សាយពាណិជ្ជកម្ម និងការតាមដានទាំងអស់",
+      "menu": {
+        "blocker": "ឧបករណ៍ទប់ស្កាត់"
+      },
+      "name": "ឧបករណ៍ទប់ស្កាត់ការផ្សាយពាណិជ្ជកម្ម"
+    },
+    "album-actions": {
+      "description": "បន្ថែមប៊ូតុង មិនចូលចិត្ត, មិនចូលចិត្ត, ចូលចិត្ត និងមិនចូលចិត្ត ដើម្បីអនុវត្តចំពោះចម្រៀងទាំងអស់ក្នុងបញ្ជីចាក់ ឬអាល់ប៊ុម",
+      "name": "សកម្មភាពអាល់ប៊ុម"
+    },
+    "album-color-theme": {
+      "description": "អនុវត្តស្បែកថាមវន្ត និងបែបផែនរូបភាពផ្អែកលើក្ដារលាយពណ៌អាល់ប៊ុម",
+      "menu": {
+        "color-mix-ratio": {
+          "label": "សមាមាត្រលាយពណ៌",
+          "submenu": {
+            "percent": "{{ratio}}%"
+          }
+        },
+        "enable-seekbar": "បើកការតុបតែងរបារស្វែងរក"
+      },
+      "name": "ស្បែកពណ៌អាល់ប៊ុម"
+    },
+    "audio-only": {
+      "description": "បង្ខំរបៀបសំឡេងតែប៉ុណ្ណោះ — ទប់ស្កាត់ស្ទ្រីមវីដេអូទាំងអស់នៅកម្រិតបណ្តាញ និងកម្មវិធីចាក់ ដើម្បីសន្សំ RAM និងកម្រិតបញ្ជូនទិន្នន័យ",
+      "name": "សំឡេងតែប៉ុណ្ណោះ"
+    },
+    "ambient-mode": {
+      "description": "អនុវត្តបែបផែនពន្លឺដោយបញ្ចេញពណ៌ទន់ៗពីវីដេអូទៅផ្ទៃខាងក្រោយអេក្រង់របស់អ្នក",
+      "menu": {
+        "blur-amount": {
+          "label": "កម្រិតព្រិល",
+          "submenu": {
+            "pixels": "{{blurAmount}} ភីកសែល"
+          }
+        },
+        "buffer": {
+          "label": "សតិបណ្ដោះអាសន្ន",
+          "submenu": {
+            "buffer": "សតិបណ្ដោះអាសន្ន"
+          }
+        },
+        "opacity": {
+          "label": "ភាពស្រអាប់",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "quality": {
+          "label": "គុណភាព",
+          "submenu": {
+            "pixels": "{{quality}} ភីកសែល"
+          }
+        },
+        "size": {
+          "label": "ទំហំ",
+          "submenu": {
+            "percent": "{{size}}%"
+          }
+        },
+        "smoothness-transition": {
+          "label": "ភាពរលូននៃការផ្លាស់ប្តូរ",
+          "submenu": {
+            "during": "កំឡុង {{interpolationTime}} វិនាទី"
+          }
+        },
+        "use-fullscreen": {
+          "label": "កំពុងប្រើពេញអេក្រង់"
+        }
+      },
+      "name": "របៀបបរិយាកាស"
+    },
+    "amuse": {
+      "description": "បន្ថែមការគាំទ្រ {{applicationName}} សម្រាប់ធាតុក្រាហ្វិក Amuse កំពុងចាក់ ដោយ 6K Labs",
+      "name": "កម្សាន្ត",
+      "response": {
+        "query": "ម៉ាស៊ីនបម្រើ Amuse API កំពុងដំណើរការ។ GET /query ដើម្បីទទួលបានព័ត៌មានចម្រៀង។"
+      }
+    },
+    "api-server": {
+      "description": "បន្ថែមម៉ាស៊ីនបម្រើ API ដើម្បីគ្រប់គ្រងកម្មវិធីចាក់",
+      "dialog": {
+        "request": {
+          "buttons": {
+            "allow": "អនុញ្ញាត",
+            "deny": "បដិសេធ"
+          },
+          "message": "អនុញ្ញាតឱ្យ {{ID}} ({{origin}}) ចូលប្រើ API?",
+          "title": "សំណើអនុញ្ញាត API"
+        }
+      },
+      "menu": {
+        "auth-strategy": {
+          "label": "យុទ្ធសាស្ត្រអនុញ្ញាត",
+          "submenu": {
+            "auth-at-first": {
+              "label": "អនុញ្ញាតនៅសំណើដំបូង"
+            },
+            "none": {
+              "label": "គ្មានការអនុញ្ញាត"
+            }
+          }
+        },
+        "hostname": {
+          "label": "ឈ្មោះម៉ាស៊ីន"
+        },
+        "port": {
+          "label": "ច្រក"
+        },
+        "https": {
+          "label": "HTTPS និងវិញ្ញាបនបត្រ",
+          "submenu": {
+            "enable-https": {
+              "label": "បើក HTTPS"
+            },
+            "cert": {
+              "label": "ឯកសារវិញ្ញាបនបត្រ (.crt/.pem)",
+              "dialogTitle": "ជ្រើសរើសឯកសារវិញ្ញាបនបត្រ HTTPS"
+            },
+            "key": {
+              "label": "ឯកសារសោឯកជន (.key/.pem)",
+              "dialogTitle": "ជ្រើសរើសឯកសារសោឯកជន HTTPS"
+            }
+          }
+        }
+      },
+      "name": "ម៉ាស៊ីនបម្រើ API [Beta]",
+      "prompt": {
+        "hostname": {
+          "label": "បញ្ចូលឈ្មោះម៉ាស៊ីន (ដូចជា 0.0.0.0) សម្រាប់ម៉ាស៊ីនបម្រើ API:",
+          "title": "ឈ្មោះម៉ាស៊ីន"
+        },
+        "port": {
+          "label": "បញ្ចូលច្រកសម្រាប់ម៉ាស៊ីនបម្រើ API:",
+          "title": "ច្រក"
+        }
+      }
+    },
+    "audio-compressor": {
+      "description": "អនុវត្តការបង្ហាប់ទៅសំឡេង (បន្ថយកម្រិតសំឡេងនៃផ្នែកខ្លាំងបំផុតនៃសញ្ញា និងបង្កើនកម្រិតសំឡេងនៃផ្នែកទន់បំផុត)",
+      "name": "ឧបករណ៍បង្ហាប់សំឡេង"
+    },
+    "auth-proxy-adapter": {
+      "description": "ការគាំទ្រសម្រាប់ការប្រើប្រាស់សេវាប្រូកស៊ីផ្ទៀងផ្ទាត់",
+      "menu": {
+        "disable": "បិទអាដាប់ទ័រប្រូកស៊ី",
+        "enable": "បើកអាដាប់ទ័រប្រូកស៊ី",
+        "hostname": {
+          "label": "ឈ្មោះម៉ាស៊ីន"
+        },
+        "port": {
+          "label": "ច្រក"
+        }
+      },
+      "name": "អាដាប់ទ័រប្រូកស៊ីផ្ទៀងផ្ទាត់",
+      "prompt": {
+        "hostname": {
+          "title": "ឈ្មោះម៉ាស៊ីនប្រូកស៊ី",
+          "label": "បញ្ចូលឈ្មោះម៉ាស៊ីនសម្រាប់ម៉ាស៊ីនបម្រើប្រូកស៊ីមូលដ្ឋាន (ត្រូវការចាប់ផ្តើមឡើងវិញ):"
+        },
+        "port": {
+          "title": "ច្រកប្រូកស៊ី",
+          "label": "បញ្ចូលច្រកសម្រាប់ម៉ាស៊ីនបម្រើប្រូកស៊ីមូលដ្ឋាន (ត្រូវការចាប់ផ្តើមឡើងវិញ):"
+        }
+      }
+    },
+    "blur-nav-bar": {
+      "description": "ធ្វើឱ្យរបាររុករកមានតម្លាភាព និងព្រិល",
+      "name": "របាររុករកព្រិល"
+    },
+    "bypass-age-restrictions": {
+      "description": "ឆ្លងកាត់ការផ្ទៀងផ្ទាត់អាយុរបស់កម្មវិធីចាក់តន្ត្រី",
+      "name": "ឆ្លងកាត់ការកម្រិតអាយុ"
+    },
+    "captions-selector": {
+      "description": "ឧបករណ៍ជ្រើសរើសចំណងជើងរងសម្រាប់បទសំឡេង {{applicationName}}",
+      "menu": {
+        "autoload": "ជ្រើសរើសចំណងជើងរងដែលបានប្រើចុងក្រោយដោយស្វ័យប្រវត្តិ",
+        "disable-captions": "គ្មានចំណងជើងរងតាមលំនាំដើម"
+      },
+      "name": "ឧបករណ៍ជ្រើសរើសចំណងជើងរង",
+      "prompt": {
+        "selector": {
+          "label": "ភាសាចំណងជើងរងបច្ចុប្បន្ន: {{language}}",
+          "none": "គ្មាន",
+          "title": "ជ្រើសរើសភាសាចំណងជើងរង"
+        }
+      },
+      "templates": {
+        "title": "បើកឧបករណ៍ជ្រើសរើសចំណងជើងរង"
+      },
+      "toast": {
+        "caption-changed": "ចំណងជើងរងបានផ្លាស់ប្តូរទៅ {{language}}",
+        "caption-disabled": "ចំណងជើងរងត្រូវបានបិទ",
+        "no-captions": "គ្មានចំណងជើងរងសម្រាប់ចម្រៀងនេះទេ"
+      }
+    },
+    "clock": {
+      "description": "បន្ថែមនាឡិកាទៅរបាររុករក",
+      "name": "នាឡិកា",
+      "menu": {
+        "format": {
+          "label": "ទម្រង់",
+          "display-seconds": "បង្ហាញវិនាទី",
+          "24-hour-format": "ទម្រង់ 24 ម៉ោង"
+        }
+      }
+    },
+    "compact-sidebar": {
+      "description": "កំណត់របារចំហៀងជានិច្ចក្នុងរបៀបតូច",
+      "name": "របារចំហៀងតូច"
+    },
+    "crossfade": {
+      "description": "ផ្លាស់ប្តូររវាងចម្រៀង",
+      "menu": {
+        "advanced": "កម្រិតខ្ពស់"
+      },
+      "name": "ឆ្លងកាត់ [Beta]",
+      "prompt": {
+        "options": {
+          "multi-input": {
+            "fade-in-duration": "រយៈពេលបន្ថយចូល (ms)",
+            "fade-out-duration": "រយៈពេលបន្ថយចេញ (ms)",
+            "fade-scaling": {
+              "label": "មាត្រដ្ឋានបន្ថយ",
+              "linear": "លីនេអ៊ែរ",
+              "logarithmic": "លោការីត"
+            },
+            "seconds-before-end": "ឆ្លងកាត់ N វិនាទីមុនពេលបញ្ចប់"
+          },
+          "title": "ជម្រើសឆ្លងកាត់"
+        }
+      }
+    },
+    "custom-output-device": {
+      "description": "កំណត់រចនាសម្ព័ន្ធឧបករណ៍បញ្ចេញមេឌៀផ្ទាល់ខ្លួនសម្រាប់ចម្រៀង",
+      "menu": {
+        "device-selector": "ជ្រើសរើសឧបករណ៍"
+      },
+      "name": "ឧបករណ៍បញ្ចេញផ្ទាល់ខ្លួន",
+      "prompt": {
+        "device-selector": {
+          "label": "ជ្រើសរើសឧបករណ៍បញ្ចេញមេឌៀដែលត្រូវប្រើ",
+          "title": "ជ្រើសរើសឧបករណ៍បញ្ចេញ"
+        }
+      }
+    },
+    "disable-autoplay": {
+      "description": "ធ្វើឱ្យចម្រៀងចាប់ផ្តើមក្នុងរបៀប \"ផ្អាក\"",
+      "menu": {
+        "apply-once": "អនុវត្តតែពេលចាប់ផ្តើមប៉ុណ្ណោះ"
+      },
+      "name": "បិទការចាក់ស្វ័យប្រវត្តិ"
+    },
+    "discord": {
+      "backend": {
+        "already-connected": "បានព្យាយាមតភ្ជាប់ជាមួយការតភ្ជាប់សកម្ម",
+        "connected": "បានតភ្ជាប់ទៅ Discord",
+        "disconnected": "បានផ្តាច់ពី Discord"
+      },
+      "description": "បង្ហាញមិត្តភក្តិរបស់អ្នកនូវអ្វីដែលអ្នកកំពុងស្តាប់ជាមួយ Rich Presence",
+      "menu": {
+        "auto-reconnect": "តភ្ជាប់ឡើងវិញដោយស្វ័យប្រវត្តិ",
+        "clear-activity": "សម្អាតសកម្មភាព",
+        "clear-activity-after-timeout": "សម្អាតសកម្មភាពបន្ទាប់ពីអស់ពេល",
+        "connected": "បានតភ្ជាប់",
+        "disconnected": "បានផ្តាច់",
+        "hide-duration-left": "លាក់រយៈពេលដែលនៅសល់",
+        "hide-github-button": "លាក់ប៊ូតុងតំណ GitHub",
+        "play-on-application": "ចាក់លើ {{applicationName}}",
+        "set-inactivity-timeout": "កំណត់ពេលអស់ពេលអសកម្ម",
+        "set-status-display-type": {
+          "label": "អត្ថបទស្ថានភាព",
+          "submenu": {
+            "application": "កំពុងស្តាប់ {{applicationName}}",
+            "artist": "កំពុងស្តាប់ {{artist}}",
+            "title": "កំពុងស្តាប់ {{song title}}"
+          }
+        }
+      },
+      "name": "Discord Rich Presence",
+      "prompt": {
+        "set-inactivity-timeout": {
+          "label": "បញ្ចូលពេលអស់ពេលអសកម្មជាវិនាទី:",
+          "title": "កំណត់ពេលអស់ពេលអសកម្ម"
+        }
+      }
+    },
+    "downloader": {
+      "backend": {
+        "dialog": {
+          "error": {
+            "buttons": {
+              "ok": "យល់ព្រម"
+            },
+            "message": "សូមអភ័យទោស ការទាញយកបានបរាជ័យ…",
+            "title": "កំហុសក្នុងការទាញយក!"
+          },
+          "start-download-playlist": {
+            "buttons": {
+              "ok": "យល់ព្រម"
+            },
+            "detail": "({{playlistSize}} ចម្រៀង)",
+            "message": "កំពុងទាញយកបញ្ជីចាក់ {{playlistTitle}}",
+            "title": "ការទាញយកបានចាប់ផ្តើម"
+          }
+        },
+        "feedback": {
+          "conversion-progress": "ការបម្លែង: {{percent}}%",
+          "converting": "កំពុងបម្លែង…",
+          "done": "បានបញ្ចប់: {{filePath}}",
+          "download-info": "កំពុងទាញយក {{artist}} - {{title}} [{{videoId}}",
+          "download-progress": "ការទាញយក: {{percent}}%",
+          "downloading": "កំពុងទាញយក…",
+          "downloading-counter": "កំពុងទាញយក {{current}}/{{total}}…",
+          "downloading-playlist": "កំពុងទាញយកបញ្ជីចាក់ \"{{playlistTitle}}\" - {{playlistSize}} ចម្រៀង ({{playlistId}})",
+          "error-while-downloading": "កំហុសក្នុងការទាញយក \"{{author}} - {{title}}\": {{error}}",
+          "folder-already-exists": "ថត {{playlistFolder}} មានរួចហើយ",
+          "getting-playlist-info": "កំពុងទទួលព័ត៌មានបញ្ជីចាក់…",
+          "loading": "កំពុងផ្ទុក…",
+          "playlist-has-only-one-song": "បញ្ជីចាក់មានតែមួយធាតុ កំពុងទាញយកដោយផ្ទាល់",
+          "playlist-id-not-found": "រកមិនឃើញលេខសម្គាល់បញ្ជីចាក់",
+          "playlist-is-empty": "បញ្ជីចាក់ទទេ",
+          "playlist-is-mix-or-private": "កំហុសក្នុងការទទួលព័ត៌មានបញ្ជីចាក់: ត្រូវប្រាកដថាវាមិនមែនជាបញ្ជីចាក់ឯកជន ឬ \"លាយសម្រាប់អ្នក\"\n\n{{error}}",
+          "preparing-file": "កំពុងរៀបចំឯកសារ…",
+          "saving": "កំពុងរក្សាទុក…",
+          "trying-to-get-playlist-id": "កំពុងព្យាយាមទទួលលេខសម្គាល់បញ្ជីចាក់: {{playlistId}}",
+          "video-id-not-found": "រកមិនឃើញវីដេអូ",
+          "writing-id3": "កំពុងសរសេរស្លាក ID3…"
+        }
+      },
+      "description": "ទាញយក MP3 / សំឡេងប្រភពដោយផ្ទាល់ពីចំណុចប្រទាក់",
+      "menu": {
+        "choose-download-folder": "ជ្រើសរើសថតទាញយក",
+        "download-finish-settings": {
+          "label": "ទាញយកពេលបញ្ចប់",
+          "prompt": {
+            "last-percent": "បន្ទាប់ពី x ភាគរយ",
+            "last-seconds": "x វិនាទីចុងក្រោយ",
+            "title": "កំណត់ពេលដែលត្រូវទាញយក"
+          },
+          "submenu": {
+            "advanced": "កម្រិតខ្ពស់",
+            "enabled": "បានបើក",
+            "mode": "របៀបពេលវេលា",
+            "percent": "ភាគរយ",
+            "seconds": "វិនាទី"
+          }
+        },
+        "download-playlist": "ទាញយកបញ្ជីចាក់",
+        "presets": "ការកំណត់ជាមុន",
+        "skip-existing": "រំលងឯកសារដែលមានស្រាប់"
+      },
+      "name": "ឧបករណ៍ទាញយក",
+      "renderer": {
+        "can-not-update-progress": "មិនអាចធ្វើបច្ចុប្បន្នភាពវឌ្ឍនភាពបានទេ"
+      },
+      "templates": {
+        "button": "ទាញយក"
+      }
+    },
+    "equalizer": {
+      "description": "បន្ថែមឧបករណ៍សមតុល្យសំឡេងទៅកម្មវិធីចាក់",
+      "menu": {
+        "presets": {
+          "label": "ការកំណត់ជាមុន",
+          "list": {
+            "bass-booster": "ឧបករណ៍បង្កើនបាស"
+          }
+        }
+      },
+      "name": "ឧបករណ៍សមតុល្យសំឡេង"
+    },
+    "exponential-volume": {
+      "description": "ធ្វើឱ្យគ្រាប់រំកិលកម្រិតសំឡេងជាអិចស្ប៉ូណង់ស្យែល ដើម្បីងាយស្រួលក្នុងការជ្រើសរើសកម្រិតសំឡេងទាប។",
+      "name": "កម្រិតសំឡេងអិចស្ប៉ូណង់ស្យែល"
+    },
+    "in-app-menu": {
+      "description": "ផ្តល់ឱ្យរបារម៉ឺនុយនូវរូបរាងទាន់សម័យ ងងឹត ឬពណ៌អាល់ប៊ុម",
+      "menu": {
+        "hide-dom-window-controls": "លាក់ការគ្រប់គ្រងវីនដូ DOM"
+      },
+      "name": "ម៉ឺនុយក្នុងកម្មវិធី"
+    },
+    "lumiastream": {
+      "description": "បន្ថែមការគាំទ្រ Lumia Stream",
+      "name": "Lumia Stream [បេតា]"
+    },
+    "lyrics-genius": {
+      "description": "បន្ថែមការគាំទ្រទំនុកច្រៀងសម្រាប់ចម្រៀងភាគច្រើន",
+      "menu": {
+        "romanized-lyrics": "ទំនុកច្រៀងរ៉ូម៉ាំង"
+      },
+      "name": "ទំនុកច្រៀង Genius",
+      "renderer": {
+        "fetched-lyrics": "បានទាញយកទំនុកច្រៀងសម្រាប់ Genius"
+      }
+    },
+    "music-together": {
+      "description": "ចែករំលែកបញ្ជីចាក់ជាមួយអ្នកដទៃ។ នៅពេលម្ចាស់ផ្ទះចាក់ចម្រៀង អ្នកផ្សេងទៀតនឹងឮចម្រៀងដូចគ្នា",
+      "dialog": {
+        "enter-host": "បញ្ចូលលេខសម្គាល់ម្ចាស់ផ្ទះ"
+      },
+      "internal": {
+        "save": "រក្សាទុក",
+        "track-source": "ប្រភពបទ",
+        "unknown-user": "អ្នកប្រើប្រាស់មិនស្គាល់"
+      },
+      "menu": {
+        "click-to-copy-id": "ចម្លងលេខសម្គាល់ម្ចាស់ផ្ទះ",
+        "close": "បិទ Music Together",
+        "connected-users": "អ្នកប្រើប្រាស់ដែលបានតភ្ជាប់",
+        "disconnect": "ផ្តាច់ Music Together",
+        "empty-user": "គ្មានអ្នកប្រើប្រាស់ដែលបានតភ្ជាប់",
+        "host": "ម្ចាស់ផ្ទះ Music Together",
+        "join": "ចូលរួម Music Together",
+        "permission": {
+          "all": "អនុញ្ញាតឱ្យភ្ញៀវគ្រប់គ្រងបញ្ជីចាក់ និងកម្មវិធីចាក់",
+          "host-only": "មានតែម្ចាស់ផ្ទះប៉ុណ្ណោះដែលអាចគ្រប់គ្រងបញ្ជីចាក់ និងកម្មវិធីចាក់",
+          "playlist": "អនុញ្ញាតឱ្យភ្ញៀវគ្រប់គ្រងបញ្ជីចាក់"
+        },
+        "set-permission": "ផ្លាស់ប្តូរការអនុញ្ញាតគ្រប់គ្រង",
+        "status": {
+          "disconnected": "បានផ្តាច់",
+          "guest": "បានតភ្ជាប់ជាភ្ញៀវ",
+          "host": "បានតភ្ជាប់ជាម្ចាស់ផ្ទះ"
+        }
+      },
+      "name": "តន្ត្រីជាមួយគ្នា [បេតា]",
+      "toast": {
+        "add-song-failed": "បរាជ័យក្នុងការបន្ថែមចម្រៀង",
+        "closed": "Music Together បានបិទ",
+        "disconnected": "Music Together បានផ្តាច់",
+        "host-failed": "បរាជ័យក្នុងការធ្វើជាម្ចាស់ផ្ទះ Music Together",
+        "id-copied": "លេខសម្គាល់ម្ចាស់ផ្ទះបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់",
+        "id-copy-failed": "បរាជ័យក្នុងការចម្លងលេខសម្គាល់ម្ចាស់ផ្ទះទៅក្ដារតម្បៀតខ្ទាស់",
+        "join-failed": "បរាជ័យក្នុងការចូលរួម Music Together",
+        "joined": "បានចូលរួម Music Together",
+        "permission-changed": "ការអនុញ្ញាត Music Together បានផ្លាស់ប្តូរទៅ \"{{permission}}\"",
+        "remove-song-failed": "បរាជ័យក្នុងការលុបចម្រៀង",
+        "user-connected": "{{name}} បានចូលរួម Music Together",
+        "user-disconnected": "{{name}} បានចាកចេញពី Music Together"
+      }
+    },
+    "navigation": {
+      "description": "ព្រួញរុករកបន្ទាប់/ថយក្រោយ ដែលបញ្ចូលដោយផ្ទាល់ក្នុងចំណុចប្រទាក់ ដូចនៅក្នុងកម្មវិធីរុករកដែលអ្នកចូលចិត្ត",
+      "name": "ការរុករក",
+      "templates": {
+        "back": {
+          "title": "ទៅកាន់ទំព័រមុន"
+        },
+        "forward": {
+          "title": "ទៅកាន់ទំព័របន្ទាប់"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "លុបប៊ូតុងចូល Google និងតំណពីចំណុចប្រទាក់",
+      "name": "គ្មានការចូល Google"
+    },
+    "notifications": {
+      "description": "បង្ហាញការជូនដំណឹងនៅពេលចម្រៀងចាប់ផ្តើមចាក់ (ការជូនដំណឹងអន្តរកម្មមាននៅលើ Windows)",
+      "menu": {
+        "interactive": "ការជូនដំណឹងអន្តរកម្ម",
+        "interactive-settings": {
+          "label": "ការកំណត់អន្តរកម្ម",
+          "submenu": {
+            "hide-button-text": "លាក់អត្ថបទប៊ូតុង",
+            "hover-controls": "បង្ហាញកម្មវិធីចាក់ខ្នាតតូចពេលចង្អុលលើថាស",
+            "refresh-on-play-pause": "ធ្វើឱ្យស្រស់ពេលចាក់/ផ្អាក",
+            "tray-controls": "បើក/បិទពេលចុចលើថាស"
+          }
+        },
+        "priority": "អាទិភាពការជូនដំណឹង",
+        "toast-style": "រចនាប័ទ្មការជូនដំណឹង",
+        "unpause-notification": "បង្ហាញការជូនដំណឹងពេលដោះផ្អាក"
+      },
+      "name": "ការជូនដំណឹង"
+    },
+    "performance-improvement": {
+      "description": "កែលម្អដំណើរការដោយបើកស្គ្រីបពិសោធន៍",
+      "name": "ការកែលម្អដំណើរការ [កំណែសាកល្បង]"
+    },
+    "playback-recovery": {
+      "description": "ស្តារឡើងវិញដោយស្វ័យប្រវត្តិពីស្ថានភាពចាក់សារថ្មីដែលជាប់គាំង ឈប់ ឬស្លាប់",
+      "menu": {
+        "log-to-console": "កត់ត្រាព្រឹត្តិការណ៍ស្តារឡើងវិញទៅកុងសូល"
+      },
+      "name": "ការស្តារការចាក់សារថ្មី"
+    },
+    "picture-in-picture": {
+      "description": "អនុញ្ញាតឱ្យប្តូរកម្មវិធីទៅរបៀបរូបភាពក្នុងរូបភាព",
+      "menu": {
+        "always-on-top": "នៅពីលើជានិច្ច",
+        "hotkey": {
+          "label": "គ្រាប់ចុចរហ័ស",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "គ្រាប់ចុចរហ័ស"
+            },
+            "label": "ជ្រើសរើសគ្រាប់ចុចរហ័សដើម្បីបិទ/បើករូបភាពក្នុងរូបភាព",
+            "title": "គ្រាប់ចុចរហ័សរូបភាពក្នុងរូបភាព"
+          }
+        },
+        "save-window-position": "រក្សាទុកទីតាំងវីនដូ",
+        "save-window-size": "រក្សាទុកទំហំវីនដូ",
+        "use-native-pip": "ប្រើ PiP ដើមរបស់កម្មវិធីរុករក"
+      },
+      "name": "រូបភាពក្នុងរូបភាព",
+      "templates": {
+        "button": "រូបភាពក្នុងរូបភាព"
+      }
+    },
+    "playback-speed": {
+      "description": "ស្តាប់លឿន ស្តាប់យឺត! បន្ថែមគ្រាប់រំកិលដែលគ្រប់គ្រងល្បឿនចម្រៀង",
+      "name": "ល្បឿនចាក់សារថ្មី",
+      "templates": {
+        "button": "ល្បឿន"
+      }
+    },
+    "precise-volume": {
+      "description": "គ្រប់គ្រងកម្រិតសំឡេងយ៉ាងច្បាស់លាស់ដោយប្រើកង់កណ្តុរ/គ្រាប់ចុចរហ័ស ជាមួយ HUD ផ្ទាល់ខ្លួន និងជំហានកម្រិតសំឡេងដែលអាចប្តូរតាមបំណង",
+      "menu": {
+        "arrows-shortcuts": "ការគ្រប់គ្រងគ្រាប់ចុចព្រួញក្នុងតំបន់",
+        "custom-volume-steps": "កំណត់ជំហានកម្រិតសំឡេងផ្ទាល់ខ្លួន",
+        "global-shortcuts": "គ្រាប់ចុចរហ័សសកល"
+      },
+      "name": "កម្រិតសំឡេងច្បាស់លាស់",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "បន្ថយកម្រិតសំឡេង",
+            "increase": "បង្កើនកម្រិតសំឡេង"
+          },
+          "label": "ជ្រើសរើសគ្រាប់ចុចកម្រិតសំឡេងសកល:",
+          "title": "គ្រាប់ចុចកម្រិតសំឡេងសកល"
+        },
+        "volume-steps": {
+          "label": "ជ្រើសរើសជំហានបង្កើន/បន្ថយកម្រិតសំឡេង",
+          "title": "ជំហានកម្រិតសំឡេង"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "គុណភាពបច្ចុប្បន្ន: {{quality}}",
+            "message": "ជ្រើសរើសគុណភាពវីដេអូ:",
+            "title": "ជ្រើសរើសគុណភាពវីដេអូ"
+          }
+        }
+      },
+      "description": "អនុញ្ញាតឱ្យផ្លាស់ប្តូរគុណភាពវីដេអូដោយប្រើប៊ូតុងនៅលើផ្ទាំងត្រួតគ្នាវីដេអូ",
+      "name": "ឧបករណ៍ផ្លាស់ប្តូរគុណភាពវីដេអូ",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "បើកឧបករណ៍ផ្លាស់ប្តូរគុណភាពកម្មវិធីចាក់"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "បន្ថែមការគាំទ្រការកត់ត្រា (ឧ. last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "បរាជ័យក្នុងការផ្ទៀងផ្ទាត់ជាមួយ Last.fm\nលាក់ផ្ទាំងលោតរហូតដល់ការចាប់ផ្តើមឡើងវិញបន្ទាប់។",
+            "title": "ការផ្ទៀងផ្ទាត់បានបរាជ័យ"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "ការកំណត់ Last.fm API"
+        },
+        "listenbrainz": {
+          "token": "បញ្ចូលសញ្ញាសម្គាល់អ្នកប្រើប្រាស់ ListenBrainz"
+        },
+        "scrobble-alternative-title": "ប្រើចំណងជើងជំនួស",
+        "scrobble-alternative-artist": "ប្រើសិល្បករជំនួស",
+        "scrobble-other-media": "កត់ត្រាមេឌៀផ្សេងទៀត"
+      },
+      "name": "ឧបករណ៍កត់ត្រា",
+      "prompt": {
+        "lastfm": {
+          "api-key": "សោ Last.fm API",
+          "api-secret": "សម្ងាត់ Last.fm API"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "បញ្ចូលសញ្ញាសម្គាល់អ្នកប្រើប្រាស់ ListenBrainz របស់អ្នក:",
+            "title": "សញ្ញាសម្គាល់ ListenBrainz"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "អនុញ្ញាតឱ្យកំណត់គ្រាប់ចុចរហ័សសកលសម្រាប់ការចាក់សារថ្មី (ចាក់/ផ្អាក/បន្ទាប់/មុន) និងបិទ OSD មេឌៀដោយការជាន់លើគ្រាប់ចុចមេឌៀ បើក Ctrl/CMD + F ដើម្បីស្វែងរក បើកការគាំទ្រ Linux MPRIS សម្រាប់គ្រាប់ចុចមេឌៀ និងគ្រាប់ចុចរហ័សផ្ទាល់ខ្លួនសម្រាប់អ្នកប្រើប្រាស់កម្រិតខ្ពស់",
+      "menu": {
+        "override-media-keys": "ជាន់លើគ្រាប់ចុចមេឌៀ",
+        "set-keybinds": "កំណត់ការគ្រប់គ្រងចម្រៀងសកល"
+      },
+      "name": "ផ្លូវកាត់ (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "បន្ទាប់",
+            "play-pause": "ចាក់ / ផ្អាក",
+            "previous": "មុន"
+          },
+          "label": "ជ្រើសរើសគ្រាប់ចុចរហ័សសកលសម្រាប់ការគ្រប់គ្រងចម្រៀង:",
+          "title": "គ្រាប់ចុចរហ័សសកល"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "រំលងផ្នែកស្ងាត់ក្នុងចម្រៀងដោយស្វ័យប្រវត្តិ",
+      "name": "រំលងភាពស្ងាត់"
+    },
+    "sponsorblock": {
+      "description": "រំលងផ្នែកដែលមិនមែនជាតន្ត្រីដោយស្វ័យប្រវត្តិ ដូចជាការណែនាំ/បញ្ចប់ ឬផ្នែកនៃវីដេអូតន្ត្រីដែលចម្រៀងមិនកំពុងចាក់",
+      "name": "SponsorBlock"
+    },
+    "synced-lyrics": {
+      "description": "ផ្តល់ទំនុកច្រៀងដែលធ្វើសមកាលកម្មទៅនឹងចម្រៀង ដោយប្រើអ្នកផ្តល់ដូចជា LRClib ។",
+      "errors": {
+        "fetch": "⚠️\tកំហុសបានកើតឡើងពេលទាញយកទំនុកច្រៀង។\n\tសូមព្យាយាមម្តងទៀតពេលក្រោយ។",
+        "not-found": "⚠️ រកមិនឃើញទំនុកច្រៀងសម្រាប់ចម្រៀងនេះទេ។"
+      },
+      "menu": {
+        "preferred-provider": {
+          "label": "អ្នកផ្តល់ដែលពេញចិត្ត",
+          "tooltip": "ជ្រើសរើសអ្នកផ្តល់លំនាំដើមដែលត្រូវប្រើ",
+          "none": {
+            "label": "គ្មាន",
+            "tooltip": "គ្មានអ្នកផ្តល់ដែលពេញចិត្ត"
+          }
+        },
+        "default-text-string": {
+          "label": "តួអក្សរលំនាំដើមរវាងទំនុកច្រៀង",
+          "tooltip": "ជ្រើសរើសតួអក្សរលំនាំដើមដែលត្រូវប្រើសម្រាប់គម្លាតរវាងទំនុកច្រៀង"
+        },
+        "line-effect": {
+          "label": "បែបផែនបន្ទាត់",
+          "submenu": {
+            "fancy": {
+              "label": "ទាន់សម័យ",
+              "tooltip": "ប្រើបែបផែនធំៗដូចកម្មវិធីនៅលើបន្ទាត់បច្ចុប្បន្ន"
+            },
+            "focus": {
+              "label": "ផ្តោត",
+              "tooltip": "ធ្វើឱ្យតែបន្ទាត់បច្ចុប្បន្នមានពណ៌ស"
+            },
+            "offset": {
+              "label": "អុហ្វសិត",
+              "tooltip": "អុហ្វសិតបន្ទាត់បច្ចុប្បន្នទៅខាងស្តាំ"
+            },
+            "scale": {
+              "label": "មាត្រដ្ឋាន",
+              "tooltip": "ធ្វើមាត្រដ្ឋានបន្ទាត់បច្ចុប្បន្ន"
+            }
+          },
+          "tooltip": "ជ្រើសរើសបែបផែនដែលត្រូវអនុវត្តលើបន្ទាត់បច្ចុប្បន្ន"
+        },
+        "lyrics-font-size": {
+          "label": "ទំហំពុម្ពអក្សរទំនុកច្រៀង",
+          "submenu": {
+            "small": {
+              "label": "តូច",
+              "tooltip": "ប្រើទំហំទំនុកច្រៀងតូចជាងមុន"
+            },
+            "medium": {
+              "label": "មធ្យម",
+              "tooltip": "ប្រើទំហំទំនុកច្រៀងមានតុល្យភាព"
+            },
+            "large": {
+              "label": "ធំ",
+              "tooltip": "ប្រើទំហំទំនុកច្រៀងធំដើម"
+            }
+          },
+          "tooltip": "ជ្រើសរើសទំហំអត្ថបទទំនុកច្រៀង"
+        },
+        "precise-timing": {
+          "label": "ធ្វើឱ្យទំនុកច្រៀងសមកាលកម្មឥតខ្ចោះ",
+          "tooltip": "គណនាដល់មីលីវិនាទីនៃការបង្ហាញបន្ទាត់បន្ទាប់ (អាចមានផលប៉ះពាល់តិចតួចលើដំណើរការ)"
+        },
+        "romanization": {
+          "label": "ធ្វើរ៉ូម៉ាំងទំនុកច្រៀង",
+          "tooltip": "ប្រសិនបើទំនុកច្រៀងជាភាសាផ្សេង ព្យាយាមបង្ហាញកំណែឡាតាំង។"
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "បង្ហាញទំនុកច្រៀងទោះបីជាមិនត្រឹមត្រូវ",
+          "tooltip": "ប្រសិនបើរកមិនឃើញចម្រៀង កម្មវិធីជំនួយនឹងព្យាយាមម្តងទៀតជាមួយសំណួរស្វែងរកផ្សេង។\nលទ្ធផលពីការព្យាយាមលើកទីពីរអាចមិនត្រឹមត្រូវ។"
+        },
+        "show-time-codes": {
+          "label": "បង្ហាញកូដពេលវេលា",
+          "tooltip": "បង្ហាញកូដពេលវេលានៅជាប់នឹងទំនុកច្រៀង"
+        },
+        "convert-chinese-character": {
+          "label": "បម្លែងអក្សរចិន",
+          "submenu": {
+            "disabled": {
+              "label": "បានបិទ",
+              "tooltip": "បិទការបម្លែងអក្សរចិន"
+            },
+            "simplified-to-traditional": {
+              "label": "សាមញ្ញទៅបុរាណ",
+              "tooltip": "បម្លែងចិនសាមញ្ញទៅចិនបុរាណ"
+            },
+            "traditional-to-simplified": {
+              "label": "បុរាណទៅសាមញ្ញ",
+              "tooltip": "បម្លែងចិនបុរាណទៅចិនសាមញ្ញ"
+            }
+          },
+          "tooltip": "បម្លែងអក្សរចិនទៅជាបុរាណ ឬសាមញ្ញ"
+        },
+        "translation": {
+          "label": "ការបកប្រែទំនុកច្រៀង",
+          "tooltip": "បកប្រែទំនុកច្រៀង និងបង្ហាញលទ្ធផលដែលបានបកប្រែតាមបន្ទាត់សម្រាប់ការបង្ហាញ។",
+          "enabled": {
+            "label": "បើកការបកប្រែ",
+            "tooltip": "បង្ហាញបន្ទាត់ដែលបានបកប្រែនៅក្រោមបន្ទាត់ទំនុកច្រៀងដើមនីមួយៗ។"
+          },
+          "provider": {
+            "label": "អ្នកផ្តល់",
+            "tooltip": "សេវាកម្មណាដែលត្រូវប្រើសម្រាប់ការបកប្រែ។"
+          },
+          "target-language": {
+            "label": "ភាសាគោលដៅ",
+            "tooltip": "ភាសាដែលត្រូវបកប្រែទំនុកច្រៀងទៅ។",
+            "options": {
+              "auto": "Follow app language",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文",
+              "en": "English",
+              "ja": "日本語",
+              "ko": "한국어",
+              "fr": "Français",
+              "de": "Deutsch",
+              "es": "Español",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "it": "Italiano",
+              "nl": "Nederlands",
+              "ru": "Русский",
+              "uk": "Українська",
+              "pl": "Polski",
+              "tr": "Türkçe",
+              "ar": "العربية",
+              "he": "עברית",
+              "fa": "فارسی",
+              "hi": "हिन्दी",
+              "bn": "বাংলা",
+              "ur": "اردو",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "mr": "मराठी",
+              "id": "Bahasa Indonesia",
+              "ms": "Bahasa Melayu",
+              "vi": "Tiếng Việt",
+              "th": "ไทย",
+              "fil": "Filipino",
+              "sw": "Kiswahili",
+              "sv": "Svenska",
+              "no": "Norsk",
+              "da": "Dansk",
+              "fi": "Suomi",
+              "cs": "Čeština",
+              "ro": "Română",
+              "hu": "Magyar",
+              "el": "Ελληνικά",
+              "bg": "Български",
+              "sr": "Српски",
+              "hr": "Hrvatski",
+              "sk": "Slovenčina",
+              "lt": "Lietuvių"
+            }
+          },
+          "configure": {
+            "label": "កំណត់រចនាសម្ព័ន្ធសោ API និងម៉ូដែល…",
+            "tooltip": "កំណត់ជម្រើសការបកប្រែជាក់លាក់សម្រាប់អ្នកផ្តល់។"
+          },
+          "clear-cache": {
+            "label": "សម្អាតឃ្លាំងសម្ងាត់ការបកប្រែ",
+            "tooltip": "លុបរាល់ការបកប្រែដែលបានរក្សាទុកក្នុងឃ្លាំងសម្ងាត់នៅលើថាស។"
+          },
+          "providers": {
+            "shared": {
+              "api-key": "សោ API",
+              "model": "ម៉ូដែល"
+            },
+            "openai-compatible": {
+              "name": "OpenAI ដែលត្រូវគ្នា",
+              "prompt-title": "ការកំណត់ដែលត្រូវគ្នាជាមួយ OpenAI",
+              "prompt-label": "ប្រើម៉ាស៊ីនបម្រើដែលត្រូវគ្នាជាមួយ OpenAI រួមទាំង Ollama (URL មូលដ្ឋាន http://127.0.0.1:11434/v1, របៀប API auto ឬ chat-completions)។",
+              "base-url": "URL មូលដ្ឋាន",
+              "api-mode": "របៀប API (responses / auto / chat-completions)"
+            },
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-title": "ការកំណត់ Anthropic",
+              "prompt-label": "ប្រើប្រាស់ API Anthropic Messages ដើម"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-title": "ការកំណត់ Gemini",
+              "prompt-label": "ប្រើប្រាស់ Google's Generative Language API (generateContent)។"
+            },
+            "local-cli": {
+              "name": "CLI ក្នុងស្រុក",
+              "prompt-title": "ការកំណត់ CLI ក្នុងមូលដ្ឋាន",
+              "prompt-label": "ប្រើ Claude Code, Codex ឬ Gemini CLI ដែលបានចូលក្នុងមូលដ្ឋាន។ ពាក្យបញ្ជា និងគំរូគឺស្វ័យប្រវត្តិ។ CLI ប្រើលំនាំដើមដែលបានចូលរបស់វា។",
+              "engine": "CLI ក្នុងស្រុក",
+              "engine-claude": "កូដរបស់ Claude",
+              "engine-codex": "កូដេក",
+              "engine-gemini": "Gemini CLI",
+              "command": "បញ្ជា",
+              "timeout": "វិនាទីផុតកំណត់ (15-600)"
+            },
+            "google-translate": {
+              "name": "កម្មវិធីបកប្រែ Google",
+              "prompt-title": "ការកំណត់ Google Translate",
+              "prompt-label": "ប្រើប្រាស់ចំណុចបញ្ចប់ Google Translate ឥតគិតថ្លៃដែលមិនផ្លូវការ។ មិនត្រូវការ API key ទេ ប៉ុន្តែ Google អាចកំណត់អត្រាប្រើប្រាស់។",
+              "host": "ម្ចាស់ផ្ទះ"
+            }
+          }
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "ប្រើអត្ថបទចម្រៀង YTM ដោយគ្មានប្រូកស៊ី",
+          "tooltip": "រំលង YTM browse proxy ហើយហៅ YouTube Music ដោយផ្ទាល់តាមរយៈសម័យផ្ទៀងផ្ទាត់ភាពត្រឹមត្រូវរបស់កម្មវិធី។ មានប្រយោជន៍ប្រសិនបើអ្នកទុកចិត្តបណ្តាញ/តំបន់របស់អ្នកដើម្បីអនុញ្ញាតឱ្យហៅទូរសព្ទដោយផ្ទាល់។"
+        },
+        "show-custom-search-button": {
+          "label": "បង្ហាញប៊ូតុងស្វែងរកផ្ទាល់ខ្លួន",
+          "tooltip": "បង្ហាញប៊ូតុងស្វែងរកក្នុងអ្នកជ្រើសរើសទំនុកច្រៀង ដែលអនុញ្ញាតឱ្យអ្នកកំណត់ឡើងវិញនូវសំណួរស្វែងរក និងអ្នកសំដែងសម្រាប់បទចម្រៀងបច្ចុប្បន្ន។"
+        }
+      },
+      "name": "ទំនុកច្រៀងដែលធ្វើសមកាលកម្ម",
+      "refetch-btn": {
+        "fetching": "កំពុងទាញយក...",
+        "normal": "ទាញយកទំនុកច្រៀងឡើងវិញ"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - ទំនុកច្រៀងអាចនឹងមិនសមកាលកម្មដោយសារភាពមិនត្រូវគ្នានៃរយៈពេល។",
+        "inexact": "⚠️ - ទំនុកច្រៀងសម្រាប់ចម្រៀងនេះអាចមិនត្រឹមត្រូវ",
+        "instrumental": "⚠️ - នេះជាចម្រៀងឧបករណ៍"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "គ្រប់គ្រងការចាក់សារថ្មីពីរបារភារកិច្ច Windows របស់អ្នក",
+      "name": "ការគ្រប់គ្រងមេឌៀរបារភារកិច្ច"
+    },
+    "touchbar": {
+      "description": "បន្ថែមធាតុក្រាហ្វិក TouchBar សម្រាប់អ្នកប្រើប្រាស់ macOS",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "ធ្វើឱ្យវីនដូកម្មវិធីមានតម្លាភាព",
+      "name": "កម្មវិធីចាក់ថ្លា",
+      "menu": {
+        "opacity": {
+          "label": "ភាពស្រអាប់",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "ប្រភេទ",
+          "submenu": {
+            "acrylic": "អាគ្រីលីក",
+            "mica": "មីកា",
+            "tabbed": "មានផ្ទាំង",
+            "none": "គ្មាន"
+          }
+        }
+      }
+    },
+    "tuna-obs": {
+      "description": "ការរួមបញ្ចូលជាមួយកម្មវិធីជំនួយ Tuna របស់ OBS",
+      "name": "តូណា OBS"
+    },
+    "unobtrusive-player": {
+      "description": "ការពារកម្មវិធីចាក់មិនឱ្យលេចឡើងនៅពេលចាក់ចម្រៀង",
+      "name": "កម្មវិធីចាក់ដែលមិនរំខាន"
+    },
+    "video-toggle": {
+      "description": "បន្ថែមប៊ូតុងដើម្បីប្តូររវាងរបៀបវីដេអូ/ចម្រៀង។ ក៏អាចលុបផ្ទាំងវីដេអូទាំងមូលបានដែរ",
+      "menu": {
+        "align": {
+          "label": "តម្រឹម",
+          "submenu": {
+            "left": "ឆ្វេង",
+            "middle": "កណ្តាល",
+            "right": "ស្តាំ"
+          }
+        },
+        "force-hide": "បង្ខំលុបផ្ទាំងវីដេអូ",
+        "mode": {
+          "label": "របៀប",
+          "submenu": {
+            "custom": "ការប្តូរផ្ទាល់ខ្លួន",
+            "disabled": "បានបិទ",
+            "native": "ការប្តូរដើម"
+          }
+        }
+      },
+      "name": "ការប្តូរវីដេអូ",
+      "templates": {
+        "button-song": "ចម្រៀង",
+        "button-video": "វីដេអូ"
+      }
+    },
+    "visualizer": {
+      "description": "បន្ថែមឧបករណ៍មើលឃើញទៅកម្មវិធីចាក់",
+      "menu": {
+        "visualizer-type": "ប្រភេទឧបករណ៍មើលឃើញ"
+      },
+      "name": "ឧបករណ៍មើលឃើញ"
+    },
+    "playlist-search": {
+      "description": "បន្ថែមប្រអប់បញ្ចូលស្វែងរកដើម្បីច្រោះបញ្ជីចាក់នៅក្នុងរបារចំហៀង និងប្រអប់បន្ថែមទៅបញ្ជីចាក់",
+      "name": "ស្វែងរកបញ្ជីចាក់",
+      "templates": {
+        "search-placeholder": "ស្វែងរកបញ្ជីចាក់",
+        "no-results": "រកមិនឃើញបញ្ជីចាក់ទេ"
+      }
+    }
+  }
+}

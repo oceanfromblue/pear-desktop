@@ -1,6 +1,11 @@
 import { app } from 'electron';
 
-import { registerCallback, SongInfoEvent } from '@/providers/song-info';
+import {
+  registerCallback,
+  SongInfoEvent,
+  unregisterCallback,
+  type SongInfo,
+} from '@/providers/song-info';
 import { createBackend } from '@/utils';
 
 import { TIME_UPDATE_DEBOUNCE_MS } from './constants';
@@ -14,6 +19,7 @@ export const backend = createBackend<
   {
     config?: DiscordPluginConfig;
     lastTimeUpdateSent: number;
+    songInfoCallback?: (songInfo: SongInfo, event: SongInfoEvent) => void;
   },
   DiscordPluginConfig
 >({
@@ -26,9 +32,7 @@ export const backend = createBackend<
 
     if (config.enabled) {
       ctx.window.once('ready-to-show', () => {
-        discordService?.connect(!config.autoReconnect);
-
-        registerCallback((songInfo, event) => {
+        this.songInfoCallback = (songInfo, event) => {
           if (!discordService?.isConnected()) return;
 
           if (event !== SongInfoEvent.TimeChanged) {
@@ -38,10 +42,13 @@ export const backend = createBackend<
             const now = Date.now();
             if (now - this.lastTimeUpdateSent > TIME_UPDATE_DEBOUNCE_MS) {
               discordService?.updateActivity(songInfo);
-              this.lastTimeUpdateSent = now; // Record the time of this debounced update
+              this.lastTimeUpdateSent = now;
             }
           }
-        });
+        };
+
+        registerCallback(this.songInfoCallback);
+        discordService?.connect(!config.autoReconnect);
       });
     }
 
@@ -55,6 +62,9 @@ export const backend = createBackend<
   },
 
   stop() {
+    if (this.songInfoCallback) {
+      unregisterCallback(this.songInfoCallback);
+    }
     discordService?.cleanup();
   },
 
@@ -63,6 +73,26 @@ export const backend = createBackend<
 
     const currentlyConnected = discordService?.isConnected() ?? false;
     if (newConfig.enabled && !currentlyConnected) {
+      // The song-info callback may not be registered yet if the plugin was
+      // enabled after startup — register it before connecting so activity
+      // updates flow once the RPC client is ready.
+      if (!this.songInfoCallback) {
+        this.songInfoCallback = (songInfo, event) => {
+          if (!discordService?.isConnected()) return;
+
+          if (event !== SongInfoEvent.TimeChanged) {
+            discordService?.updateActivity(songInfo);
+            this.lastTimeUpdateSent = Date.now();
+          } else {
+            const now = Date.now();
+            if (now - this.lastTimeUpdateSent > TIME_UPDATE_DEBOUNCE_MS) {
+              discordService?.updateActivity(songInfo);
+              this.lastTimeUpdateSent = now;
+            }
+          }
+        };
+        registerCallback(this.songInfoCallback);
+      }
       discordService?.connect(!newConfig.autoReconnect);
     } else if (!newConfig.enabled && currentlyConnected) {
       discordService?.disconnect();

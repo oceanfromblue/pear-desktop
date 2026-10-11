@@ -109,7 +109,8 @@
                   "title": "Nastavtiť proxy"
                 }
               },
-              "toggle-dev-tools": "Zobraziť/skryť DevTools"
+              "toggle-dev-tools": "Zobraziť/skryť DevTools",
+              "force-smtc": "Vynútiť použitie externého SMTC"
             }
           },
           "always-on-top": "Vždy na vrchu",
@@ -144,7 +145,9 @@
               "disabled": "Vypnutý",
               "enabled-and-hide-app": "Povolené a skry aplikáciu",
               "enabled-and-show-app": "Povolené a ukáž aplikáciu",
-              "play-pause-on-click": "Prehrať/Pozastaviť na stlačenie"
+              "play-pause-on-click": "Prehrať/Pozastaviť na stlačenie",
+              "move-to-current-desktop": "Presunúť na aktuálnu virtuálnu plochu pri zobrazení",
+              "force-white-icons": "Vynútiť používanie bielych ikon"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Páči sa mi",
+      "dislike": "Nepáči sa",
+      "unlike": "Na rozdiel od",
+      "undislike": "Zrušiť dislike"
     }
   },
   "plugins": {
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Skryť text tlačidla",
             "refresh-on-play-pause": "Obnoviť pri prehrávaní/pozastavení",
-            "tray-controls": "Otvoriť/Zatvoriť kliknutím na lištu"
+            "tray-controls": "Otvoriť/Zatvoriť kliknutím na lištu",
+            "hover-controls": "Zobraziť mini prehrávač pri umiestnení kurzora na ikonu na paneli"
           }
         },
         "priority": "Priorita oznámenia",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Preskakuje skladby označené Nepáči sa",
-      "name": "Preskakovať skladby označené Nepáči sa"
-    },
     "skip-silences": {
       "description": "Automaticky preskakovať tiché časti v hudbe",
       "name": "Preskakuj tiché časti"
@@ -886,6 +890,24 @@
           },
           "tooltip": "Vyber efekt pre aktuálny riadok"
         },
+        "lyrics-font-size": {
+          "label": "Veľkosť písma textov",
+          "submenu": {
+            "large": {
+              "label": "Veľké",
+              "tooltip": "Použiť pôvodnú väčšiu veľkosť textov"
+            },
+            "medium": {
+              "label": "Stredné",
+              "tooltip": "Použiť vyváženú veľkosť textov"
+            },
+            "small": {
+              "label": "Malé",
+              "tooltip": "Použiť kompaktnejšiu veľkosť textov"
+            }
+          },
+          "tooltip": "Vyberte, aké veľké majú byť texty piesní"
+        },
         "precise-timing": {
           "label": "Dokonale synchronizovať text piesne",
           "tooltip": "Vypočítaj na presnú milisekundu zobrazenie ďalšieho riadku (môže mať menší vplyv na výkon)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "Zobraziť časové značky",
           "tooltip": "Zobraziť časové kódy vedľa textov"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Vymazať vyrovnávaciu pamäť prekladov",
+            "tooltip": "Odstrániť všetky uložené preklady z disku."
+          },
+          "configure": {
+            "label": "Konfigurovať API kľúč a model...",
+            "tooltip": "Nastaviť možnosti prekladu špecifické pre poskytovateľa."
+          },
+          "enabled": {
+            "label": "Povoliť preklad",
+            "tooltip": "Zobraziť preložený riadok pod každým pôvodným riadkom textu."
+          },
+          "label": "Preklad textov",
+          "provider": {
+            "label": "Poskytovateľ",
+            "tooltip": "Ktorú službu použiť na preklad."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Používa natívne Anthropic Messages API.",
+              "prompt-title": "Anthropic nastavenia"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Používa Google Generative Language API (generateContent).",
+              "prompt-title": "Gemini nastavenia"
+            },
+            "google-translate": {
+              "host": "Hostiteľ",
+              "name": "Google Prekladač",
+              "prompt-label": "Používa neoficiálny bezplatný koncový bod Google Prekladača. API kľúč nie je potrebný, ale Google ho môže obmedziť.",
+              "prompt-title": "Nastavenia Google Prekladača"
+            },
+            "local-cli": {
+              "command": "Príkaz",
+              "engine": "Lokálne CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokálne CLI",
+              "prompt-label": "Použiť lokálne prihlásené Claude Code, Codex alebo Gemini CLI. Príkaz a model sú automatické; CLI používa svoje vlastné prihlásené predvolené hodnoty.",
+              "prompt-title": "Nastavenia lokálneho CLI",
+              "timeout": "Časový limit v sekundách (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API režim (responses / auto / chat-completions)",
+              "base-url": "Základná URL",
+              "name": "OpenAI kompatibilný",
+              "prompt-label": "Použiť OpenAI-kompatibilné servery, vrátane Ollama (základná URL http://127.0.0.1:11434/v1, API režim auto alebo chat-completions).",
+              "prompt-title": "OpenAI-kompatibilné nastavenia"
+            },
+            "shared": {
+              "api-key": "API kľúč",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Cieľový jazyk",
+            "options": {
+              "ar": "العربية",
+              "auto": "Nasledovať jazyk aplikácie",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Jazyk, do ktorého sa majú texty preložiť."
+          },
+          "tooltip": "Preložiť texty a zobraziť preložený výsledok riadok po riadku."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Použiť texty YTM bez proxy",
+          "tooltip": "Preskočiť YTM proxy prehliadania a volať YouTube Music priamo pomocou overenej relácie aplikácie. Užitočné, ak dôverujete svojej sieti/regiónu, že umožní priame volania prehliadania."
+        },
+        "show-custom-search-button": {
+          "label": "Zobraziť vlastné tlačidlo vyhľadávania",
+          "tooltip": "Zobraziť tlačidlo vyhľadávania vo výbere textov piesní, ktoré umožňuje prepísať vyhľadávací dopyt a interpreta pre aktuálnu skladbu."
         }
       },
       "name": "Synchronizované texty",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Typ Vizualizéra"
       },
       "name": "Vizualizér"
+    },
+    "audio-only": {
+      "description": "Vynúti režim iba so zvukom — blokuje všetky video streamy na sieťovej úrovni a úrovni prehrávača, aby ušetril RAM a šírku pásma",
+      "name": "Iba zvuk"
+    },
+    "playback-recovery": {
+      "description": "Automaticky obnovuje prehrávanie zo zaseknutých, zastavených alebo mŕtvych stavov",
+      "menu": {
+        "log-to-console": "Zaznamenávať udalosti obnovenia do konzoly"
+      },
+      "name": "Obnova prehrávania"
+    },
+    "playlist-search": {
+      "description": "Pridá vyhľadávacie pole na filtrovanie playlistov v bočnom paneli a v dialógu Pridať do playlistu",
+      "name": "Vyhľadávanie v zozname skladieb",
+      "templates": {
+        "search-placeholder": "Hľadať playlisty",
+        "no-results": "Nenašli sa žiadne playlisty"
+      }
     }
   }
 }

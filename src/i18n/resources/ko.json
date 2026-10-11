@@ -110,7 +110,8 @@
                   "title": "프록시 설정하기"
                 }
               },
-              "toggle-dev-tools": "DevTools 열기"
+              "toggle-dev-tools": "DevTools 열기",
+              "force-smtc": "외부 SMTC 사용 강제"
             }
           },
           "always-on-top": "항상 최상단에 표시하기",
@@ -147,7 +148,9 @@
               "disabled": "비활성화",
               "enabled-and-hide-app": "활성화 및 앱 숨기기",
               "enabled-and-show-app": "활성화 및 앱 표시",
-              "play-pause-on-click": "클릭 시 재생/일시 정지"
+              "move-to-current-desktop": "표시할 때 현재 가상 데스크톱으로 이동",
+              "play-pause-on-click": "클릭 시 재생/일시 정지",
+              "force-white-icons": "강제로 흰색 아이콘 사용"
             }
           },
           "visual-tweaks": {
@@ -214,7 +217,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "좋아요",
+      "dislike": "싫어요",
+      "unlike": "Unlike",
+      "undislike": "싫어요 취소"
     }
   },
   "plugins": {
@@ -238,6 +245,10 @@
         "enable-seekbar": "재생바 색조 변경 활성화"
       },
       "name": "앨범 컬러 기반 테마"
+    },
+    "audio-only": {
+      "description": "오디오 전용 모드 강제 — 모든 비디오 스트림을 네트워크 및 플레이어 수준에서 차단하여 RAM과 대역폭을 절약합니다",
+      "name": "오디오 전용"
     },
     "ambient-mode": {
       "description": "영상의 간접 조명을 화면 배경에 투사하여 조명 효과를 적용합니다",
@@ -687,6 +698,7 @@
           "label": "대화형 알림 설정",
           "submenu": {
             "hide-button-text": "버튼 텍스트 숨기기",
+            "hover-controls": "트레이에 마우스 올릴 시 미니 플레이어 표시",
             "refresh-on-play-pause": "재생/일시정지 시 새로고침",
             "tray-controls": "트레이 클릭 시 열기/닫기"
           }
@@ -700,6 +712,13 @@
     "performance-improvement": {
       "description": "실험적인 스크립트를 활성화하여 성능을 개선합니다",
       "name": "성능 개선 [베타]"
+    },
+    "playback-recovery": {
+      "description": "멈추거나 중단된 재생 상태에서 자동으로 복구합니다",
+      "menu": {
+        "log-to-console": "콘솔에 복구 이벤트 기록"
+      },
+      "name": "재생 복구"
     },
     "picture-in-picture": {
       "description": "앱을 PiP 모드로 전환할 수 있게 허용합니다",
@@ -826,10 +845,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "싫어요 표시된 노래를 건너뜁니다",
-      "name": "싫어요 표시 노래 건너뛰기"
-    },
     "skip-silences": {
       "description": "노래의 무음 부분을 자동으로 건너뜁니다",
       "name": "무음 건너뛰기"
@@ -889,6 +904,24 @@
           },
           "tooltip": "현재 줄에 적용할 효과를 선택합니다"
         },
+        "lyrics-font-size": {
+          "label": "가사 글꼴 크기",
+          "submenu": {
+            "large": {
+              "label": "크게",
+              "tooltip": "원래의 큰 가사 크기 사용"
+            },
+            "medium": {
+              "label": "보통",
+              "tooltip": "균형 잡힌 가사 크기 사용"
+            },
+            "small": {
+              "label": "작게",
+              "tooltip": "더 작은 가사 크기 사용"
+            }
+          },
+          "tooltip": "가사 텍스트의 크기를 선택합니다"
+        },
         "precise-timing": {
           "label": "가사를 최대한 정교하게 동기화",
           "tooltip": "다음 줄의 표시를 밀리초 단위로 계산합니다 (성능에 약간의 영향을 미칠 수 있음)"
@@ -912,6 +945,125 @@
         "show-time-codes": {
           "label": "시간 코드 표시",
           "tooltip": "가사 옆에 시간 코드 표시"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "번역 캐시 삭제",
+            "tooltip": "디스크에 저장된 모든 캐시된 번역을 삭제합니다."
+          },
+          "configure": {
+            "label": "API 키 및 모델 구성…",
+            "tooltip": "제공자별 번역 옵션을 설정합니다."
+          },
+          "enabled": {
+            "label": "번역 활성화",
+            "tooltip": "원본 가사 줄 아래에 번역된 줄을 표시합니다."
+          },
+          "label": "가사 번역",
+          "provider": {
+            "label": "제공자",
+            "tooltip": "번역에 사용할 서비스입니다."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "기본 Anthropic Messages API를 사용합니다.",
+              "prompt-title": "Anthropic 설정"
+            },
+            "gemini": {
+              "name": "Google 제미나이",
+              "prompt-label": "Google 생성형 언어 API(generateContent)를 사용합니다.",
+              "prompt-title": "Gemini 설정"
+            },
+            "google-translate": {
+              "host": "호스트",
+              "name": "Google 번역",
+              "prompt-label": "비공식 무료 Google Translate 엔드포인트를 사용합니다. API 키가 필요하지 않지만 Google에서 속도 제한을 둘 수 있습니다.",
+              "prompt-title": "Google Translate 설정"
+            },
+            "local-cli": {
+              "command": "명령어",
+              "engine": "로컬 CLI",
+              "engine-claude": "클로드 코드",
+              "engine-codex": "코덱스",
+              "engine-gemini": "Gemini CLI",
+              "name": "로컬 CLI",
+              "prompt-label": "로컬에 로그인된 Claude Code, Codex 또는 Gemini CLI를 사용합니다. 명령어와 모델은 자동으로 설정되며 CLI는 자체 로그인된 기본값을 사용합니다.",
+              "prompt-title": "로컬 CLI 설정",
+              "timeout": "시간 초과(초) (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API 모드 (responses / auto / chat-completions)",
+              "base-url": "기본 URL",
+              "name": "OpenAI 호환",
+              "prompt-label": "Ollama(기본 URL http://127.0.0.1:11434/v1, API 모드 auto 또는 chat-completions)를 포함한 OpenAI 호환 서버를 사용합니다.",
+              "prompt-title": "OpenAI 호환 설정"
+            },
+            "shared": {
+              "api-key": "API 키",
+              "model": "모델"
+            }
+          },
+          "target-language": {
+            "label": "번역 대상 언어",
+            "options": {
+              "ar": "العربية",
+              "auto": "앱 언어에 따름",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "가사를 번역할 언어입니다."
+          },
+          "tooltip": "가사를 번역하고 번역 결과를 한 줄씩 표시합니다."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "YTM 가사 사용 (프록시 없음)",
+          "tooltip": "YTM 브라우즈 프록시를 건너뛰고 앱의 인증된 세션을 사용하여 YouTube Music에 직접 호출합니다. 네트워크/지역이 직접 브라우즈 호출을 허용한다고 신뢰하는 경우 유용합니다."
+        },
+        "show-custom-search-button": {
+          "label": "사용자 정의 검색 버튼 표시",
+          "tooltip": "가사 선택기에 검색 버튼을 표시하여 현재 노래의 검색어와 아티스트를 재정의할 수 있도록 합니다."
         }
       },
       "name": "싱크 가사",
@@ -1000,6 +1152,14 @@
         "visualizer-type": "비주얼라이저 타입"
       },
       "name": "비주얼라이저"
+    },
+    "playlist-search": {
+      "description": "사이드바와 재생목록 추가 대화상자에서 재생목록을 필터링할 수 있는 검색 입력을 추가합니다",
+      "name": "플레이리스트 검색",
+      "templates": {
+        "search-placeholder": "플레이리스트 검색",
+        "no-results": "재생 목록을 찾을 수 없습니다"
+      }
     }
   }
 }

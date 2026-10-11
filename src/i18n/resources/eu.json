@@ -6,7 +6,9 @@
         "executed-at-ms": "Plugina {{pluginName}}{{contextName}} {{ms}} m-tan exekutatu da",
         "initialize-failed": "Ezin izan da {{pluginName}} plugina abiaraztea",
         "load-all": "Plugin guztiak kargatzen",
+        "load-failed": "Ezin izan da \"{{pluginName}}\" plugina kargatu",
         "loaded": "{{pluginName}} plugina kargatuta",
+        "unload-failed": "Ezin izan da \"{{pluginName}}\" plugina deskargatu",
         "unloaded": "{{pluginName}} plugina deskargatuta"
       }
     }
@@ -23,6 +25,1132 @@
       },
       "i18n": {
         "loaded": "i18n'a kargatuta"
+      },
+      "second-instance": {
+        "receive-command": "Komandoa protokoloaren bidez jasoa: \"{{command}}\""
+      },
+      "theme": {
+        "css-file-not-found": "\"{{cssFile}}\" CSS fitxategia ez da existitzen, alde batera utzita"
+      },
+      "unresponsive": {
+        "details": "Erantzunik gabeko errorea!\n{{error}}"
+      },
+      "when-ready": {
+        "clearing-cache-after-20s": "Aplikazioaren cachea garbitzen"
+      },
+      "window": {
+        "tried-to-render-offscreen": "Leihoa pantailatik kanpo errendatzen saiatu da, windowSize={{windowSize}}, displaySize={{displaySize}}, position={{position}}"
+      }
+    },
+    "dialog": {
+      "hide-menu-enabled": {
+        "detail": "Menua ezkutatuta dago, erabili 'Alt' erakusteko (edo 'Escape' aplikazio-barneko menua erabiltzen baduzu)",
+        "message": "Menua ezkutatzea gaituta dago",
+        "title": "Menua ezkutatzea gaituta"
+      },
+      "need-to-restart": {
+        "buttons": {
+          "later": "Geroago",
+          "restart-now": "Berrabiarazi orain"
+        },
+        "detail": "\"{{pluginName}}\" pluginak berrabiaraztea eskatzen du eragina izateko",
+        "message": "\"{{pluginName}}\"(e)k berrabiarazi behar du",
+        "title": "Berrabiaraztea beharrezkoa"
+      },
+      "unresponsive": {
+        "buttons": {
+          "quit": "Irten",
+          "relaunch": "Berrabiarazi",
+          "wait": "Itxaron"
+        },
+        "detail": "Barkatu eragozpenak! Aukeratu zer egin:",
+        "message": "Aplikazioak ez du erantzuten",
+        "title": "Leihoak ez du erantzuten"
+      },
+      "update-available": {
+        "buttons": {
+          "disable": "Desgaitu eguneraketak",
+          "download": "Deskargatu",
+          "ok": "Ados"
+        },
+        "detail": "Bertsio berri bat eskuragarri dago eta hemen deskarga daiteke {{downloadLink}}",
+        "message": "Bertsio berri bat eskuragarri dago",
+        "title": "Eguneraketa eskuragarri"
+      }
+    },
+    "menu": {
+      "about": "Honi buruz",
+      "navigation": {
+        "label": "Nabigazioa",
+        "submenu": {
+          "copy-current-url": "Kopiatu uneko URLa",
+          "go-back": "Atzera",
+          "go-forward": "Aurrera",
+          "quit": "Irten",
+          "restart": "Berrabiarazi aplikazioa"
+        }
+      },
+      "options": {
+        "label": "Aukerak",
+        "submenu": {
+          "advanced-options": {
+            "label": "Aukera aurreratuak",
+            "submenu": {
+              "auto-reset-app-cache": "Berrezarri aplikazioaren cachea aplikazioa hastean",
+              "disable-hardware-acceleration": "Desgaitu hardware azelerazioa",
+              "edit-config-json": "Editatu config.json",
+              "override-user-agent": "Ordezkatu User-Agent",
+              "restart-on-config-changes": "Berrabiarazi konfigurazio aldaketetan",
+              "set-proxy": {
+                "label": "Ezarri proxya",
+                "prompt": {
+                  "label": "Sartu proxy helbidea: (utzi hutsik desgaitzeko)",
+                  "placeholder": "Adibidea: SOCKS5://127.0.0.1:9999",
+                  "title": "Ezarri proxya"
+                }
+              },
+              "toggle-dev-tools": "Txandakatu DevTools",
+              "force-smtc": "Behartu SMTC kanpokoaren erabilera"
+            }
+          },
+          "always-on-top": "Beti gainean",
+          "auto-update": "Eguneratze automatikoa",
+          "hide-menu": {
+            "dialog": {
+              "message": "Menua ezkutatuta egongo da hurrengo abiaraztean, erabili [Alt] erakusteko (edo [`] aplikazio-barneko menua erabiltzen baduzu)",
+              "title": "Menua ezkutatzea gaituta"
+            },
+            "label": "Ezkutatu menua"
+          },
+          "language": {
+            "dialog": {
+              "message": "Hizkuntza berrabiarazi ondoren aldatuko da",
+              "title": "Hizkuntza aldatuta"
+            },
+            "label": "Hizkuntza",
+            "submenu": {
+              "to-help-translate": "Itzultzen lagundu nahi? Klikatu hemen"
+            }
+          },
+          "resume-on-start": "Jarraitu azken abestia aplikazioa hastean",
+          "single-instance-lock": "Instantzia bakarreko blokeoa",
+          "start-at-login": "Hasi saioa hastean",
+          "starting-page": {
+            "label": "Hasierako orria",
+            "unset": "Ezarri gabe"
+          },
+          "tray": {
+            "label": "Erretilua",
+            "submenu": {
+              "disabled": "Desgaituta",
+              "enabled-and-hide-app": "Gaituta eta aplikazioa ezkutatu",
+              "enabled-and-show-app": "Gaituta eta aplikazioa erakutsi",
+              "move-to-current-desktop": "Erakustean uneko mahaigain birtualera eraman",
+              "play-pause-on-click": "Erreproduzitu/Pausatu klik egitean",
+              "force-white-icons": "Behartu ikono zuriak erabiltzera"
+            }
+          },
+          "visual-tweaks": {
+            "label": "Doikuntza bisualak",
+            "submenu": {
+              "custom-window-title": {
+                "label": "Leihoaren izenburu pertsonalizatua",
+                "prompt": {
+                  "label": "Sartu leihoaren izenburu pertsonalizatua: (utzi hutsik desgaitzeko)",
+                  "placeholder": "Adibidea: {{applicationName}}"
+                }
+              },
+              "like-buttons": {
+                "default": "Lehenetsia",
+                "force-show": "Behartu erakustea",
+                "hide": "Ezkutatu",
+                "label": "Gustoko botoiak",
+                "swap": "Alderantzikatu gustoko botoien ordena"
+              },
+              "remove-upgrade-button": "Kendu igoera botoia",
+              "theme": {
+                "dialog": {
+                  "button": {
+                    "cancel": "Utzi",
+                    "remove": "Kendu"
+                  },
+                  "remove-theme": "Ziur zaude gai pertsonalizatua kendu nahi duzula?",
+                  "remove-theme-message": "Honek gai pertsonalizatua kenduko du"
+                },
+                "label": "Gaia",
+                "submenu": {
+                  "import-css-file": "Inportatu CSS fitxategi pertsonalizatua",
+                  "no-theme": "Gairik gabe"
+                }
+              }
+            }
+          }
+        }
+      },
+      "plugins": {
+        "enabled": "Gaituta",
+        "label": "Pluginak",
+        "new": "BERRIA"
+      },
+      "view": {
+        "label": "Ikusi",
+        "submenu": {
+          "force-reload": "Behartu birkarga",
+          "reload": "Birkargatu",
+          "reset-zoom": "Benetako tamaina",
+          "toggle-fullscreen": "Txandakatu pantaila osoa",
+          "zoom-in": "Handitu",
+          "zoom-out": "Txikitu"
+        }
+      }
+    },
+    "tray": {
+      "next": "Hurrengoa",
+      "play-pause": "Erreproduzitu/Pausatu",
+      "previous": "Aurrekoa",
+      "quit": "Irten",
+      "restart": "Berrabiarazi aplikazioa",
+      "show": "Erakutsi leihoa",
+      "tooltip": {
+        "default": "{{applicationName}}",
+        "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
+      },
+      "like": "Atsegin",
+      "dislike": "Ez gustatu",
+      "unlike": "Ez bezala",
+      "undislike": "Ez gustatu"
+    }
+  },
+  "plugins": {
+    "ad-speedup": {
+      "description": "Iragarki bat erreproduzitzen bada, audioa isilarazi eta erreprodukzio abiadura 16x-era ezartzen du",
+      "name": "Iragarkien abiadura"
+    },
+    "adblocker": {
+      "description": "Blokeatu iragarki eta jarraipen guztiak lehenetsita",
+      "menu": {
+        "blocker": "Blokeatzailea"
+      },
+      "name": "Iragarki blokeatzailea"
+    },
+    "album-actions": {
+      "description": "Gustoko ez, Ez gustoko, Gustoko eta Gustokoa kendu botoiak gehitzen ditu erreprodukzio-zerrenda edo album bateko abesti guztiei aplikatzeko",
+      "name": "Albumaren ekintzak"
+    },
+    "album-color-theme": {
+      "description": "Albumaren kolore paletan oinarritutako gai dinamiko eta efektu bisualak aplikatzen ditu",
+      "menu": {
+        "color-mix-ratio": {
+          "label": "Kolore nahaste ratioa",
+          "submenu": {
+            "percent": "{{ratio}}%"
+          }
+        },
+        "enable-seekbar": "Gaitu bilaketa-barraren gaikuntza"
+      },
+      "name": "Albumaren kolore gaia"
+    },
+    "audio-only": {
+      "description": "Audio soilik modua behartzen du — bideo korronte guztiak blokeatzen ditu sare eta erreproduzitzaile mailan RAM eta banda-zabalera aurrezteko",
+      "name": "Audioa soilik"
+    },
+    "ambient-mode": {
+      "description": "Argiztapen efektu bat aplikatzen du bideoko kolore leunak zure pantailaren atzeko planora proiektatuz",
+      "menu": {
+        "blur-amount": {
+          "label": "Lausotze kantitatea",
+          "submenu": {
+            "pixels": "{{blurAmount}} pixel"
+          }
+        },
+        "buffer": {
+          "label": "Bufferra",
+          "submenu": {
+            "buffer": "buffer"
+          }
+        },
+        "opacity": {
+          "label": "Opakotasuna",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "quality": {
+          "label": "Kalitatea",
+          "submenu": {
+            "pixels": "{{quality}} pixel"
+          }
+        },
+        "size": {
+          "label": "Tamaina",
+          "submenu": {
+            "percent": "{{size}}%"
+          }
+        },
+        "smoothness-transition": {
+          "label": "Leuntasun trantsizioa",
+          "submenu": {
+            "during": "{{interpolationTime}} s-tan zehar"
+          }
+        },
+        "use-fullscreen": {
+          "label": "Pantaila osoa erabiltzen"
+        }
+      },
+      "name": "Giro modua"
+    },
+    "amuse": {
+      "description": "{{applicationName}}(r)i Amuse-ren unean erreproduzitzen ari den widget-erako euskarria gehitzen dio (6K Labs)",
+      "name": "Amuse",
+      "response": {
+        "query": "Amuse API zerbitzaria martxan dago. GET /query erabili abestiaren informazioa lortzeko."
+      }
+    },
+    "api-server": {
+      "description": "API zerbitzari bat gehitzen du erreproduzitzailea kontrolatzeko",
+      "dialog": {
+        "request": {
+          "buttons": {
+            "allow": "Baimendu",
+            "deny": "Ukatu"
+          },
+          "message": "Baimendu {{ID}} ({{origin}}) APIra sartzea?",
+          "title": "API baimen eskaera"
+        }
+      },
+      "menu": {
+        "auth-strategy": {
+          "label": "Baimen estrategia",
+          "submenu": {
+            "auth-at-first": {
+              "label": "Baimendu lehen eskaeran"
+            },
+            "none": {
+              "label": "Baimenik gabe"
+            }
+          }
+        },
+        "hostname": {
+          "label": "Ostalari-izena"
+        },
+        "https": {
+          "label": "HTTPS eta Ziurtagiriak",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "Hautatu HTTPS ziurtagiri fitxategia",
+              "label": "Ziurtagiri fitxategia (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "Gaitu HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Hautatu HTTPS gako pribatuaren fitxategia",
+              "label": "Gako pribatuaren fitxategia (.key/.pem)"
+            }
+          }
+        },
+        "port": {
+          "label": "Ataka"
+        }
+      },
+      "name": "API Zerbitzaria [Beta]",
+      "prompt": {
+        "hostname": {
+          "label": "Sartu ostalari-izena (adib. 0.0.0.0) API zerbitzarirako:",
+          "title": "Ostalari-izena"
+        },
+        "port": {
+          "label": "Sartu ataka API zerbitzarirako:",
+          "title": "Ataka"
+        }
+      }
+    },
+    "audio-compressor": {
+      "description": "Aplikatu audioari konpresioa (seinalearen zatirik ozenenen bolumena jaisten du eta zatirik apalenen bolumena igotzen du)",
+      "name": "Audio konpresorea"
+    },
+    "auth-proxy-adapter": {
+      "description": "Autentifikazio proxy zerbitzuen erabilerarako euskarria",
+      "menu": {
+        "disable": "Desgaitu Proxy Egokigailua",
+        "enable": "Gaitu Proxy Egokigailua",
+        "hostname": {
+          "label": "Ostalari-izena"
+        },
+        "port": {
+          "label": "Ataka"
+        }
+      },
+      "name": "Auth Proxy Egokigailua",
+      "prompt": {
+        "hostname": {
+          "label": "Sartu ostalari-izena tokiko proxy zerbitzarirako (berrabiaraztea eskatzen du):",
+          "title": "Proxy-aren ostalari-izena"
+        },
+        "port": {
+          "label": "Sartu ataka tokiko proxy zerbitzarirako (berrabiaraztea eskatzen du):",
+          "title": "Proxy-aren ataka"
+        }
+      }
+    },
+    "blur-nav-bar": {
+      "description": "Nabigazio-barra gardena eta lausoa bihurtzen du",
+      "name": "Lausotu nabigazio-barra"
+    },
+    "bypass-age-restrictions": {
+      "description": "Musika-erreproduzitzailearen adin-egiaztapena saihestu",
+      "name": "Adin-murrizketak saihestu"
+    },
+    "captions-selector": {
+      "description": "Azpitituluen hautatzailea {{applicationName}} audio pistentzako",
+      "menu": {
+        "autoload": "Automatikoki hautatu azken erabilitako azpititulua",
+        "disable-captions": "Azpititulurik gabe lehenetsita"
+      },
+      "name": "Azpitituluen hautatzailea",
+      "prompt": {
+        "selector": {
+          "label": "Uneko azpitituluen hizkuntza: {{language}}",
+          "none": "Bat ere ez",
+          "title": "Hautatu azpitituluen hizkuntza"
+        }
+      },
+      "templates": {
+        "title": "Ireki azpitituluen hautatzailea"
+      },
+      "toast": {
+        "caption-changed": "Azpitituluak {{language}}(e)ra aldatu dira",
+        "caption-disabled": "Azpitituluak desgaituta",
+        "no-captions": "Ez dago azpititulurik eskuragarri abesti honetarako"
+      }
+    },
+    "clock": {
+      "description": "Gehitu erloju bat nabigazio-barrari",
+      "menu": {
+        "format": {
+          "24-hour-format": "24 orduko formatua",
+          "display-seconds": "Erakutsi segundoak",
+          "label": "Formatua"
+        }
+      },
+      "name": "Erlojua"
+    },
+    "compact-sidebar": {
+      "description": "Alboko barra beti modu trinkoan ezarri",
+      "name": "Alboko barra trinkoa"
+    },
+    "crossfade": {
+      "description": "Abestien arteko gurutzatutako desagertzea",
+      "menu": {
+        "advanced": "Aurreratua"
+      },
+      "name": "Gurutzatze [Beta]",
+      "prompt": {
+        "options": {
+          "multi-input": {
+            "fade-in-duration": "Sartze-desagertzearen iraupena (ms)",
+            "fade-out-duration": "Irteera-desagertzearen iraupena (ms)",
+            "fade-scaling": {
+              "label": "Desagertzearen eskalatzea",
+              "linear": "Lineala",
+              "logarithmic": "Logaritmikoa"
+            },
+            "seconds-before-end": "Crossfade N segundo amaitu baino lehen"
+          },
+          "title": "Crossfade aukerak"
+        }
+      }
+    },
+    "custom-output-device": {
+      "description": "Konfiguratu irteera pertsonalizatuko multimedia gailu bat abestietarako",
+      "menu": {
+        "device-selector": "Hautatu gailua"
+      },
+      "name": "Irteera gailu pertsonalizatua",
+      "prompt": {
+        "device-selector": {
+          "label": "Aukeratu erabili beharreko irteera multimedia gailua",
+          "title": "Hautatu irteera gailua"
+        }
+      }
+    },
+    "disable-autoplay": {
+      "description": "Abestia \"pausatuta\" moduan hastea eragiten du",
+      "menu": {
+        "apply-once": "Abiaraztean bakarrik aplikatzen da"
+      },
+      "name": "Desgaitu erreprodukzio automatikoa"
+    },
+    "discord": {
+      "backend": {
+        "already-connected": "Konexio aktiboarekin konektatzen saiatu da",
+        "connected": "Discord-era konektatuta",
+        "disconnected": "Discord-etik deskonektatuta"
+      },
+      "description": "Erakutsi zure lagunei zer entzuten ari zaren Rich Presence-rekin",
+      "menu": {
+        "auto-reconnect": "Birkonexio automatikoa",
+        "clear-activity": "Garbitu jarduera",
+        "clear-activity-after-timeout": "Garbitu jarduera denbora-muga ondoren",
+        "connected": "Konektatuta",
+        "disconnected": "Deskonektatuta",
+        "hide-duration-left": "Ezkutatu geratzen den iraupena",
+        "hide-github-button": "Ezkutatu GitHub esteka botoia",
+        "play-on-application": "Erreproduzitu {{applicationName}}(e)n",
+        "set-inactivity-timeout": "Ezarri jarduerarik gabeko denbora-muga",
+        "set-status-display-type": {
+          "label": "Egoera testua",
+          "submenu": {
+            "application": "{{applicationName}} entzuten",
+            "artist": "{artist} entzuten",
+            "title": "{song title} entzuten"
+          }
+        }
+      },
+      "name": "Discord Rich Presence",
+      "prompt": {
+        "set-inactivity-timeout": {
+          "label": "Sartu jarduerarik gabeko denbora-muga segundotan:",
+          "title": "Ezarri jarduerarik gabeko denbora-muga"
+        }
+      }
+    },
+    "downloader": {
+      "backend": {
+        "dialog": {
+          "error": {
+            "buttons": {
+              "ok": "Ados"
+            },
+            "message": "Argh! Barkatu, deskargak huts egin du…",
+            "title": "Errorea deskargan!"
+          },
+          "start-download-playlist": {
+            "buttons": {
+              "ok": "Ados"
+            },
+            "detail": "({{playlistSize}} abesti)",
+            "message": "{{playlistTitle}} erreprodukzio-zerrenda deskargatzen",
+            "title": "Deskarga hasi da"
+          }
+        },
+        "feedback": {
+          "conversion-progress": "Bihurketa: {{percent}}%",
+          "converting": "Bihurtzen…",
+          "done": "Eginda: {{filePath}}",
+          "download-info": "Deskargatzen {{artist}} - {{title}} [{{videoId}}",
+          "download-progress": "Deskarga: {{percent}}%",
+          "downloading": "Deskargatzen…",
+          "downloading-counter": "Deskargatzen {{current}}/{{total}}…",
+          "downloading-playlist": "Erreprodukzio-zerrenda deskargatzen \"{{playlistTitle}}\" - {{playlistSize}} abesti ({{playlistId}})",
+          "error-while-downloading": "Errorea deskargatzean \"{{author}} - {{title}}\": {{error}}",
+          "folder-already-exists": "{{playlistFolder}} karpeta badago lehendik",
+          "getting-playlist-info": "Erreprodukzio-zerrendaren informazioa lortzen…",
+          "loading": "Kargatzen…",
+          "playlist-has-only-one-song": "Erreprodukzio-zerrendak elementu bakarra du, zuzenean deskargatzen",
+          "playlist-id-not-found": "Ez da erreprodukzio-zerrendaren IDrik aurkitu",
+          "playlist-is-empty": "Erreprodukzio-zerrenda hutsik dago",
+          "playlist-is-mix-or-private": "Errorea erreprodukzio-zerrendaren informazioa lortzean: ziurtatu ez dela pribatua edo \"Zuretzat nahastua\" erreprodukzio-zerrenda\n\n{{error}}",
+          "preparing-file": "Fitxategia prestatzen…",
+          "saving": "Gordetzen…",
+          "trying-to-get-playlist-id": "Erreprodukzio-zerrendaren IDa lortzen saiatzen: {{playlistId}}",
+          "video-id-not-found": "Bideoa ez da aurkitu",
+          "writing-id3": "ID3 etiketak idazten…"
+        }
+      },
+      "description": "MP3 / jatorrizko audioa deskargatu zuzenean interfazetik",
+      "menu": {
+        "choose-download-folder": "Aukeratu deskargaren karpeta",
+        "download-finish-settings": {
+          "label": "Deskargatu amaitzean",
+          "prompt": {
+            "last-percent": "X portzentajearen ondoren",
+            "last-seconds": "Azken x segundoak",
+            "title": "Konfiguratu noiz deskargatu"
+          },
+          "submenu": {
+            "advanced": "Aurreratua",
+            "enabled": "Gaituta",
+            "mode": "Denbora modua",
+            "percent": "Portzentajea",
+            "seconds": "Segundoak"
+          }
+        },
+        "download-playlist": "Deskargatu erreprodukzio-zerrenda",
+        "presets": "Aurre-ezarpenak",
+        "skip-existing": "Saltatu lehendik dauden fitxategiak"
+      },
+      "name": "Deskargatzailea",
+      "renderer": {
+        "can-not-update-progress": "Ezin da aurrerapena eguneratu"
+      },
+      "templates": {
+        "button": "Deskargatu"
+      }
+    },
+    "equalizer": {
+      "description": "Ekualizadore bat gehitzen dio erreproduzitzaileari",
+      "menu": {
+        "presets": {
+          "label": "Aurre-ezarpenak",
+          "list": {
+            "bass-booster": "Baxu indartzailea"
+          }
+        }
+      },
+      "name": "Ekualizadorea"
+    },
+    "exponential-volume": {
+      "description": "Bolumen graduatzailea esponentzial bihurtzen du, bolumen baxuagoak errazago hautatzeko.",
+      "name": "Bolumen esponentziala"
+    },
+    "in-app-menu": {
+      "description": "Menu-barrei itxura dotore, ilun edo albumaren kolorekoa ematen die",
+      "menu": {
+        "hide-dom-window-controls": "Ezkutatu DOM leiho kontrolak"
+      },
+      "name": "Aplikazio-barneko menua"
+    },
+    "lumiastream": {
+      "description": "Lumia Stream euskarria gehitzen du",
+      "name": "Lumia Stream [Beta]"
+    },
+    "lyrics-genius": {
+      "description": "Abesti gehienentzako letren euskarria gehitzen du",
+      "menu": {
+        "romanized-lyrics": "Letra erromanizatuak"
+      },
+      "name": "Letra Genius",
+      "renderer": {
+        "fetched-lyrics": "Genius-erako letrak eskuratu dira"
+      }
+    },
+    "music-together": {
+      "description": "Partekatu erreprodukzio-zerrenda bat besteekin. Ostalariak abesti bat erreproduzitzen duenean, beste guztiek abesti bera entzungo dute",
+      "dialog": {
+        "enter-host": "Sartu ostalariaren IDa"
+      },
+      "internal": {
+        "save": "Gorde",
+        "track-source": "Pistaren jatorria",
+        "unknown-user": "Erabiltzaile ezezaguna"
+      },
+      "menu": {
+        "click-to-copy-id": "Kopiatu ostalariaren IDa",
+        "close": "Itxi Music Together",
+        "connected-users": "Konektatutako erabiltzaileak",
+        "disconnect": "Deskonektatu Music Together",
+        "empty-user": "Ez dago konektatutako erabiltzailerik",
+        "host": "Music Together ostalaria",
+        "join": "Batu Music Together-era",
+        "permission": {
+          "all": "Baimendu gonbidatuei erreprodukzio-zerrenda eta erreproduzitzailea kontrolatzea",
+          "host-only": "Ostalariak bakarrik kontrola dezake erreprodukzio-zerrenda eta erreproduzitzailea",
+          "playlist": "Baimendu gonbidatuei erreprodukzio-zerrenda kontrolatzea"
+        },
+        "set-permission": "Aldatu kontrol baimena",
+        "status": {
+          "disconnected": "Deskonektatuta",
+          "guest": "Gonbidatu gisa konektatuta",
+          "host": "Ostalari gisa konektatuta"
+        }
+      },
+      "name": "Musika Elkartea [Beta]",
+      "toast": {
+        "add-song-failed": "Ezin izan da abestia gehitu",
+        "closed": "Music Together itxita",
+        "disconnected": "Music Together deskonektatuta",
+        "host-failed": "Music Together ostalaritzeak huts egin du",
+        "id-copied": "Ostalariaren IDa arbelean kopiatuta",
+        "id-copy-failed": "Ezin izan da ostalariaren IDa arbelean kopiatu",
+        "join-failed": "Music Together-era batzeak huts egin du",
+        "joined": "Music Together-era batuta",
+        "permission-changed": "Music Together baimena \"{{permission}}\"(e)ra aldatu da",
+        "remove-song-failed": "Ezin izan da abestia kendu",
+        "user-connected": "{{name}} Music Together-era batu da",
+        "user-disconnected": "{{name}}(e)k Music Together utzi du"
+      }
+    },
+    "navigation": {
+      "description": "Hurrengoa/Atzera nabigazio geziak zuzenean interfazean integratuta, zure nabigatzaile gogokoenean bezala",
+      "name": "Nabigazioa",
+      "templates": {
+        "back": {
+          "title": "Joan aurreko orrira"
+        },
+        "forward": {
+          "title": "Joan hurrengo orrira"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "Kendu Google-ren saio-hasiera botoiak eta estekak interfazetik",
+      "name": "Google saio-hasierarik gabe"
+    },
+    "notifications": {
+      "description": "Erakutsi jakinarazpen bat abesti bat erreproduzitzen hasten denean (jakinarazpen interaktiboak eskuragarri daude Windows-en)",
+      "menu": {
+        "interactive": "Jakinarazpen interaktiboak",
+        "interactive-settings": {
+          "label": "Ezarpen interaktiboak",
+          "submenu": {
+            "hide-button-text": "Ezkutatu botoiaren testua",
+            "hover-controls": "Erakutsi mini-erreproduzitzailea erretiluaren gainean saguarekin pasatzean",
+            "refresh-on-play-pause": "Freskatu erreproduzitzean/pausatzean",
+            "tray-controls": "Ireki/Itxi erretiluan klik egitean"
+          }
+        },
+        "priority": "Jakinarazpenaren lehentasuna",
+        "toast-style": "Jakinarazpenen estiloa",
+        "unpause-notification": "Erakutsi jakinarazpena erreprodukzioa berrabiaraztean"
+      },
+      "name": "Jakinarazpenak"
+    },
+    "performance-improvement": {
+      "description": "Hobetu errendimendua script esperimentalak gaituta",
+      "name": "Errendimendu hobekuntza [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Automatikoki berreskuratzen da trabatuta, geldituta edo hilda dauden erreprodukzio egoeretatik",
+      "menu": {
+        "log-to-console": "Erregistratu berreskuratze gertaerak kontsolara"
+      },
+      "name": "Erreprodukzioaren berreskurapena"
+    },
+    "picture-in-picture": {
+      "description": "Aplikazioa irudi-irudian modura aldatzeko aukera ematen du",
+      "menu": {
+        "always-on-top": "Beti gainean",
+        "hotkey": {
+          "label": "Laster-tekla",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "Laster-tekla"
+            },
+            "label": "Aukeratu laster-tekla bat irudi-irudiana txandakatzeko",
+            "title": "Irudi-irudiko laster-tekla"
+          }
+        },
+        "save-window-position": "Gorde leihoaren posizioa",
+        "save-window-size": "Gorde leihoaren tamaina",
+        "use-native-pip": "Erabili nabigatzailearen jatorrizko PiP-a"
+      },
+      "name": "Irudi-irudian",
+      "templates": {
+        "button": "Irudi-irudian"
+      }
+    },
+    "playback-speed": {
+      "description": "Entzun azkar, entzun mantso! Abestiaren abiadura kontrolatzen duen graduatzailea gehitzen du",
+      "name": "Erreprodukzio abiadura",
+      "templates": {
+        "button": "Abiadura"
+      }
+    },
+    "precise-volume": {
+      "description": "Kontrolatu bolumena zehaztasunez saguaren gurpila/laster-teklekin, HUD pertsonalizatu eta bolumen urrats konfiguragarriekin",
+      "menu": {
+        "arrows-shortcuts": "Tokiko gezi-teklen kontrolak",
+        "custom-volume-steps": "Ezarri bolumen urrats pertsonalizatuak",
+        "global-shortcuts": "Laster-tekla globalak"
+      },
+      "name": "Bolumen zehatza",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "Bolumena jaitsi",
+            "increase": "Bolumena igo"
+          },
+          "label": "Aukeratu bolumenaren laster-tekla globalak:",
+          "title": "Bolumenaren laster-tekla globalak"
+        },
+        "volume-steps": {
+          "label": "Aukeratu bolumena igotzeko/jaisteko urratsak",
+          "title": "Bolumen urratsak"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "Uneko kalitatea: {{quality}}",
+            "message": "Aukeratu bideo kalitatea:",
+            "title": "Aukeratu bideo kalitatea"
+          }
+        }
+      },
+      "description": "Bideo-gainean botoi batekin bideo kalitatea aldatzeko aukera ematen du",
+      "name": "Bideo kalitate aldatzailea",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "Ireki erreproduzitzailearen kalitate aldatzailea"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "Gehitu scrobbling euskarria (adib. last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "Last.fm-rekin autentifikatzeak huts egin du\nEzkutatu popup-a hurrengo berrabiarazterarte.",
+            "title": "Autentifikazioak huts egin du"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "Last.fm API ezarpenak"
+        },
+        "listenbrainz": {
+          "token": "Sartu ListenBrainz erabiltzaile tokena"
+        },
+        "scrobble-alternative-artist": "Erabili artista alternatiboak",
+        "scrobble-alternative-title": "Erabili izenburu alternatiboak",
+        "scrobble-other-media": "Scrobbleatu beste multimedia batzuk"
+      },
+      "name": "Scrobbler-a",
+      "prompt": {
+        "lastfm": {
+          "api-key": "Last.fm API gakoa",
+          "api-secret": "Last.fm API sekretua"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "Sartu zure ListenBrainz erabiltzaile tokena:",
+            "title": "ListenBrainz tokena"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "Erreprodukziorako laster-tekla globalak ezartzea ahalbidetzen du (erreproduzitu/pausatu/hurrengoa/aurrekoa) eta multimedia OSD desaktibatzea multimedia teklak gainidatziz, Ctrl/CMD + F aktibatzea bilatzeko, Linux MPRIS euskarria aktibatzea multimedia tekletarako eta laster-tekla pertsonalizatuak erabiltzaile aurreratuentzat",
+      "menu": {
+        "override-media-keys": "Gainidatzi multimedia teklak",
+        "set-keybinds": "Ezarri abesti kontrol globalak"
+      },
+      "name": "Lasterbideak (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "Hurrengoa",
+            "play-pause": "Erreproduzitu / Pausatu",
+            "previous": "Aurrekoa"
+          },
+          "label": "Aukeratu laster-tekla globalak abestien kontrolerako:",
+          "title": "Laster-tekla globalak"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "Automatikoki saltatu isilune atalak abestietan",
+      "name": "Saltatu isiluneak"
+    },
+    "sponsorblock": {
+      "description": "Automatikoki saltatzen ditu musika ez diren atalak, hala nola intro/outro edo musika bideoen zatiak non abestia erreproduzitzen ez den",
+      "name": "SponsorBlock"
+    },
+    "synced-lyrics": {
+      "description": "Abestien letra sinkronizatuak eskaintzen ditu, LRClib bezalako hornitzaileak erabiliz.",
+      "errors": {
+        "fetch": "⚠️\tErrore bat gertatu da letrak eskuratzean.\n\tSaiatu berriro geroago mesedez.",
+        "not-found": "⚠️ Ez da letrarik aurkitu abesti honetarako."
+      },
+      "menu": {
+        "convert-chinese-character": {
+          "label": "Bihurtu karaktere txinatarra",
+          "submenu": {
+            "disabled": {
+              "label": "Desgaituta",
+              "tooltip": "Desgaitu karaktere txinatarren bihurketa"
+            },
+            "simplified-to-traditional": {
+              "label": "Sinplifikatutik tradizionalera",
+              "tooltip": "Bihurtu txinera sinplifikatua txinera tradizionalera"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradizionaletik sinplifikatura",
+              "tooltip": "Bihurtu txinera tradizionala txinera sinplifikatura"
+            }
+          },
+          "tooltip": "Bihurtu karaktere txinatarra tradizionalera edo sinplifikatura"
+        },
+        "default-text-string": {
+          "label": "Letren arteko karaktere lehenetsia",
+          "tooltip": "Aukeratu letren arteko tarterako erabiliko den karaktere lehenetsia"
+        },
+        "line-effect": {
+          "label": "Lerro efektua",
+          "submenu": {
+            "fancy": {
+              "label": "Dotorea",
+              "tooltip": "Erabili efektu handi, aplikazio-antzekoak uneko lerroan"
+            },
+            "focus": {
+              "label": "Fokua",
+              "tooltip": "Egin uneko lerroa zuria bakarrik"
+            },
+            "offset": {
+              "label": "Desplazamendua",
+              "tooltip": "Desplazatu uneko lerroa eskuinera"
+            },
+            "scale": {
+              "label": "Eskala",
+              "tooltip": "Eskalatu uneko lerroa"
+            }
+          },
+          "tooltip": "Aukeratu uneko lerroari aplikatu beharreko efektua"
+        },
+        "lyrics-font-size": {
+          "label": "Letren letra-tamaina",
+          "submenu": {
+            "large": {
+              "label": "Handia",
+              "tooltip": "Erabili jatorrizko letren tamaina handiagoa"
+            },
+            "medium": {
+              "label": "Ertaina",
+              "tooltip": "Erabili letren tamaina orekatua"
+            },
+            "small": {
+              "label": "Txikia",
+              "tooltip": "Erabili letren tamaina trinkoagoa"
+            }
+          },
+          "tooltip": "Aukeratu zein handia izan behar duen letren testuak"
+        },
+        "precise-timing": {
+          "label": "Egin letrak guztiz sinkronizatuak",
+          "tooltip": "Kalkulatu hurrengo lerroaren bistaratzea milisegundoraino (errendimenduan eragin txikia izan dezake)"
+        },
+        "preferred-provider": {
+          "label": "Hornitzaile hobetsia",
+          "none": {
+            "label": "Bat ere ez",
+            "tooltip": "Ez dago hornitzaile hobetsirik"
+          },
+          "tooltip": "Aukeratu erabili beharreko hornitzaile lehenetsia"
+        },
+        "romanization": {
+          "label": "Erromanizatu letrak",
+          "tooltip": "Letrak beste hizkuntza batean badaude, saiatu bertsio latinoa bistaratzen."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "Erakutsi letrak zehaztugabeak badira ere",
+          "tooltip": "Abestia aurkitzen ez bada, pluginak berriro saiatzen da beste bilaketa-kontsulta batekin.\nBigarren saiakeraren emaitza agian ez da zehatza izango."
+        },
+        "show-time-codes": {
+          "label": "Erakutsi denbora kodeak",
+          "tooltip": "Erakutsi denbora kodeak letren ondoan"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Garbitu itzulpen cachea",
+            "tooltip": "Ezabatu diskoan gordetako cacheko itzulpen guztiak."
+          },
+          "configure": {
+            "label": "Konfiguratu API gakoa eta modeloa…",
+            "tooltip": "Ezarri hornitzailearen itzulpen aukera espezifikoak."
+          },
+          "enabled": {
+            "label": "Gaitu itzulpena",
+            "tooltip": "Erakutsi itzulitako lerro bat jatorrizko letra lerro bakoitzaren azpian."
+          },
+          "label": "Letren itzulpena",
+          "provider": {
+            "label": "Hornitzailea",
+            "tooltip": "Zein zerbitzu erabili itzulpenerako."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Anthropic-en jatorrizko Mezuen APIa erabiltzen du.",
+              "prompt-title": "Anthropic ezarpenak"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Google-ren Hizkuntza Sortzailearen APIa erabiltzen du (generateContent).",
+              "prompt-title": "Gemini ezarpenak"
+            },
+            "google-translate": {
+              "host": "Ostalaria",
+              "name": "Google Itzulpena",
+              "prompt-label": "Google Translate-ren doako amaiera-puntu ez-ofiziala erabiltzen du. Ez da API gakorik behar, baina Google-k tasa-muga ezar dezake.",
+              "prompt-title": "Google Translate ezarpenak"
+            },
+            "local-cli": {
+              "command": "Komandoa",
+              "engine": "CLI lokala",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Kodexa",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI lokala",
+              "prompt-label": "Erabili lokalki saioa hasitako Claude Code, Codex edo Gemini CLI. Komandoa eta modeloa automatikoak dira; CLI-ak bere saio hasierako lehenetsia erabiltzen du.",
+              "prompt-title": "CLI lokalaren ezarpenak",
+              "timeout": "Denbora-muga segundotan (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API modua (responses / auto / chat-completions)",
+              "base-url": "Oinarri URLa",
+              "name": "OpenAI-rekin bateragarria",
+              "prompt-label": "Erabili OpenAI-rekin bateragarriak diren zerbitzariak, Ollama barne (oinarri URLa http://127.0.0.1:11434/v1, API modua auto edo chat-completions).",
+              "prompt-title": "OpenAI-rekin bateragarriak diren ezarpenak"
+            },
+            "shared": {
+              "api-key": "API gakoa",
+              "model": "Modeloa"
+            }
+          },
+          "target-language": {
+            "label": "Helburu hizkuntza",
+            "options": {
+              "ar": "العربية",
+              "auto": "Jarraitu aplikazioaren hizkuntza",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Letrak zein hizkuntzatara itzuli."
+          },
+          "tooltip": "Itzuli letrak eta erakutsi itzulitako emaitza lerroz lerro."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Erabili YTM letrak proxyrik gabe",
+          "tooltip": "Saltatu YTM arakatze proxy-a eta deitu YouTube Music zuzenean aplikazioaren saio autentifikatua erabiliz. Erabilgarria da zure sareak/eskualdeak arakatze-dei zuzenak baimentzen baditu."
+        },
+        "show-custom-search-button": {
+          "label": "Erakutsi bilaketa botoi pertsonalizatua",
+          "tooltip": "Erakutsi bilaketa-botoi bat letra-hautatzailean, uneko abestiaren bilaketa-kontsulta eta artista gainidazteko aukera ematen duena."
+        }
+      },
+      "name": "Letra sinkronizatuak",
+      "refetch-btn": {
+        "fetching": "Eskuratzen...",
+        "normal": "Berreskuratu letrak"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Letrak sinkronizaziotik kanpo egon daitezke iraupenaren desadostasunagatik.",
+        "inexact": "⚠️ - Abesti honen letrak agian ez dira zehatzak",
+        "instrumental": "⚠️ - Hau abesti instrumentala da"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "Kontrolatu erreprodukzioa zure Windows ataza-barratik",
+      "name": "Ataza-barrako multimedia kontrola"
+    },
+    "touchbar": {
+      "description": "TouchBar widget bat gehitzen du macOS erabiltzaileentzat",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "Aplikazioaren leihoa gardena bihurtzen du",
+      "menu": {
+        "opacity": {
+          "label": "Opakotasuna",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Mota",
+          "submenu": {
+            "acrylic": "Akrilikoa",
+            "mica": "Mika",
+            "none": "Bat ere ez",
+            "tabbed": "Fitxaduna"
+          }
+        }
+      },
+      "name": "Erreproduzitzaile gardena"
+    },
+    "tuna-obs": {
+      "description": "OBS-ren Tuna pluginarekin integrazioa",
+      "name": "Atun OBS"
+    },
+    "unobtrusive-player": {
+      "description": "Erreproduzitzailea agertzea eragozten du abesti bat erreproduzitzerakoan",
+      "name": "Erreproduzitzaile diskretua"
+    },
+    "video-toggle": {
+      "description": "Botoi bat gehitzen du Bideoa/Abestia moduen artean aldatzeko. Aukeran bideo fitxa osoa ere ken dezake",
+      "menu": {
+        "align": {
+          "label": "Lerrokatzea",
+          "submenu": {
+            "left": "Ezkerra",
+            "middle": "Erdia",
+            "right": "Eskuina"
+          }
+        },
+        "force-hide": "Behartu bideo fitxaren kentzea",
+        "mode": {
+          "label": "Modua",
+          "submenu": {
+            "custom": "Txandakatze pertsonalizatua",
+            "disabled": "Desgaituta",
+            "native": "Jatorrizko txandakatzea"
+          }
+        }
+      },
+      "name": "Bideo txandakatzailea",
+      "templates": {
+        "button-song": "Abestia",
+        "button-video": "Bideoa"
+      }
+    },
+    "visualizer": {
+      "description": "Bisualizatzaile bat gehitzen dio erreproduzitzaileari",
+      "menu": {
+        "visualizer-type": "Bisualizatzaile mota"
+      },
+      "name": "Bisualizatzailea"
+    },
+    "playlist-search": {
+      "description": "Gehitu bilaketa-sarrera bat alboko barran eta Zerrendara gehitu elkarrizketa-koadroan erreprodukzio-zerrendak iragazteko.",
+      "name": "Bilaketa-zerrenda",
+      "templates": {
+        "search-placeholder": "Bilatu erreprodukzio-zerrendak",
+        "no-results": "Ez da aurkitu erreprodukzio-zerrendarik"
       }
     }
   }

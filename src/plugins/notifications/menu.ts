@@ -59,15 +59,6 @@ export const onMenu = async ({
           submenu: [
             {
               label: t(
-                'plugins.notifications.menu.interactive-settings.submenu.tray-controls',
-              ),
-              type: 'checkbox',
-              checked: config.trayControls,
-              click: (item: MenuItem) =>
-                setConfig({ trayControls: item.checked }),
-            },
-            {
-              label: t(
                 'plugins.notifications.menu.interactive-settings.submenu.hide-button-text',
               ),
               type: 'checkbox',
@@ -83,6 +74,15 @@ export const onMenu = async ({
               checked: config.refreshOnPlayPause,
               click: (item: MenuItem) =>
                 setConfig({ refreshOnPlayPause: item.checked }),
+            },
+            {
+              label: t(
+                'plugins.notifications.menu.interactive-settings.submenu.hover-controls',
+              ),
+              type: 'checkbox',
+              checked: config.hoverControls,
+              click: (item: MenuItem) =>
+                setConfig({ hoverControls: item.checked }),
             },
           ],
         },

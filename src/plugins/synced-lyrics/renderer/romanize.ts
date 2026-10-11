@@ -5,7 +5,7 @@ import { romanize as esHangulRomanize } from 'es-hangul';
 import { translate as hanjaTranslate } from 'hanja/lib/translate';
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
-import lazyVar from 'lazy-var';
+import { lazy } from 'lazy-var';
 import { pinyin } from 'pinyin-pro';
 import { detect } from 'tinyld';
 
@@ -49,7 +49,7 @@ const shinjitai = [
 ].map((codePoint) => String.fromCodePoint(codePoint));
 const shinjitaiRegex = new RegExp(`[${shinjitai.join('')}]`);
 
-const kuroshiro = lazyVar.lazy(async () => {
+const kuroshiro = lazy(async () => {
   const _kuroshiro = new Kuroshiro();
   await _kuroshiro.init(
     new KuromojiAnalyzer({
@@ -67,6 +67,7 @@ const hasJapanese = (lines: string[]) =>
 // tests for Hangul characters, sufficient for our use case
 const hasKorean = (lines: string[]) =>
   lines.some((line) => /[ㄱ-ㅎㅏ-ㅣ가-힣]+/.test(line));
+
 
 // https://en.wikipedia.org/wiki/Thai_(Unicode_block)
 const hasThai = (lines: string[]) =>

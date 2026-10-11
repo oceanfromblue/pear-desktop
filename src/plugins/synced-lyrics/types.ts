@@ -1,19 +1,118 @@
 import type { ProviderName } from './providers';
 import type { SongInfo } from '@/providers/song-info';
 
+export type TranslationProviderName =
+  | 'openai-compatible'
+  | 'anthropic'
+  | 'gemini'
+  | 'local-cli'
+  | 'google-translate';
+
+export type OpenAICompatibleApiMode = 'responses' | 'chat-completions' | 'auto';
+export type LocalCliProviderEngine = 'claude' | 'codex' | 'gemini';
+
+export type TranslationProviderSettings = {
+  'openai-compatible': {
+    baseUrl: string;
+    apiKey: string;
+    model: string;
+    apiMode?: OpenAICompatibleApiMode;
+  };
+  'anthropic': { apiKey: string; model: string };
+  'gemini': { apiKey: string; model: string };
+  'local-cli': {
+    engine: LocalCliProviderEngine;
+    command?: string;
+    model?: string;
+    timeoutSeconds: number;
+  };
+  'google-translate': {
+    host: string;
+  };
+};
+
+export type TranslationTargetLanguage =
+  | 'auto'
+  | 'zh-CN'
+  | 'zh-TW'
+  | 'en'
+  | 'ja'
+  | 'ko'
+  | 'fr'
+  | 'de'
+  | 'es'
+  | 'pt-BR'
+  | 'pt-PT'
+  | 'it'
+  | 'nl'
+  | 'ru'
+  | 'uk'
+  | 'pl'
+  | 'tr'
+  | 'ar'
+  | 'he'
+  | 'fa'
+  | 'hi'
+  | 'bn'
+  | 'ur'
+  | 'ta'
+  | 'te'
+  | 'mr'
+  | 'id'
+  | 'ms'
+  | 'vi'
+  | 'th'
+  | 'fil'
+  | 'sw'
+  | 'sv'
+  | 'no'
+  | 'da'
+  | 'fi'
+  | 'cs'
+  | 'ro'
+  | 'hu'
+  | 'el'
+  | 'bg'
+  | 'sr'
+  | 'hr'
+  | 'sk'
+  | 'lt';
+
+export type TranslationConfig = {
+  enabled: boolean;
+  provider: TranslationProviderName;
+  targetLanguage: TranslationTargetLanguage;
+  providers: TranslationProviderSettings;
+};
+
 export type SyncedLyricsPluginConfig = {
   enabled: boolean;
-  preferredProvider?: ProviderName;
+  /**
+   * Providers in the order they are tried, the first hit winning. Absent means
+   * the order they are declared in — see the note on the plugin's config.
+   */
+  providerPriority?: ProviderName[];
+  /**
+   * Follow `providerPriority`. Off restores the pre-priority-list behaviour:
+   * whichever provider has the best lyrics wins, the list only breaks ties.
+   */
+  usePriorityList: boolean;
+  /** Prefer time-synced lyrics over plain ones while walking the order. */
+  preferSynced: boolean;
   preciseTiming: boolean;
   showTimeCodes: boolean;
   defaultTextString: string | string[];
   showLyricsEvenIfInexact: boolean;
   lineEffect: LineEffect;
+  lyricsFontSize?: LyricsFontSize;
   romanization: boolean;
+  useYTMLyricsWithoutProxy: boolean;
   convertChineseCharacter?:
     | 'simplifiedToTraditional'
     | 'traditionalToSimplified'
     | 'disabled';
+  showCustomSearchButton?: boolean;
+  translation: TranslationConfig;
 };
 
 export type LineLyricsStatus = 'previous' | 'current' | 'upcoming';
@@ -28,6 +127,7 @@ export type LineLyrics = {
 };
 
 export type LineEffect = 'fancy' | 'scale' | 'offset' | 'focus';
+export type LyricsFontSize = 'small' | 'medium' | 'large';
 
 export interface LyricResult {
   title: string;
@@ -35,6 +135,12 @@ export interface LyricResult {
 
   lyrics?: string;
   lines?: LineLyrics[];
+  translation?: {
+    lyrics?: string;
+    lines?: LineLyrics[];
+    language?: string;
+    provider?: string;
+  };
 }
 
 // prettier-ignore

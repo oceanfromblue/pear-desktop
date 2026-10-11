@@ -109,7 +109,8 @@
                   "title": "Définir un proxy"
                 }
               },
-              "toggle-dev-tools": "Ouvrir/fermer les outils de développement"
+              "toggle-dev-tools": "Ouvrir/fermer les outils de développement",
+              "force-smtc": "Forcer l'utilisation de SMTC externe"
             }
           },
           "always-on-top": "Toujours au dessus",
@@ -144,7 +145,9 @@
               "disabled": "Désactivé",
               "enabled-and-hide-app": "Activé et cacher l'app",
               "enabled-and-show-app": "Activé et afficher l'application",
-              "play-pause-on-click": "Lecture/Pause au clic"
+              "move-to-current-desktop": "Déplacer vers le bureau virtuel actuel lors de l'affichage",
+              "play-pause-on-click": "Lecture/Pause au clic",
+              "force-white-icons": "Forcer l'utilisation d'icônes blanches"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}} : {{artist}} - {{title}}"
-      }
+      },
+      "like": "J'aime",
+      "dislike": "Je n'aime pas",
+      "unlike": "Contrairement à",
+      "undislike": "Ne pas retirer le pouce"
     }
   },
   "plugins": {
@@ -280,6 +287,10 @@
         }
       },
       "name": "Mode ambiant"
+    },
+    "audio-only": {
+      "description": "Force le mode audio uniquement — bloque tous les flux vidéo au niveau du réseau et du lecteur pour économiser la RAM et la bande passante",
+      "name": "Audio Uniquement"
     },
     "amuse": {
       "description": "Ajout de la prise en charge de {{applicationName}} pour le widget Amuse now playing de 6K Labs",
@@ -684,6 +695,7 @@
           "label": "Paramètres interactifs",
           "submenu": {
             "hide-button-text": "Masquer le texte du bouton",
+            "hover-controls": "Afficher le mini-lecteur au survol de la barre d'état",
             "refresh-on-play-pause": "Actualiser lors de la lecture/pause",
             "tray-controls": "Ouvrir/Fermer au clic sur l’icône de la barre des tâches"
           }
@@ -697,6 +709,13 @@
     "performance-improvement": {
       "description": "Améliorer les performances en activant les scripts expérimentaux",
       "name": "Amélioration des performances [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Récupère automatiquement des états de lecture bloqués, arrêtés ou morts",
+      "menu": {
+        "log-to-console": "Enregistrer les événements de récupération dans la console"
+      },
+      "name": "Récupération de lecture"
     },
     "picture-in-picture": {
       "description": "Permet de basculer l’application en mode picture-in-picture",
@@ -823,10 +842,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Passe les titres \"Je n'aime pas\"",
-      "name": "Passer les titres \"Je n'aime pas\""
-    },
     "skip-silences": {
       "description": "Ignorer automatiquement les sections de silence dans les chansons",
       "name": "Passer les silences"
@@ -886,6 +901,24 @@
           },
           "tooltip": "Choisi l'effet à appliquer sur la ligne actuelle"
         },
+        "lyrics-font-size": {
+          "label": "Taille de la police des paroles",
+          "submenu": {
+            "large": {
+              "label": "Grand",
+              "tooltip": "Utiliser la taille originale plus large des paroles"
+            },
+            "medium": {
+              "label": "Moyen",
+              "tooltip": "Utiliser une taille de paroles équilibrée"
+            },
+            "small": {
+              "label": "Petit",
+              "tooltip": "Utiliser une taille de paroles plus compacte"
+            }
+          },
+          "tooltip": "Choisissez la taille du texte des paroles"
+        },
         "precise-timing": {
           "label": "Rend les paroles parfaitement synchronisées",
           "tooltip": "Calcul à la milliseconde près l'affichage de la ligne suivante (peut avoir un faible impact sur les performances)"
@@ -909,6 +942,125 @@
         "show-time-codes": {
           "label": "Afficher les timecodes",
           "tooltip": "Affiche le timecode à côté de chaque paroles"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Vider le cache de traduction",
+            "tooltip": "Supprimer toutes les traductions en cache stockées sur le disque."
+          },
+          "configure": {
+            "label": "Configurer la clé API et le modèle…",
+            "tooltip": "Définir les options de traduction spécifiques au fournisseur."
+          },
+          "enabled": {
+            "label": "Activer la traduction",
+            "tooltip": "Afficher une ligne traduite sous chaque ligne originale des paroles."
+          },
+          "label": "Traduction des paroles",
+          "provider": {
+            "label": "Fournisseur",
+            "tooltip": "Quel service utiliser pour la traduction."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Utilise l'API native Anthropic Messages.",
+              "prompt-title": "Paramètres Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Utilise l'API Generative Language de Google (generateContent).",
+              "prompt-title": "Paramètres Gemini"
+            },
+            "google-translate": {
+              "host": "Hôte",
+              "name": "Google Traduction",
+              "prompt-label": "Utilise le point de terminaison gratuit non officiel de Google Traduction. Aucune clé API requise, mais Google peut limiter le débit.",
+              "prompt-title": "Paramètres Google Traduction"
+            },
+            "local-cli": {
+              "command": "Commande",
+              "engine": "CLI local",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI local",
+              "prompt-label": "Utiliser un Claude Code, Codex ou Gemini CLI connecté localement. La commande et le modèle sont automatiques ; le CLI utilise sa propre valeur par défaut.",
+              "prompt-title": "Paramètres CLI local",
+              "timeout": "Délai d'expiration en secondes (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Mode API (responses / auto / chat-completions)",
+              "base-url": "URL de base",
+              "name": "Compatible OpenAI",
+              "prompt-label": "Utiliser des serveurs compatibles OpenAI, y compris Ollama (URL de base http://127.0.0.1:11434/v1, mode API auto ou chat-completions).",
+              "prompt-title": "Paramètres compatibles OpenAI"
+            },
+            "shared": {
+              "api-key": "Clé API",
+              "model": "Modèle"
+            }
+          },
+          "target-language": {
+            "label": "Langue cible",
+            "options": {
+              "ar": "العربية",
+              "auto": "Suivre la langue de l'application",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "La langue dans laquelle traduire les paroles."
+          },
+          "tooltip": "Traduire les paroles et afficher le résultat traduit ligne par ligne."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Utiliser les paroles YTM sans proxy",
+          "tooltip": "Contourner le proxy de navigation YTM et appeler YouTube Music directement en utilisant la session authentifiée de l'application. Utile si vous faites confiance à votre réseau/région pour autoriser les appels de navigation directs."
+        },
+        "show-custom-search-button": {
+          "label": "Afficher le bouton de recherche personnalisé",
+          "tooltip": "Afficher un bouton de recherche dans le sélecteur de paroles qui permet de remplacer la requête de recherche et l'artiste pour la chanson en cours."
         }
       },
       "name": "Paroles Synchronisées",
@@ -997,6 +1149,14 @@
         "visualizer-type": "Type de visualiseur"
       },
       "name": "Visualiseur"
+    },
+    "playlist-search": {
+      "description": "Ajoute un champ de recherche pour filtrer les playlists dans la barre latérale et la boîte de dialogue Ajouter à la playlist",
+      "name": "Recherche de playlist",
+      "templates": {
+        "search-placeholder": "Rechercher des playlists",
+        "no-results": "Aucune playlist trouvée"
+      }
     }
   }
 }

@@ -16,7 +16,7 @@
   "language": {
     "code": "sq",
     "local-name": "Shqip",
-    "name": "Emri i gjuhës në anglisht. p.sh. japonisht, koreanisht, anglisht, rusisht"
+    "name": "Albanian"
   },
   "main": {
     "console": {
@@ -219,6 +219,13 @@
       "description": "Nëse luan një reklamë, e hesht zërin dhe e vendos shpejtësinë e luajtjes në 16x",
       "name": "Përshpejtimi i reklamave"
     },
+    "adblocker": {
+      "description": "Blloko të gjitha reklamat dhe gjurmimin menjëherë",
+      "menu": {
+        "blocker": "Bllokuesi"
+      },
+      "name": "Bllokuesi i Reklamave"
+    },
     "album-actions": {
       "description": "Shton butonat \"Nuk më pëlqen\", \"Nuk e pëlqej\", \"Pëlqej\" dhe \"E pëlqej\" për t'i zbatuar këto në të gjitha këngët në një playlist ose album",
       "name": "Veprimet e albumit"
@@ -306,9 +313,837 @@
           "submenu": {
             "auth-at-first": {
               "label": "Autorizo në kërkesën e parë"
+            },
+            "none": {
+              "label": "Pa autorizim"
             }
           }
+        },
+        "hostname": {
+          "label": "Emri i hostit"
+        },
+        "https": {
+          "label": "HTTPS dhe Certifikatat",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "Zgjidh skedarin e certifikatës HTTPS",
+              "label": "Skedari i certifikatës (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "Aktivizo HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Zgjidh skedarin e çelësit privat HTTPS",
+              "label": "Skedari i çelësit privat (.key/.pem)"
+            }
+          }
+        },
+        "port": {
+          "label": "Porta"
         }
+      },
+      "name": "Serveri API [Beta]",
+      "prompt": {
+        "hostname": {
+          "label": "Shkruaj emrin e hostit (si 0.0.0.0) për serverin API:",
+          "title": "Emri i hostit"
+        },
+        "port": {
+          "label": "Shkruaj portën për serverin API:",
+          "title": "Porta"
+        }
+      }
+    },
+    "audio-compressor": {
+      "description": "Apliko kompresim në audio (ul volumin e pjesëve më të larta të sinjalit dhe rrit volumin e pjesëve më të ulëta)",
+      "name": "Kompresori i Audios"
+    },
+    "auth-proxy-adapter": {
+      "description": "Mbështetje për përdorimin e shërbimeve të proxy-t të vërtetimit",
+      "menu": {
+        "disable": "Çaktivizo Përshtatësin e Proxy-t",
+        "enable": "Aktivizo Përshtatësin e Proxy-t",
+        "hostname": {
+          "label": "Emri i hostit"
+        },
+        "port": {
+          "label": "Porta"
+        }
+      },
+      "name": "Përshtatësi i Proxy-t të Vërtetimit",
+      "prompt": {
+        "hostname": {
+          "label": "Shkruaj emrin e hostit për serverin lokal të proxy-t (kërkon rinisje):",
+          "title": "Emri i hostit të Proxy-t"
+        },
+        "port": {
+          "label": "Shkruaj portën për serverin lokal të proxy-t (kërkon rinisje):",
+          "title": "Porta e Proxy-t"
+        }
+      }
+    },
+    "blur-nav-bar": {
+      "description": "E bën shiritin e navigimit transparent dhe të turbullt",
+      "name": "Turbullimi i Shiritit të Navigimit"
+    },
+    "bypass-age-restrictions": {
+      "description": "Anashkalo verifikimin e moshës së Luajtësit të Muzikës",
+      "name": "Anashkalo Kufizimet e Moshës"
+    },
+    "captions-selector": {
+      "description": "Zgjedhësi i titrave për gjurmët audio të {{applicationName}}",
+      "menu": {
+        "autoload": "Zgjidh automatikisht titrat e fundit të përdorur",
+        "disable-captions": "Pa titra si parazgjedhje"
+      },
+      "name": "Zgjedhësi i Titrave",
+      "prompt": {
+        "selector": {
+          "label": "Gjuha aktuale e titrave: {{language}}",
+          "none": "Asnjë",
+          "title": "Zgjidh gjuhën e titrave"
+        }
+      },
+      "templates": {
+        "title": "Hap zgjedhësin e titrave"
+      },
+      "toast": {
+        "caption-changed": "Titrat u ndryshuan në {{language}}",
+        "caption-disabled": "Titrat u çaktivizuan",
+        "no-captions": "Nuk ka titra të disponueshëm për këtë këngë"
+      }
+    },
+    "clock": {
+      "description": "Shto një orë në shiritin e navigimit",
+      "menu": {
+        "format": {
+          "24-hour-format": "Formati 24-Orësh",
+          "display-seconds": "Shfaq Sekondat",
+          "label": "Formati"
+        }
+      },
+      "name": "Ora"
+    },
+    "compact-sidebar": {
+      "description": "Vendos gjithmonë shiritin anësor në modalitetin kompakt",
+      "name": "Shiriti Anësor Kompakt"
+    },
+    "crossfade": {
+      "description": "Kryqëzim midis këngëve",
+      "menu": {
+        "advanced": "E avancuar"
+      },
+      "name": "Kryqëzimi [Beta]",
+      "prompt": {
+        "options": {
+          "multi-input": {
+            "fade-in-duration": "Kohëzgjatja e hyrjes (ms)",
+            "fade-out-duration": "Kohëzgjatja e daljes (ms)",
+            "fade-scaling": {
+              "label": "Shkallëzimi i zbehjes",
+              "linear": "Linear",
+              "logarithmic": "Logaritmik"
+            },
+            "seconds-before-end": "Kryqëzo N sekonda para fundit"
+          },
+          "title": "Opsionet e kryqëzimit"
+        }
+      }
+    },
+    "custom-output-device": {
+      "description": "Konfiguro një pajisje dalëse mediatike të personalizuar për këngët",
+      "menu": {
+        "device-selector": "Zgjidh Pajisjen"
+      },
+      "name": "Pajisja Dalëse e Personalizuar",
+      "prompt": {
+        "device-selector": {
+          "label": "Zgjidh pajisjen dalëse mediatike që do të përdoret",
+          "title": "Zgjidh Pajisjen Dalëse"
+        }
+      }
+    },
+    "disable-autoplay": {
+      "description": "E bën këngën të fillojë në modalitetin \"pauzë\"",
+      "menu": {
+        "apply-once": "Zbatohet vetëm në nisje"
+      },
+      "name": "Çaktivizo Luajtjen Automatike"
+    },
+    "discord": {
+      "backend": {
+        "already-connected": "U përpoq të lidhej me një lidhje aktive",
+        "connected": "U lidh me Discord",
+        "disconnected": "U shkëput nga Discord"
+      },
+      "description": "Tregoju miqve të tu çfarë po dëgjon me Rich Presence",
+      "menu": {
+        "auto-reconnect": "Rilidhje automatike",
+        "clear-activity": "Pastro aktivitetin",
+        "clear-activity-after-timeout": "Pastro aktivitetin pas skadimit të kohës",
+        "connected": "I lidhur",
+        "disconnected": "I shkëputur",
+        "hide-duration-left": "Fshih kohëzgjatjen e mbetur",
+        "hide-github-button": "Fshih butonin e lidhjes GitHub",
+        "play-on-application": "Luaj në {{applicationName}}",
+        "set-inactivity-timeout": "Vendos kohën e pasivitetit",
+        "set-status-display-type": {
+          "label": "Teksti i statusit",
+          "submenu": {
+            "application": "Duke dëgjuar {{applicationName}}",
+            "artist": "Duke dëgjuar {artist}",
+            "title": "Duke dëgjuar {song title}"
+          }
+        }
+      },
+      "name": "Prania e Pasurisë së Discord",
+      "prompt": {
+        "set-inactivity-timeout": {
+          "label": "Shkruaj kohën e pasivitetit në sekonda:",
+          "title": "Vendos kohën e pasivitetit"
+        }
+      }
+    },
+    "downloader": {
+      "backend": {
+        "dialog": {
+          "error": {
+            "buttons": {
+              "ok": "OK"
+            },
+            "message": "Oh! Na vjen keq, shkarkimi dështoi...",
+            "title": "Gabim në shkarkim!"
+          },
+          "start-download-playlist": {
+            "buttons": {
+              "ok": "OK"
+            },
+            "detail": "({{playlistSize}} këngë)",
+            "message": "Duke shkarkuar listën e dëgjimit {{playlistTitle}}",
+            "title": "Shkarkimi filloi"
+          }
+        },
+        "feedback": {
+          "conversion-progress": "Konvertimi: {{percent}}%",
+          "converting": "Duke konvertuar...",
+          "done": "U krye: {{filePath}}",
+          "download-info": "Duke shkarkuar {{artist}} - {{title}} [{{videoId}}",
+          "download-progress": "Shkarkimi: {{percent}}%",
+          "downloading": "Duke shkarkuar...",
+          "downloading-counter": "Duke shkarkuar {{current}}/{{total}}...",
+          "downloading-playlist": "Duke shkarkuar listën e dëgjimit \"{{playlistTitle}}\" - {{playlistSize}} këngë ({{playlistId}})",
+          "error-while-downloading": "Gabim gjatë shkarkimit të \"{{author}} - {{title}}\": {{error}}",
+          "folder-already-exists": "Dosja {{playlistFolder}} tashmë ekziston",
+          "getting-playlist-info": "Duke marrë informacionin e listës së dëgjimit...",
+          "loading": "Duke ngarkuar...",
+          "playlist-has-only-one-song": "Lista e dëgjimit ka vetëm një artikull, duke e shkarkuar drejtpërdrejt",
+          "playlist-id-not-found": "Nuk u gjet ID e listës së dëgjimit",
+          "playlist-is-empty": "Lista e dëgjimit është bosh",
+          "playlist-is-mix-or-private": "Gabim gjatë marrjes së informacionit të listës së dëgjimit: sigurohu që nuk është private ose listë \"E përzier për ty\"\n\n{{error}}",
+          "preparing-file": "Duke përgatitur skedarin...",
+          "saving": "Duke ruajtur...",
+          "trying-to-get-playlist-id": "Duke u përpjekur të marr ID-në e listës së dëgjimit: {{playlistId}}",
+          "video-id-not-found": "Videoja nuk u gjet",
+          "writing-id3": "Duke shkruar etiketat ID3..."
+        }
+      },
+      "description": "Shkarkon MP3 / audio burimore drejtpërdrejt nga ndërfaqja",
+      "menu": {
+        "choose-download-folder": "Zgjidh dosjen e shkarkimit",
+        "download-finish-settings": {
+          "label": "Shkarko në përfundim",
+          "prompt": {
+            "last-percent": "Pas x përqind",
+            "last-seconds": "X sekondat e fundit",
+            "title": "Konfiguro kur të shkarkohet"
+          },
+          "submenu": {
+            "advanced": "E avancuar",
+            "enabled": "Aktivizuar",
+            "mode": "Modaliteti i kohës",
+            "percent": "Përqindje",
+            "seconds": "Sekonda"
+          }
+        },
+        "download-playlist": "Shkarko listën e dëgjimit",
+        "presets": "Paracaktimet",
+        "skip-existing": "Kalo skedarët ekzistues"
+      },
+      "name": "Shkarkuesi",
+      "renderer": {
+        "can-not-update-progress": "Nuk mund të përditësohet progresi"
+      },
+      "templates": {
+        "button": "Shkarko"
+      }
+    },
+    "equalizer": {
+      "description": "Shton një barazues në luajtës",
+      "menu": {
+        "presets": {
+          "label": "Paracaktimet",
+          "list": {
+            "bass-booster": "Përforcuesi i basit"
+          }
+        }
+      },
+      "name": "Barazuesi"
+    },
+    "exponential-volume": {
+      "description": "E bën rrëshqitësin e volumit eksponencial, kështu që është më e lehtë të zgjedhësh volume më të ulëta.",
+      "name": "Volumi Eksponencial"
+    },
+    "in-app-menu": {
+      "description": "I jep shiritave të menusë një pamje elegante, të errët ose me ngjyrat e albumit",
+      "menu": {
+        "hide-dom-window-controls": "Fshih kontrollet DOM të dritares"
+      },
+      "name": "Menuja brenda Aplikacionit"
+    },
+    "lumiastream": {
+      "description": "Shton mbështetjen për Lumia Stream",
+      "name": "Lumia Stream [Beta]"
+    },
+    "lyrics-genius": {
+      "description": "Shton mbështetjen e teksteve për shumicën e këngëve",
+      "menu": {
+        "romanized-lyrics": "Tekste të Romanizuara"
+      },
+      "name": "Teksti Genius",
+      "renderer": {
+        "fetched-lyrics": "U morën tekstet për Genius"
+      }
+    },
+    "music-together": {
+      "description": "Ndaj një listë dëgjimi me të tjerët. Kur hosti luan një këngë, të gjithë të tjerët do të dëgjojnë të njëjtën këngë",
+      "dialog": {
+        "enter-host": "Shkruaj ID-në e Hosti-t"
+      },
+      "internal": {
+        "save": "Ruaj",
+        "track-source": "Burimi i Këngës",
+        "unknown-user": "Përdorues i Panjohur"
+      },
+      "menu": {
+        "click-to-copy-id": "Kopjo ID-në e Hosti-t",
+        "close": "Mbyll Music Together",
+        "connected-users": "Përdoruesit e Lidhur",
+        "disconnect": "Shkëput Music Together",
+        "empty-user": "Asnjë përdorues i lidhur",
+        "host": "Hosti i Music Together",
+        "join": "Bashkohu me Music Together",
+        "permission": {
+          "all": "Lejo të ftuarit të kontrollojnë listën e dëgjimit dhe luajtësin",
+          "host-only": "Vetëm hosti mund të kontrollojë listën e dëgjimit dhe luajtësin",
+          "playlist": "Lejo të ftuarit të kontrollojnë listën e dëgjimit"
+        },
+        "set-permission": "Ndrysho Lejen e Kontrollit",
+        "status": {
+          "disconnected": "I shkëputur",
+          "guest": "I lidhur si i ftuar",
+          "host": "I lidhur si host"
+        }
+      },
+      "name": "Muzikë Së Bashku [Beta]",
+      "toast": {
+        "add-song-failed": "Dështoi shtimi i këngës",
+        "closed": "Music Together u mbyll",
+        "disconnected": "Music Together u shkëput",
+        "host-failed": "Dështoi pritja e Music Together",
+        "id-copied": "ID-ja e Hosti-t u kopjua në kujtesën e fragmenteve",
+        "id-copy-failed": "Dështoi kopjimi i ID-së së Hosti-t në kujtesën e fragmenteve",
+        "join-failed": "Dështoi bashkimi me Music Together",
+        "joined": "U bashkua me Music Together",
+        "permission-changed": "Leja e Music Together u ndryshua në \"{{permission}}\"",
+        "remove-song-failed": "Dështoi heqja e këngës",
+        "user-connected": "{{name}} u bashkua me Music Together",
+        "user-disconnected": "{{name}} u largua nga Music Together"
+      }
+    },
+    "navigation": {
+      "description": "Shigjetat e navigimit Para/Mbrapa të integruara drejtpërdrejt në ndërfaqe, si në shfletuesin tuaj të preferuar",
+      "name": "Navigimi",
+      "templates": {
+        "back": {
+          "title": "Shko në faqen e mëparshme"
+        },
+        "forward": {
+          "title": "Shko në faqen tjetër"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "Hiq butonat dhe lidhjet e hyrjes në Google nga ndërfaqja",
+      "name": "Pa Hyrje në Google"
+    },
+    "notifications": {
+      "description": "Shfaq një njoftim kur një këngë fillon të luajë (njoftimet interaktive janë të disponueshme në Windows)",
+      "menu": {
+        "interactive": "Njoftime Interaktive",
+        "interactive-settings": {
+          "label": "Cilësimet Interaktive",
+          "submenu": {
+            "hide-button-text": "Fshih tekstin e butonit",
+            "refresh-on-play-pause": "Rifresko në Luaj/Pauzo",
+            "tray-controls": "Hap/Mbyll me klikim në tabaka",
+            "hover-controls": "Shfaq mini-luajtësin kur kursori qëndron mbi ikonën në tabaka"
+          }
+        },
+        "priority": "Prioriteti i Njoftimit",
+        "toast-style": "Stili i njoftimit",
+        "unpause-notification": "Shfaq njoftim kur vazhdon luajtja"
+      },
+      "name": "Njoftimet"
+    },
+    "performance-improvement": {
+      "description": "Përmirëso performancën duke aktivizuar skriptet eksperimentale",
+      "name": "Përmirësimi i performancës [Beta]"
+    },
+    "picture-in-picture": {
+      "description": "Lejon kalimin e aplikacionit në modalitetin fotografi-në-fotografi",
+      "menu": {
+        "always-on-top": "Gjithmonë mbi të tjerat",
+        "hotkey": {
+          "label": "Shkurtore",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "Shkurtore"
+            },
+            "label": "Zgjidh një shkurtore për të aktivizuar fotografi-në-fotografi",
+            "title": "Shkurtorja e fotografisë-në-fotografi"
+          }
+        },
+        "save-window-position": "Ruaj pozicionin e dritares",
+        "save-window-size": "Ruaj madhësinë e dritares",
+        "use-native-pip": "Përdor PiP-në vendase të shfletuesit"
+      },
+      "name": "Fotografi-në-fotografi",
+      "templates": {
+        "button": "Fotografi-në-fotografi"
+      }
+    },
+    "playback-speed": {
+      "description": "Dëgjo shpejt, dëgjo ngadalë! Shton një rrëshqitës që kontrollon shpejtësinë e këngës",
+      "name": "Shpejtësia e Luajtjes",
+      "templates": {
+        "button": "Shpejtësia"
+      }
+    },
+    "precise-volume": {
+      "description": "Kontrollo volumin me saktësi duke përdorur rrotën e miut/shkurtoret, me një HUD të personalizuar dhe hapa të personalizueshëm të volumit",
+      "menu": {
+        "arrows-shortcuts": "Kontrollet Lokale me Shigjeta",
+        "custom-volume-steps": "Vendos Hapat e Personalizuar të Volumit",
+        "global-shortcuts": "Shkurtoret Globale"
+      },
+      "name": "Volumi i Saktë",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "Ul Volumin",
+            "increase": "Rrit Volumin"
+          },
+          "label": "Zgjidh Shkurtoret Globale të Volumit:",
+          "title": "Shkurtoret Globale të Volumit"
+        },
+        "volume-steps": {
+          "label": "Zgjidh Hapat e Rritjes/Zbritjes së Volumit",
+          "title": "Hapat e Volumit"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "Cilësia Aktuale: {{quality}}",
+            "message": "Zgjidh Cilësinë e Videos:",
+            "title": "Zgjidh Cilësinë e Videos"
+          }
+        }
+      },
+      "description": "Lejon ndryshimin e cilësisë së videos me një buton në mbivendosjen e videos",
+      "name": "Ndryshuesi i Cilësisë së Videos",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "Hap ndryshuesin e cilësisë së luajtësit"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "Shto mbështetjen e scrobbling-ut (p.sh. last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "Dështoi vërtetimi me Last.fm\nFshih dritaren kërcyese deri në rinisjen tjetër.",
+            "title": "Vërtetimi Dështoi"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "Cilësimet e API-së Last.fm"
+        },
+        "listenbrainz": {
+          "token": "Shkruaj token-in e përdoruesit ListenBrainz"
+        },
+        "scrobble-alternative-artist": "Përdor artistë alternativë",
+        "scrobble-alternative-title": "Përdor tituj alternativë",
+        "scrobble-other-media": "Scrobble media të tjera"
+      },
+      "name": "Scrobbler",
+      "prompt": {
+        "lastfm": {
+          "api-key": "Çelësi API i Last.fm",
+          "api-secret": "Sekreti API i Last.fm"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "Shkruaj token-in tënd të përdoruesit ListenBrainz:",
+            "title": "Token-i ListenBrainz"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "Lejon vendosjen e shkurtoreve globale për luajtjen (luaj/pauzo/tjetra/e mëparshmja) dhe fikjen e OSD-së mediatike duke mbishkruar tastet mediatike, aktivizimin e Ctrl/CMD + F për kërkim, aktivizimin e mbështetjes Linux MPRIS për tastet mediatike dhe shkurtore të personalizuara për përdoruesit e avancuar",
+      "menu": {
+        "override-media-keys": "Mbishkruaj Tastet Mediatike",
+        "set-keybinds": "Vendos Kontrollet Globale të Këngëve"
+      },
+      "name": "Shkurtoret (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "Tjetra",
+            "play-pause": "Luaj / Pauzo",
+            "previous": "E Mëparshmja"
+          },
+          "label": "Zgjidh Shkurtoret Globale për Kontrollin e Këngëve:",
+          "title": "Shkurtoret Globale"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "Kalo automatikisht pjesët e heshtura në këngë",
+      "name": "Kalo Heshtjet"
+    },
+    "sponsorblock": {
+      "description": "Kalon automatikisht pjesët jo-muzikore si hyrja/dalja ose pjesët e videove muzikore ku kënga nuk po luan",
+      "name": "SponsorBlock"
+    },
+    "synced-lyrics": {
+      "description": "Ofron tekste të sinkronizuara për këngët, duke përdorur ofrues si LRClib.",
+      "errors": {
+        "fetch": "⚠️\tNdodhi një gabim gjatë marrjes së teksteve.\n\tJu lutemi provoni përsëri më vonë.",
+        "not-found": "⚠️ Nuk u gjetën tekste për këtë këngë."
+      },
+      "menu": {
+        "convert-chinese-character": {
+          "label": "Konverto karakteret kineze",
+          "submenu": {
+            "disabled": {
+              "label": "Çaktivizuar",
+              "tooltip": "Çaktivizo konvertimin e karaktereve kineze"
+            },
+            "simplified-to-traditional": {
+              "label": "E thjeshtuar në Tradicionale",
+              "tooltip": "Konverto kinezishten e thjeshtuar në kinezishten tradicionale"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradicionale në të Thjeshtuar",
+              "tooltip": "Konverto kinezishten tradicionale në kinezishten e thjeshtuar"
+            }
+          },
+          "tooltip": "Konverto karakteret kineze në Tradicionale ose të Thjeshtuara"
+        },
+        "default-text-string": {
+          "label": "Karakteri i parazgjedhur midis teksteve",
+          "tooltip": "Zgjidh karakterin e parazgjedhur për hapësirën midis teksteve"
+        },
+        "line-effect": {
+          "label": "Efekti i rreshtit",
+          "submenu": {
+            "fancy": {
+              "label": "Elegant",
+              "tooltip": "Përdor efekte të mëdha, si të aplikacionit në rreshtin aktual"
+            },
+            "focus": {
+              "label": "Fokus",
+              "tooltip": "Bëj vetëm rreshtin aktual të bardhë"
+            },
+            "offset": {
+              "label": "Zhvendosje",
+              "tooltip": "Zhvendos në të djathtë rreshtin aktual"
+            },
+            "scale": {
+              "label": "Shkallë",
+              "tooltip": "Shkallëzo rreshtin aktual"
+            }
+          },
+          "tooltip": "Zgjidh efektin për të aplikuar në rreshtin aktual"
+        },
+        "lyrics-font-size": {
+          "label": "Madhësia e shkrimit të teksteve",
+          "submenu": {
+            "large": {
+              "label": "E madhe",
+              "tooltip": "Përdor madhësinë origjinale më të madhe të teksteve"
+            },
+            "medium": {
+              "label": "E mesme",
+              "tooltip": "Përdor një madhësi të balancuar të teksteve"
+            },
+            "small": {
+              "label": "E vogël",
+              "tooltip": "Përdor një madhësi më kompakte të teksteve"
+            }
+          },
+          "tooltip": "Zgjidh sa të mëdha duhet të jenë tekstet"
+        },
+        "precise-timing": {
+          "label": "Bëji tekstet plotësisht të sinkronizuara",
+          "tooltip": "Llogarit në milisekondë shfaqjen e rreshtit tjetër (mund të ketë një ndikim të vogël në performancë)"
+        },
+        "preferred-provider": {
+          "label": "Ofruesi i Preferuar",
+          "none": {
+            "label": "Asnjë",
+            "tooltip": "Asnjë ofrues i preferuar"
+          },
+          "tooltip": "Zgjidh ofruesin e parazgjedhur për t'u përdorur"
+        },
+        "romanization": {
+          "label": "Romanizo tekstet",
+          "tooltip": "Nëse tekstet janë në një gjuhë tjetër, provo të shfaqësh një version latin."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "Shfaq tekstet edhe nëse janë të pasakta",
+          "tooltip": "Nëse kënga nuk gjendet, shtojca provon përsëri me një pyetje tjetër kërkimi.\nRezultati i përpjekjes së dytë mund të mos jetë i saktë."
+        },
+        "show-time-codes": {
+          "label": "Shfaq kodet kohore",
+          "tooltip": "Shfaq kodet kohore pranë teksteve"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Pastro memorien e përkohshme të përkthimeve",
+            "tooltip": "Fshi të gjitha përkthimet e ruajtura në disk."
+          },
+          "configure": {
+            "label": "Konfiguro çelësin API dhe modelin...",
+            "tooltip": "Vendos opsionet e përkthimit specifike për ofruesin."
+          },
+          "enabled": {
+            "label": "Aktivizo përkthimin",
+            "tooltip": "Shfaq një rresht të përkthyer nën çdo rresht origjinal të tekstit."
+          },
+          "label": "Përkthimi i teksteve",
+          "provider": {
+            "label": "Ofruesi",
+            "tooltip": "Cilin shërbim të përdoret për përkthim."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Përdor API-në vendase Anthropic Messages.",
+              "prompt-title": "Cilësimet Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Përdor API-në e Gjuhës Gjenerative të Google (generateContent).",
+              "prompt-title": "Cilësimet Gemini"
+            },
+            "google-translate": {
+              "host": "Hosti",
+              "name": "Përkthimi Google",
+              "prompt-label": "Përdor pikën fundore jozyrtare falas të Google Translate. Nuk kërkohet çelës API, por Google mund ta kufizojë atë.",
+              "prompt-title": "Cilësimet e Google Translate"
+            },
+            "local-cli": {
+              "command": "Komanda",
+              "engine": "CLI Lokale",
+              "engine-claude": "Kodi i Claude",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI Lokale",
+              "prompt-label": "Përdor një Claude Code, Codex ose Gemini CLI të identifikuar lokalisht. Komanda dhe modeli janë automatike; CLI përdor parazgjedhjet e veta të identifikuara.",
+              "prompt-title": "Cilësimet e CLI-së Lokale",
+              "timeout": "Koha e skadimit në sekonda (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Modaliteti API (responses / auto / chat-completions)",
+              "base-url": "URL bazë",
+              "name": "I pajtueshëm me OpenAI",
+              "prompt-label": "Përdor serverë të pajtueshëm me OpenAI, duke përfshirë Ollama (URL bazë http://127.0.0.1:11434/v1, modaliteti API auto ose chat-completions).",
+              "prompt-title": "Cilësimet e pajtueshme me OpenAI"
+            },
+            "shared": {
+              "api-key": "Çelësi API",
+              "model": "Modeli"
+            }
+          },
+          "target-language": {
+            "label": "Gjuha e synuar",
+            "options": {
+              "ar": "العربية",
+              "auto": "Ndjek gjuhën e aplikacionit",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Gjuha në të cilën do të përkthehen tekstet."
+          },
+          "tooltip": "Përkthe tekstet dhe shfaq rezultatin e përkthyer rresht pas rreshti."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Përdor tekstet e YTM pa proxy",
+          "tooltip": "Anasho përfaqësuesin e shfletimit YTM dhe thirr YouTube Music direkt duke përdorur sesionin e autentikuar të aplikacionit. E dobishme nëse i besoni rrjetit/rajonit tuaj për të lejuar thirrje të drejtpërdrejta shfletimi."
+        },
+        "show-custom-search-button": {
+          "label": "Trego butonin e personalizuar të kërkimit",
+          "tooltip": "Shfaq një buton kërkimi në zgjedhësin e teksteve që ju lejon të anashkaloni pyetjen e kërkimit dhe artistin për këngën aktuale."
+        }
+      },
+      "name": "Tekste të Sinkronizuara",
+      "refetch-btn": {
+        "fetching": "Duke marrë...",
+        "normal": "Rimerr tekstet"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Tekstet mund të jenë jashtë sinkronizimit për shkak të një mospërputhjeje në kohëzgjatje.",
+        "inexact": "⚠️ - Tekstet për këtë këngë mund të mos jenë të sakta",
+        "instrumental": "⚠️ - Kjo është një këngë instrumentale"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "Kontrollo luajtjen nga shiriti i detyrave të Windows",
+      "name": "Kontrolli Mediatik i Shiritit të Detyrave"
+    },
+    "touchbar": {
+      "description": "Shton një widget TouchBar për përdoruesit e macOS",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "E bën dritaren e aplikacionit transparente",
+      "menu": {
+        "opacity": {
+          "label": "Opaciteti",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Lloji",
+          "submenu": {
+            "acrylic": "Akrilik",
+            "mica": "Mika",
+            "none": "Asnjë",
+            "tabbed": "Me skeda"
+          }
+        }
+      },
+      "name": "Luajtësi Transparent"
+    },
+    "tuna-obs": {
+      "description": "Integrimi me shtojcën Tuna të OBS",
+      "name": "Tuna OBS"
+    },
+    "unobtrusive-player": {
+      "description": "Parandalon shfaqjen e luajtësit kur luan një këngë",
+      "name": "Luajtësi Pa Pengesa"
+    },
+    "video-toggle": {
+      "description": "Shton një buton për të kaluar midis modalitetit Video/Këngë. Gjithashtu mund të heqë opsionalisht të gjithë skedën e videos",
+      "menu": {
+        "align": {
+          "label": "Rreshtimi",
+          "submenu": {
+            "left": "Majtas",
+            "middle": "Mes",
+            "right": "Djathtas"
+          }
+        },
+        "force-hide": "Hiq me forcë skedën e videos",
+        "mode": {
+          "label": "Modaliteti",
+          "submenu": {
+            "custom": "Ndryshim i personalizuar",
+            "disabled": "Çaktivizuar",
+            "native": "Ndryshim vendor"
+          }
+        }
+      },
+      "name": "Ndryshimi i Videos",
+      "templates": {
+        "button-song": "Këngë",
+        "button-video": "Video"
+      }
+    },
+    "visualizer": {
+      "description": "Shton një vizualizues në luajtës",
+      "menu": {
+        "visualizer-type": "Lloji i Vizualizuesit"
+      },
+      "name": "Vizualizuesi"
+    },
+    "audio-only": {
+      "description": "Detyron modalitetin vetëm audio — bllokon të gjitha transmetimet video në nivel rrjeti dhe luajtësi për të kursyer RAM dhe gjerësi brezi",
+      "name": "Vetëm Audio"
+    },
+    "playback-recovery": {
+      "description": "Rikuperon automatikisht nga gjendjet e bllokuara, të ndalura ose të vdekura të luajtjes",
+      "menu": {
+        "log-to-console": "Regjistro ngjarjet e rikuperimit në tastierë"
+      },
+      "name": "Rikuperimi i Luajtjes"
+    },
+    "playlist-search": {
+      "description": "Shton një fushë kërkimi për të filtruar listat e luajtjes në shiritin anësor dhe dialogun \"Shto në listën e luajtjes\"",
+      "name": "Kërkimi i listës së këngëve",
+      "templates": {
+        "search-placeholder": "Kërko listat e luajtjes",
+        "no-results": "Nuk u gjetën lista"
       }
     }
   }

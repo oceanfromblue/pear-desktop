@@ -1,8 +1,8 @@
-/* oxlint-disable @stylistic/no-mixed-operators */
 import { IconCheckCircle } from '@mdui/icons/check-circle.js';
 import { IconChevronLeft } from '@mdui/icons/chevron-left.js';
 import { IconChevronRight } from '@mdui/icons/chevron-right.js';
 import { IconError } from '@mdui/icons/error.js';
+import { IconSearch } from '@mdui/icons/search.js';
 import { IconStarBorder } from '@mdui/icons/star-border.js';
 import { IconStar } from '@mdui/icons/star.js';
 import { IconWarning } from '@mdui/icons/warning.js';
@@ -20,63 +20,97 @@ import {
   Show,
   Switch,
 } from 'solid-js';
+import { Portal } from 'solid-js/web';
 import * as z from 'zod';
 
+import { t } from '@/i18n';
+import { getSongInfo } from '@/providers/song-info-front';
 import { LitElementWrapper } from '@/solit';
 
 import {
+  hasLyricText,
+  pickWithStar,
   type ProviderName,
-  ProviderNames,
-  providerNames,
   ProviderNameSchema,
+  providerNames,
   type ProviderState,
+  resolvePriority,
+  starredProviderKey,
 } from '../../providers';
+import {
+  customQuery,
+  loadCustomQueryForVideo,
+  removeCustomQuery,
+  saveCustomQuery,
+} from '../custom-query-store';
 import { _ytAPI } from '../index';
 import { reactiveOwner } from '../reactive-root';
 import { config } from '../renderer';
-import { currentLyrics, lyricsStore, setLyricsStore } from '../store';
+import {
+  clearSearchCacheForVideo,
+  currentLyrics,
+  lyricsStore,
+  refreshCurrentLyrics,
+  setLyricsStore,
+} from '../store';
+import { isChineseTranslationTarget } from '../translation-store';
 
 import type { PlayerAPIEvents } from '@/types/player-api-events';
+import type { VideoDataChanged } from '@/types/video-data-changed';
 
-const LocalStorageSchema = z.object({
-  provider: ProviderNameSchema,
-});
+/** Stored shape: `{ provider }`, so entries written before the picker rewrite still load. */
+const StarredProviderSchema = z.object({ provider: ProviderNameSchema });
 
 export const providerIdx = runWithOwner(reactiveOwner, () =>
   createMemo(() => providerNames.indexOf(lyricsStore.provider)),
 )!;
 
-const shouldSwitchProvider = (providerData: ProviderState) => {
-  if (providerData.state === 'error') return true;
-  if (providerData.state === 'fetching') return true;
+const pickBestProvider = (starred: ProviderName | null): ProviderName => {
+  const cfg = config();
   return (
-    providerData.state === 'done' &&
-    !providerData.data?.lines &&
-    !providerData.data?.lyrics
+    pickWithStar({
+      priority: resolvePriority(cfg?.providerPriority),
+      lyrics: lyricsStore.lyrics,
+      preferSynced: cfg?.preferSynced ?? true,
+      starred,
+      usePriorityList: cfg?.usePriorityList ?? false,
+      wantsOfficialTranslation: Boolean(
+        cfg?.translation.enabled &&
+        isChineseTranslationTarget(cfg.translation.targetLanguage),
+      ),
+    }) ?? providerNames[0]
   );
 };
 
-const providerBias = (p: ProviderName) =>
-  (lyricsStore.lyrics[p].state === 'done' ? 1 : -1) +
-  (lyricsStore.lyrics[p].data?.lines?.length ? 2 : -1) +
-  (lyricsStore.lyrics[p].data?.lines?.length && p === ProviderNames.YTMusic
-    ? 1
-    : 0) +
-  (lyricsStore.lyrics[p].data?.lyrics ? 1 : -1);
+/** A hand-edited or stale entry must not pin the picker to a provider that is gone. */
+const readStarredProvider = (videoId: string): ProviderName | null => {
+  const stored = localStorage.getItem(starredProviderKey(videoId));
+  if (!stored) return null;
 
-const pickBestProvider = () => {
-  const preferred = config()?.preferredProvider;
-  if (preferred) {
-    const data = lyricsStore.lyrics[preferred].data;
-    if (Array.isArray(data?.lines) || data?.lyrics) {
-      return { provider: preferred, force: true };
-    }
+  try {
+    const parsed = StarredProviderSchema.safeParse(JSON.parse(stored));
+    return parsed.success ? parsed.data.provider : null;
+  } catch {
+    return null;
   }
+};
 
-  const providers = Array.from(providerNames);
-  providers.sort((a, b) => providerBias(b) - providerBias(a));
+const writeStarredProvider = (
+  videoId: string,
+  provider: ProviderName | null,
+) => {
+  if (provider === null) localStorage.removeItem(starredProviderKey(videoId));
+  else
+    localStorage.setItem(
+      starredProviderKey(videoId),
+      JSON.stringify({ provider }),
+    );
+};
 
-  return { provider: providers[0], force: false };
+const shouldSwitchProvider = (providerData: ProviderState) => {
+  if (providerData.state === 'error') return true;
+  if (providerData.state === 'fetching') return true;
+  return providerData.state === 'done' && !hasLyricText(providerData.data);
 };
 
 const [hasManuallySwitchedProvider, setHasManuallySwitchedProvider] =
@@ -90,102 +124,164 @@ export const LyricsPicker = (props: {
     createSignal<ProviderName | null>(null);
 
   createEffect(() => {
-    const id = videoId();
-    if (id === null) {
-      setStarredProvider(null);
-      return;
-    }
-
-    const key = `ytmd-sl-starred-${id}`;
-    const value = localStorage.getItem(key);
-    if (!value) {
-      setStarredProvider(null);
-      return;
-    }
-
-    const parseResult = LocalStorageSchema.safeParse(JSON.parse(value));
-    if (parseResult.success) {
-      setLyricsStore('provider', parseResult.data.provider);
-      setStarredProvider(parseResult.data.provider);
-    } else {
-      setStarredProvider(null);
-    }
+    loadCustomQueryForVideo(videoId());
   });
 
-  const toggleStar = () => {
+  createEffect(() => {
     const id = videoId();
-    if (id === null) return;
+    setStarredProvider(id === null ? null : readStarredProvider(id));
+  });
 
-    const key = `ytmd-sl-starred-${id}`;
+  // Custom query modal
+  const [showSearchModal, setShowSearchModal] = createSignal(false);
+  const [searchQuery, setSearchQuery] = createSignal('');
+  const [searchArtist, setSearchArtist] = createSignal('');
 
-    setStarredProvider((starredProvider) => {
-      if (lyricsStore.provider === starredProvider) {
-        localStorage.removeItem(key);
-        return null;
-      }
-
-      const provider = lyricsStore.provider;
-      localStorage.setItem(key, JSON.stringify({ provider }));
-
-      return provider;
-    });
+  const openSearchModal = () => {
+    const info = getSongInfo();
+    const existing = customQuery();
+    setSearchQuery(existing?.query || info?.title || '');
+    setSearchArtist(
+      existing?.artist ??
+        (info?.artist || currentLyrics()?.data?.artists?.[0] || ''),
+    );
+    setShowSearchModal(true);
   };
 
-  const videoDataChangeHandler = (
-    name: string,
-    { videoId }: PlayerAPIEvents['videodatachange']['value'],
-  ) => {
+  const closeSearchModal = () => setShowSearchModal(false);
+
+  // A press that starts inside the modal and is released on the backdrop still
+  // dispatches `click` on the backdrop. Track where the press began so a text
+  // selection dragged out of an input doesn't close the modal.
+  let pressedOnBackdrop = false;
+
+  const submitCustomQuery = (e: Event) => {
+    e.preventDefault();
+    const id = videoId();
+    if (!id) return;
+
+    const q = searchQuery().trim();
+    if (!q) return;
+
+    saveCustomQuery(id, {
+      query: q,
+      artist: searchArtist().trim() || undefined,
+    });
+    loadCustomQueryForVideo(id);
+    clearSearchCacheForVideo(id);
+    refreshCurrentLyrics('custom-query-change');
+    closeSearchModal();
+  };
+
+  const clearCustomQueryAction = () => {
+    const id = videoId();
+    if (!id) return;
+    removeCustomQuery(id);
+    loadCustomQueryForVideo(id);
+    clearSearchCacheForVideo(id);
+    refreshCurrentLyrics('custom-query-change');
+    closeSearchModal();
+  };
+
+  const handleVideoData = (videoId: string, name: string) => {
     setVideoId(videoId);
 
     if (name !== 'dataloaded') return;
     setHasManuallySwitchedProvider(false);
   };
 
+  const videoDataChangeHandler = (
+    name: string,
+    { videoId }: PlayerAPIEvents['videodatachange']['value'],
+  ) => handleVideoData(videoId, name);
+
+  const domVideoDataChangeHandler = (e: Event) => {
+    const detail = (e as CustomEvent<VideoDataChanged>).detail;
+    if (!detail?.videoData?.videoId) return;
+    handleVideoData(detail.videoData.videoId, detail.name);
+  };
+
   // prettier-ignore
   {
-    onMount(() => _ytAPI?.addEventListener('videodatachange', videoDataChangeHandler));
-    onCleanup(() => _ytAPI?.removeEventListener('videodatachange', videoDataChangeHandler));
+    onMount(() => {
+      // Register on _ytAPI if already available, and get current videoId
+      if (_ytAPI) {
+        const vd = _ytAPI.getVideoData();
+        if (vd?.video_id) setVideoId(vd.video_id);
+        _ytAPI.addEventListener('videodatachange', videoDataChangeHandler);
+      }
+
+      // Always listen for DOM videodatachange events — these dispatch
+      // regardless of _ytAPI availability, covering both the mount-too-early
+      // race and events that fired before this component existed.
+      document.addEventListener('videodatachange', domVideoDataChangeHandler);
+    });
+
+    onCleanup(() => {
+      _ytAPI?.removeEventListener('videodatachange', videoDataChangeHandler);
+      document.removeEventListener('videodatachange', domVideoDataChangeHandler);
+    });
   }
 
   createEffect(() => {
-    if (!hasManuallySwitchedProvider()) {
-      const starred = starredProvider();
-      if (starred !== null) {
-        setLyricsStore('provider', starred);
-        return;
-      }
+    // A manual pick (arrow buttons, dots) sticks for the rest of the song.
+    if (videoId() === null || hasManuallySwitchedProvider()) return;
 
-      const allProvidersFailed = providerNames.every((p) =>
-        shouldSwitchProvider(lyricsStore.lyrics[p]),
-      );
-      if (allProvidersFailed) return;
-
-      const { provider, force } = pickBestProvider();
-      if (
-        force ||
-        providerBias(lyricsStore.provider) < providerBias(provider)
-      ) {
-        setLyricsStore('provider', provider);
-      }
+    // Nothing to pick from while every provider is still fetching or errored.
+    if (
+      providerNames.every((p) => shouldSwitchProvider(lyricsStore.lyrics[p]))
+    ) {
+      return;
     }
+
+    // Re-decided on every result: providers answer in network order, so picking
+    // once would let a fast lower-priority provider beat the user's first choice.
+    const provider = pickBestProvider(starredProvider());
+    if (provider !== lyricsStore.provider) setLyricsStore('provider', provider);
   });
 
-  const next = () => {
+  /** Any manual pick sticks for the rest of the song. */
+  const chooseProvider = (provider: ProviderName) => {
     setHasManuallySwitchedProvider(true);
-    setLyricsStore('provider', (prevProvider) => {
-      const idx = providerNames.indexOf(prevProvider);
-      return providerNames[(idx + 1) % providerNames.length];
-    });
+    setLyricsStore('provider', provider);
   };
 
-  const previous = () => {
-    setHasManuallySwitchedProvider(true);
-    setLyricsStore('provider', (prevProvider) => {
-      const idx = providerNames.indexOf(prevProvider);
-      return providerNames[
-        (idx + providerNames.length - 1) % providerNames.length
-      ];
-    });
+  /**
+   * Pin the provider showing now to this song, or unpin it. Starring is an
+   * explicit override, so it also cancels a manual pick and applies at once.
+   */
+  const toggleStar = () => {
+    const id = videoId();
+    const current = lyricsStore.provider;
+    const next = starredProvider() === current ? null : current;
+
+    if (id !== null) writeStarredProvider(id, next);
+
+    setHasManuallySwitchedProvider(false);
+    setStarredProvider(next);
+  };
+
+  const isStarred = (provider: ProviderName) => starredProvider() === provider;
+
+  /** The star shows and toggles the pin for this song. */
+  const starProps = (provider: ProviderName) => ({
+    onClick: toggleStar,
+    role: 'button',
+    style: { padding: '5px' },
+    title: t(
+      isStarred(provider)
+        ? 'plugins.synced-lyrics.menu.unstar-provider.tooltip'
+        : 'plugins.synced-lyrics.menu.star-provider.tooltip',
+    ),
+  });
+
+  const step = (offset: number) => {
+    const idx = providerNames.indexOf(lyricsStore.provider);
+    chooseProvider(
+      providerNames[
+        (idx + providerNames.length + offset) % providerNames.length
+      ],
+    );
   };
 
   return (
@@ -195,9 +291,10 @@ export const LyricsPicker = (props: {
           <LitElementWrapper
             elementClass={IconChevronLeft}
             props={{
-              onClick: previous,
+              onClick: () => step(-1),
               role: 'button',
               style: { padding: '5px' },
+              title: t('plugins.synced-lyrics.menu.previous-provider.tooltip'),
             }}
           />
         </mdui-button-icon>
@@ -237,8 +334,7 @@ export const LyricsPicker = (props: {
                   <Match
                     when={
                       currentLyrics().state === 'done' &&
-                      (currentLyrics().data?.lines ||
-                        currentLyrics().data?.lyrics)
+                      hasLyricText(currentLyrics().data)
                     }
                   >
                     <LitElementWrapper
@@ -249,8 +345,7 @@ export const LyricsPicker = (props: {
                   <Match
                     when={
                       currentLyrics().state === 'done' &&
-                      !currentLyrics().data?.lines &&
-                      !currentLyrics().data?.lyrics
+                      !hasLyricText(currentLyrics().data)
                     }
                   >
                     <LitElementWrapper
@@ -263,14 +358,20 @@ export const LyricsPicker = (props: {
                   class="description ytmusic-description-shelf-renderer"
                   text={{ runs: [{ text: provider() }] }}
                 />
-                <mdui-button-icon onClick={toggleStar} tabindex={-1}>
+                <mdui-button-icon tabindex={-1}>
                   <Show
                     fallback={
-                      <LitElementWrapper elementClass={IconStarBorder} />
+                      <LitElementWrapper
+                        elementClass={IconStarBorder}
+                        props={starProps(provider())}
+                      />
                     }
-                    when={starredProvider() === provider()}
+                    when={isStarred(provider())}
                   >
-                    <LitElementWrapper elementClass={IconStar} />
+                    <LitElementWrapper
+                      elementClass={IconStar}
+                      props={starProps(provider())}
+                    />
                   </Show>
                 </mdui-button-icon>
               </div>
@@ -283,7 +384,7 @@ export const LyricsPicker = (props: {
             {(_, idx) => (
               <li
                 class="lyrics-picker-dot"
-                onClick={() => setLyricsStore('provider', providerNames[idx()])}
+                onClick={() => chooseProvider(providerNames[idx()])}
                 style={{
                   background: idx() === providerIdx() ? 'white' : 'black',
                 }}
@@ -293,18 +394,113 @@ export const LyricsPicker = (props: {
         </ul>
       </div>
 
+      <Show when={config()?.showCustomSearchButton !== false}>
+        <div class="lyrics-picker-right">
+          <mdui-button-icon>
+            <LitElementWrapper
+              elementClass={IconSearch}
+              props={{
+                onClick: openSearchModal,
+                role: 'button',
+                style: { padding: '5px' },
+                title: t(
+                  'plugins.synced-lyrics.menu.custom-search-button.tooltip',
+                ),
+              }}
+            />
+          </mdui-button-icon>
+        </div>
+      </Show>
+
       <div class="lyrics-picker-left">
         <mdui-button-icon>
           <LitElementWrapper
             elementClass={IconChevronRight}
             props={{
-              onClick: next,
+              onClick: () => step(1),
               role: 'button',
               style: { padding: '5px' },
+              title: t('plugins.synced-lyrics.menu.next-provider.tooltip'),
             }}
           />
         </mdui-button-icon>
       </div>
+
+      <Show when={showSearchModal()}>
+        <Portal>
+          <div
+            class="synced-lyrics-modal-backdrop"
+            onClick={() => {
+              if (pressedOnBackdrop) closeSearchModal();
+            }}
+            onMouseDown={(e) => {
+              pressedOnBackdrop = e.target === e.currentTarget;
+            }}
+          >
+            <form
+              class="synced-lyrics-modal"
+              onClick={(e) => e.stopPropagation()}
+              onSubmit={submitCustomQuery}
+            >
+              <span class="synced-lyrics-modal-title">Custom search query</span>
+
+              <label class="synced-lyrics-modal-label">
+                Title / search query
+                <input
+                  class="synced-lyrics-modal-input"
+                  onInput={(e) =>
+                    setSearchQuery((e.target as HTMLInputElement).value)
+                  }
+                  placeholder="Song title to search for…"
+                  type="text"
+                  value={searchQuery()}
+                />
+              </label>
+
+              <label class="synced-lyrics-modal-label">
+                Artist
+                <input
+                  class="synced-lyrics-modal-input"
+                  onInput={(e) =>
+                    setSearchArtist((e.target as HTMLInputElement).value)
+                  }
+                  placeholder="(optional)"
+                  type="text"
+                  value={searchArtist()}
+                />
+              </label>
+
+              <div class="synced-lyrics-modal-actions">
+                <button
+                  class="synced-lyrics-modal-btn synced-lyrics-modal-btn--secondary"
+                  onClick={closeSearchModal}
+                  type="button"
+                >
+                  Cancel
+                </button>
+
+                <Show when={customQuery()}>
+                  <button
+                    class="synced-lyrics-modal-btn synced-lyrics-modal-btn--danger"
+                    onClick={clearCustomQueryAction}
+                    type="button"
+                  >
+                    Clear saved query
+                  </button>
+                </Show>
+
+                <button
+                  class="synced-lyrics-modal-btn synced-lyrics-modal-btn--primary"
+                  disabled={!searchQuery().trim()}
+                  type="submit"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </Portal>
+      </Show>
     </div>
   );
 };

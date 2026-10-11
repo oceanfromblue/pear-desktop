@@ -4,6 +4,7 @@ allowBuilds:
   electron: true
   electron-winstaller: true
   esbuild: true
+  node-smtc@https://codeload.github.com/michei69/node-smtc/tar.gz/6894d2a2b7cc31f953e4dd0d605282e81993d16b: true
   unrs-resolver: true
   utf-8-validate: true
 overrides:

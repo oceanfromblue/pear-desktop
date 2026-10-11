@@ -109,7 +109,8 @@
                   "title": "Proxy beállítása"
                 }
               },
-              "toggle-dev-tools": "Fejlesztőeszközök BE/KI"
+              "toggle-dev-tools": "Fejlesztőeszközök BE/KI",
+              "force-smtc": "Külső SMTC használatának kényszerítése"
             }
           },
           "always-on-top": "Mindig látható",
@@ -144,7 +145,9 @@
               "disabled": "Letiltva",
               "enabled-and-hide-app": "Engedélyezve és alkalmazás elrejtése",
               "enabled-and-show-app": "Engedélyezve és alkalmazás megjelenítése",
-              "play-pause-on-click": "Lejátszás/Szünet az ikonra kattintással"
+              "play-pause-on-click": "Lejátszás/Szünet az ikonra kattintással",
+              "move-to-current-desktop": "Áthelyezés az aktuális virtuális asztalra megjelenítéskor",
+              "force-white-icons": "Fehér ikonok kényszerítése"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Tetszik",
+      "dislike": "Nem tetszik",
+      "unlike": "Ellentétben",
+      "undislike": "Tetszés eltávolítása"
     }
   },
   "plugins": {
@@ -231,7 +238,8 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Keresősáv témázásának engedélyezése"
       },
       "name": "Album színtéma"
     },
@@ -314,6 +322,22 @@
         "hostname": {
           "label": "Kiszolgáló név"
         },
+        "https": {
+          "label": "HTTPS és Tanúsítványok",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "HTTPS tanúsítvány fájl kiválasztása",
+              "label": "Tanúsítvány fájl (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "HTTPS engedélyezése"
+            },
+            "key": {
+              "dialogTitle": "HTTPS privát kulcs fájl kiválasztása",
+              "label": "Privát kulcs fájl (.key/.pem)"
+            }
+          }
+        },
         "port": {
           "label": "Port"
         }
@@ -335,6 +359,7 @@
       "name": "Hangtömörítő"
     },
     "auth-proxy-adapter": {
+      "description": "Hitelesítési proxy szolgáltatások használatának támogatása",
       "menu": {
         "disable": "Proxy adapder kikapcsolása",
         "enable": "Proxy adapter bekapcsolása",
@@ -345,6 +370,7 @@
           "label": "Port"
         }
       },
+      "name": "Hitelesítési Proxy Adapter",
       "prompt": {
         "hostname": {
           "label": "Adjon meg egy hosztnevet a lokális proxy szerverhez (újraindítást igényel):",
@@ -387,6 +413,17 @@
         "no-captions": "Nincsenek elérhető feliratok ehhez a dalhoz"
       }
     },
+    "clock": {
+      "description": "Óra hozzáadása a navigációs sávhoz",
+      "menu": {
+        "format": {
+          "24-hour-format": "24 órás formátum",
+          "display-seconds": "Másodpercek megjelenítése",
+          "label": "Formátum"
+        }
+      },
+      "name": "Óra"
+    },
     "compact-sidebar": {
       "description": "Mindig becsukva tartja a bal oldali savót, ahol a Kezdőlap. Felfedezés, Könyvtár és egyebek láthatók. (Amit bármikor ki lehet nyitni)",
       "name": "Kompakt oldalsáv"
@@ -414,6 +451,7 @@
       }
     },
     "custom-output-device": {
+      "description": "Egyedi kimeneti médiaeszköz beállítása dalokhoz",
       "menu": {
         "device-selector": "Eszköz kiválasztása"
       },
@@ -647,7 +685,8 @@
           "submenu": {
             "hide-button-text": "Gombok szövegének elrejtése",
             "refresh-on-play-pause": "Frissítés lejátszás/szünet megnyomásakor",
-            "tray-controls": "Megnyitás/Bezárás tálca ikonra kattintva"
+            "tray-controls": "Megnyitás/Bezárás tálca ikonra kattintva",
+            "hover-controls": "Mini-lejátszó megjelenítése a tálca ikon fölé húzáskor"
           }
         },
         "priority": "Értesítési prioritás",
@@ -724,7 +763,12 @@
         }
       },
       "description": "Lehetővé teszi a videó minőségének megváltoztatását egy gombbal a videó fedvényen",
-      "name": "Videóminőség módosító"
+      "name": "Videóminőség módosító",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "Lejátszó minőség váltó megnyitása"
+        }
+      }
     },
     "scrobbler": {
       "description": "Scrobbling támogatás hozzáadása (pl. last.fm, ListenBrainz)",
@@ -743,6 +787,7 @@
         "listenbrainz": {
           "token": "Add meg a ListenBrainz felhasználói tokenedet"
         },
+        "scrobble-alternative-artist": "Alternatív előadók használata",
         "scrobble-alternative-title": "Alternatív címek használata",
         "scrobble-other-media": "Más média scrobbelése"
       },
@@ -779,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Kihagyja a nem kedvelt dalokat",
-      "name": "Nem kedvelt dal kihagyása"
-    },
     "skip-silences": {
       "description": "Automatikusan kihagyja a csendes részeket a dalokban",
       "name": "Csend kihagyása"
@@ -798,6 +839,24 @@
         "not-found": "⚠️ - Ehhez a dalhoz nem található dalszöveg."
       },
       "menu": {
+        "convert-chinese-character": {
+          "label": "Kínai karakter átalakítása",
+          "submenu": {
+            "disabled": {
+              "label": "Letiltva",
+              "tooltip": "Kínai karakter átalakítás letiltása"
+            },
+            "simplified-to-traditional": {
+              "label": "Egyszerűsítettről Hagyományosra",
+              "tooltip": "Egyszerűsített kínai átalakítása hagyományos kínaivá"
+            },
+            "traditional-to-simplified": {
+              "label": "Hagyományosról Egyszerűsítettre",
+              "tooltip": "Hagyományos kínai átalakítása egyszerűsített kínaivá"
+            }
+          },
+          "tooltip": "Kínai karakter átalakítása hagyományos vagy egyszerűsített formába"
+        },
         "default-text-string": {
           "label": "Alapértelmezett karakter a dalszövegek között",
           "tooltip": "Válassza ki az alapértelmezett karaktert, amelyet a dalszövegek közötti szünethez használni szeretne"
@@ -824,9 +883,35 @@
           },
           "tooltip": "Válassza ki az aktuális sorra alkalmazandó effektust"
         },
+        "lyrics-font-size": {
+          "label": "Dalszöveg betűméret",
+          "submenu": {
+            "large": {
+              "label": "Nagy",
+              "tooltip": "Az eredeti nagyobb dalszöveg méret használata"
+            },
+            "medium": {
+              "label": "Közepes",
+              "tooltip": "Kiegyensúlyozott dalszöveg méret használata"
+            },
+            "small": {
+              "label": "Kicsi",
+              "tooltip": "Kompaktabb dalszöveg méret használata"
+            }
+          },
+          "tooltip": "Válaszd ki, milyen nagy legyen a dalszöveg"
+        },
         "precise-timing": {
           "label": "Dalszöveg tökéletes szinkronizálása",
           "tooltip": "Számítsa ki az aktuális sor megjelenítésének idejét ezredmásodperc pontossággal (ez kis mértékben befolyásolhatja a teljesítményt)"
+        },
+        "preferred-provider": {
+          "label": "Előnyben részesített szolgáltató",
+          "none": {
+            "label": "Nincs",
+            "tooltip": "Nincs előnyben részesített szolgáltató"
+          },
+          "tooltip": "Válaszd ki az alapértelmezett szolgáltatót"
         },
         "romanization": {
           "label": "Latin betűs szöveg",
@@ -839,6 +924,125 @@
         "show-time-codes": {
           "label": "Időkódok megjelenítése",
           "tooltip": "Az időkódok megjelenítése a dalszövegek mellett"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Fordítási gyorsítótár törlése",
+            "tooltip": "A lemezen tárolt összes gyorsítótárazott fordítás törlése."
+          },
+          "configure": {
+            "label": "API kulcs és modell beállítása…",
+            "tooltip": "Szolgáltató-specifikus fordítási beállítások megadása."
+          },
+          "enabled": {
+            "label": "Fordítás engedélyezése",
+            "tooltip": "Fordított sor megjelenítése minden eredeti dalszöveg sor alatt."
+          },
+          "label": "Dalszöveg fordítása",
+          "provider": {
+            "label": "Szolgáltató",
+            "tooltip": "Melyik szolgáltatást használja a fordításhoz."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Natív Anthropic Messages API-t használ.",
+              "prompt-title": "Anthropic beállítások"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "A Google Generative Language API-t (generateContent) használja.",
+              "prompt-title": "Gemini beállítások"
+            },
+            "google-translate": {
+              "host": "Házigazda",
+              "name": "Google Fordítás",
+              "prompt-label": "A nem hivatalos ingyenes Google Fordító végpontot használja. Nincs szükség API-kulcsra, de a Google korlátozhatja a sebességet.",
+              "prompt-title": "Google Fordítás beállításai"
+            },
+            "local-cli": {
+              "command": "Parancs",
+              "engine": "Helyi CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Helyi CLI",
+              "prompt-label": "Használj helyben bejelentkezett Claude Code-ot, Codex-et vagy Gemini CLI-t. A parancs és a modell automatikus; a CLI a saját bejelentkezett alapértelmezettjét használja.",
+              "prompt-title": "Helyi CLI beállítások",
+              "timeout": "Időtúllépés másodpercben (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API mód (válaszok / automatikus / chat-befejezések)",
+              "base-url": "Alap URL",
+              "name": "OpenAI kompatibilis",
+              "prompt-label": "Használjon OpenAI-kompatibilis szervereket, beleértve az Ollamát (alap URL: http://127.0.0.1:11434/v1, API mód: auto vagy chat-completions).",
+              "prompt-title": "OpenAI-kompatibilis beállítások"
+            },
+            "shared": {
+              "api-key": "API-kulcs",
+              "model": "Modell"
+            }
+          },
+          "target-language": {
+            "label": "Célnyelv",
+            "options": {
+              "ar": "العربية",
+              "auto": "Follow app language",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "A nyelv, amelyre a dalszöveget fordítani kell."
+          },
+          "tooltip": "Dalszöveg fordítása és a lefordított eredmény soronkénti megjelenítése."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Használj YTM dalszövegeket proxy nélkül",
+          "tooltip": "Hagyja ki az YTM böngésző proxyt, és hívja közvetlenül a YouTube Musicot az alkalmazás hitelesített munkamenetével. Hasznos, ha megbízik a hálózatában/régiójában, hogy engedélyezi a közvetlen böngészési hívásokat."
+        },
+        "show-custom-search-button": {
+          "label": "Egyedi keresés gomb megjelenítése",
+          "tooltip": "Megjelenít egy keresőgombot a dalszövegválasztóban, amely lehetővé teszi a keresési lekérdezés és az előadó felülírását az aktuális dalhoz."
         }
       },
       "name": "Szinkronizált dalszövegek",
@@ -859,6 +1063,27 @@
     "touchbar": {
       "description": "macOS felhasználók számára hozzáad egy widgetet a TouchBar-hoz",
       "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "Átlátszóvá teszi az alkalmazás ablakát",
+      "menu": {
+        "opacity": {
+          "label": "Átlátszatlanság",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Típus",
+          "submenu": {
+            "acrylic": "Akril",
+            "mica": "Csillám",
+            "none": "Nincs",
+            "tabbed": "Füles"
+          }
+        }
+      },
+      "name": "Átlátszó Lejátszó"
     },
     "tuna-obs": {
       "description": "Integráció az OBS Tuna pluginjával",
@@ -891,7 +1116,8 @@
       },
       "name": "Videó váltó",
       "templates": {
-        "button-song": "Zeneszám"
+        "button-song": "Zeneszám",
+        "button-video": "Videó"
       }
     },
     "visualizer": {
@@ -900,6 +1126,25 @@
         "visualizer-type": "Vizualizáció típus"
       },
       "name": "Vizualizáció"
+    },
+    "audio-only": {
+      "description": "Csak hang mód kényszerítése — blokkol minden videófolyamot hálózati és lejátszó szinten a RAM és sávszélesség megtakarítása érdekében",
+      "name": "Csak Hang"
+    },
+    "playback-recovery": {
+      "description": "Automatikusan helyreállítja az elakadt, leállt vagy hibás lejátszási állapotokat",
+      "menu": {
+        "log-to-console": "Helyreállítási események naplózása a konzolba"
+      },
+      "name": "Lejátszás Helyreállítása"
+    },
+    "playlist-search": {
+      "description": "Keresőmező hozzáadása a lejátszási listák szűréséhez az oldalsávban és a Hozzáadás lejátszási listához párbeszédablakban",
+      "name": "Lemezlista keresése",
+      "templates": {
+        "search-placeholder": "Keresés lejátszási listákban",
+        "no-results": "Nem található lejátszási lista"
+      }
     }
   }
 }

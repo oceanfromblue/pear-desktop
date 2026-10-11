@@ -1,6 +1,8 @@
 import { createEffect, createMemo, createSignal, Show } from 'solid-js';
 
 import { config } from '../renderer';
+import { lyricsStore } from '../store';
+import { getLineTranslation } from '../translation-store';
 import {
   canonicalize,
   convertChineseCharacter,
@@ -10,6 +12,7 @@ import {
 
 interface PlainLyricsProps {
   line: string;
+  index: number;
 }
 
 export const PlainLyrics = (props: PlainLyricsProps) => {
@@ -27,9 +30,20 @@ export const PlainLyrics = (props: PlainLyricsProps) => {
     if (!config()?.romanization) return;
 
     const input = canonicalize(text());
-    romanize(input).then((result) => {
-      setRomanization(canonicalize(result));
-    });
+    romanize(input)
+      .then((result) => {
+        setRomanization(canonicalize(result));
+      })
+      .catch(() => {
+        // Romanization is best-effort — keep the previous value on failure
+      });
+  });
+
+  const translation = createMemo(() => {
+    if (!config()?.translation?.enabled) return '';
+    const videoId = lyricsStore.videoId;
+    if (!videoId) return '';
+    return getLineTranslation(videoId, props.index) ?? '';
   });
 
   return (
@@ -57,6 +71,19 @@ export const PlainLyrics = (props: PlainLyricsProps) => {
           class="romaji"
           text={{
             runs: [{ text: romanization() }],
+          }}
+        />
+      </Show>
+      <Show
+        when={
+          translation() &&
+          simplifyUnicode(text()) !== simplifyUnicode(translation())
+        }
+      >
+        <yt-formatted-string
+          class="translation"
+          text={{
+            runs: [{ text: translation() }],
           }}
         />
       </Show>

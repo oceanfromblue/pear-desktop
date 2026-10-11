@@ -109,7 +109,8 @@
                   "title": "Definir proxy"
                 }
               },
-              "toggle-dev-tools": "Alternar DevTools"
+              "toggle-dev-tools": "Alternar DevTools",
+              "force-smtc": "Forçar o uso de SMTC externo"
             }
           },
           "always-on-top": "Sempre no topo",
@@ -144,7 +145,9 @@
               "disabled": "Desativado",
               "enabled-and-hide-app": "Ativado e aplicativo oculto",
               "enabled-and-show-app": "Ativado e mostrar aplicativo",
-              "play-pause-on-click": "Reproduzir/Pausar ao clicar"
+              "play-pause-on-click": "Reproduzir/Pausar ao clicar",
+              "move-to-current-desktop": "Mover para a área de trabalho virtual atual ao mostrar",
+              "force-white-icons": "Forçar o uso de ícones brancos"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Curtir",
+      "dislike": "Não gostei",
+      "unlike": "Diferente de",
+      "undislike": "Remover deslike"
     }
   },
   "plugins": {
@@ -528,7 +535,7 @@
           "converting": "Convertendo…",
           "done": "Concluído: {{filePath}}",
           "download-info": "Baixando {{artist}} - {{title}} [{{videoId}}",
-          "download-progress": "Download: {{percent}}%",
+          "download-progress": "Baixar: {{percent}}%",
           "downloading": "Baixando…",
           "downloading-counter": "Baixando {{current}}/{{total}}…",
           "downloading-playlist": "Baixando lista de reprodução \"{{playlistTitle}}\" - {{playlistSize}} músicas ({{playlistId}})",
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Ocultar texto do botão",
             "refresh-on-play-pause": "Atualizar ao Reproduzir/Pausar",
-            "tray-controls": "Abrir/Fechar ao clicar na área de notificação"
+            "tray-controls": "Abrir/Fechar ao clicar na área de notificação",
+            "hover-controls": "Mostrar mini-player ao passar o mouse sobre a bandeja"
           }
         },
         "priority": "Prioridade da notificação",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Ignora músicas marcadas com \"não gostei\"",
-      "name": "Pular músicas marcadas com \"não gostei\""
-    },
     "skip-silences": {
       "description": "Pular automaticamente seções de silêncio em músicas",
       "name": "Pular silêncios"
@@ -886,6 +890,24 @@
           },
           "tooltip": "Escolha o efeito a ser aplicado à linha atual"
         },
+        "lyrics-font-size": {
+          "label": "Tamanho da fonte das letras",
+          "submenu": {
+            "large": {
+              "label": "Grande",
+              "tooltip": "Usar o tamanho de letra maior original"
+            },
+            "medium": {
+              "label": "Médio",
+              "tooltip": "Usar um tamanho de letra equilibrado"
+            },
+            "small": {
+              "label": "Pequeno",
+              "tooltip": "Usar um tamanho de letra mais compacto"
+            }
+          },
+          "tooltip": "Escolha o tamanho do texto das letras"
+        },
         "precise-timing": {
           "label": "Deixa as letras perfeitamente sincronizadas",
           "tooltip": "Calcular até o milissegundo a exibição da próxima linha (pode ter um pequeno impacto no desempenho)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "Mostrar códigos de tempo",
           "tooltip": "Mostrar os códigos de tempo ao lado das letras"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Limpar cache de tradução",
+            "tooltip": "Excluir todas as traduções em cache armazenadas no disco."
+          },
+          "configure": {
+            "label": "Configurar chave API e modelo…",
+            "tooltip": "Definir opções de tradução específicas do provedor."
+          },
+          "enabled": {
+            "label": "Ativar tradução",
+            "tooltip": "Mostrar uma linha traduzida abaixo de cada linha original da letra."
+          },
+          "label": "Tradução de letras",
+          "provider": {
+            "label": "Provedor",
+            "tooltip": "Qual serviço usar para tradução."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Usa a API nativa Anthropic Messages.",
+              "prompt-title": "Configurações do Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Usa a API Google Generative Language (generateContent).",
+              "prompt-title": "Configurações do Gemini"
+            },
+            "google-translate": {
+              "host": "Anfitrião",
+              "name": "Tradutor Google",
+              "prompt-label": "Usa o endpoint gratuito não oficial do Google Translate. Não requer chave API, mas o Google pode limitar a taxa.",
+              "prompt-title": "Configurações do Google Translate"
+            },
+            "local-cli": {
+              "command": "Comando",
+              "engine": "CLI Local",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI Local",
+              "prompt-label": "Usar um Claude Code, Codex ou Gemini CLI conectado localmente. O comando e o modelo são automáticos; o CLI usa seu próprio padrão conectado.",
+              "prompt-title": "Configurações do CLI Local",
+              "timeout": "Segundos de timeout (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Modo API (responses / auto / chat-completions)",
+              "base-url": "URL base",
+              "name": "Compatível com OpenAI",
+              "prompt-label": "Usar servidores compatíveis com OpenAI, incluindo Ollama (URL base http://127.0.0.1:11434/v1, modo API auto ou chat-completions).",
+              "prompt-title": "Configurações compatíveis com OpenAI"
+            },
+            "shared": {
+              "api-key": "Chave API",
+              "model": "Modelo"
+            }
+          },
+          "target-language": {
+            "label": "Idioma de destino",
+            "options": {
+              "ar": "العربية",
+              "auto": "Seguir idioma do aplicativo",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "O idioma para o qual as letras serão traduzidas."
+          },
+          "tooltip": "Traduzir letras e mostrar o resultado traduzido linha por linha."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Usar letras do YTM sem proxy",
+          "tooltip": "Pule o proxy de navegação do YTM e chame o YouTube Music diretamente usando a sessão autenticada do aplicativo. Útil se você confiar em sua rede/região para permitir chamadas de navegação diretas."
+        },
+        "show-custom-search-button": {
+          "label": "Mostrar botão de pesquisa personalizado",
+          "tooltip": "Mostrar um botão de busca no seletor de letras que permite substituir a consulta de busca e o artista da música atual."
         }
       },
       "name": "Letras sincronizadas",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Tipo de visualizador"
       },
       "name": "Visualizador"
+    },
+    "audio-only": {
+      "description": "Força o modo somente áudio — bloqueia todos os fluxos de vídeo no nível da rede e do player para economizar RAM e largura de banda",
+      "name": "Somente Áudio"
+    },
+    "playback-recovery": {
+      "description": "Recupera automaticamente de estados de reprodução travados, parados ou inativos",
+      "menu": {
+        "log-to-console": "Registrar eventos de recuperação no console"
+      },
+      "name": "Recuperação de Reprodução"
+    },
+    "playlist-search": {
+      "description": "Adiciona um campo de busca para filtrar playlists na barra lateral e no diálogo Adicionar à playlist",
+      "name": "Pesquisa de Playlist",
+      "templates": {
+        "search-placeholder": "Pesquisar playlists",
+        "no-results": "Nenhuma playlist encontrada"
+      }
     }
   }
 }

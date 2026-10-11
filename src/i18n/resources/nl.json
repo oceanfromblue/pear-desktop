@@ -16,7 +16,7 @@
   "language": {
     "code": "nl",
     "local-name": "Nederlands",
-    "name": "Nederlands"
+    "name": "Dutch"
   },
   "main": {
     "console": {
@@ -109,7 +109,8 @@
                   "title": "Proxy instellen"
                 }
               },
-              "toggle-dev-tools": "DevTools schakelen"
+              "toggle-dev-tools": "DevTools schakelen",
+              "force-smtc": "Forceer het gebruik van externe SMTC"
             }
           },
           "always-on-top": "Altijd bovenop",
@@ -144,7 +145,9 @@
               "disabled": "Uitgeschakeld",
               "enabled-and-hide-app": "Ingeschakeld en applicatie verbergen",
               "enabled-and-show-app": "Ingeschakeld en applicatie weergeven",
-              "play-pause-on-click": "Afspelen/Pauzeren bij klikken"
+              "play-pause-on-click": "Afspelen/Pauzeren bij klikken",
+              "move-to-current-desktop": "Verplaats naar huidig virtueel bureaublad bij weergave",
+              "force-white-icons": "Forceer het gebruik van witte pictogrammen"
             }
           },
           "visual-tweaks": {
@@ -161,7 +164,8 @@
                 "default": "Standaard",
                 "force-show": "Forceren weergeven",
                 "hide": "Verbergen",
-                "label": "Vind ik leuk-knoppen"
+                "label": "Vind ik leuk-knoppen",
+                "swap": "Volgorde van vind-ik-leuk-knoppen wisselen"
               },
               "remove-upgrade-button": "Upgrade-knop verwijderen",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Vind ik leuk",
+      "dislike": "Niet leuk vinden",
+      "unlike": "Anders dan",
+      "undislike": "Niet meer niet leuk vinden"
     }
   },
   "plugins": {
@@ -409,7 +417,9 @@
       "description": "Voeg een klok toe aan de navigatiebalk",
       "menu": {
         "format": {
-          "24-hour-format": "24-uursformaat"
+          "24-hour-format": "24-uursformaat",
+          "display-seconds": "Seconden weergeven",
+          "label": "Formaat"
         }
       },
       "name": "Klok"
@@ -675,7 +685,8 @@
           "submenu": {
             "hide-button-text": "Knoptekst verbergen",
             "refresh-on-play-pause": "Herlaad bij het afspelen/pauzeren",
-            "tray-controls": "Open/Sluit op tray klik"
+            "tray-controls": "Open/Sluit op tray klik",
+            "hover-controls": "Toon mini-speler bij zweven over systeemvak"
           }
         },
         "priority": "Meldingprioriteit",
@@ -813,10 +824,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Slaat disliked nummers over",
-      "name": "Sla disliked nummers over"
-    },
     "skip-silences": {
       "description": "Sla automatisch stiltesecties in nummers over",
       "name": "Stiltes overslaan"
@@ -833,7 +840,12 @@
       },
       "menu": {
         "convert-chinese-character": {
+          "label": "Converteer Chinees karakter",
           "submenu": {
+            "disabled": {
+              "label": "Uitgeschakeld",
+              "tooltip": "Chinese karakterconversie uitschakelen"
+            },
             "simplified-to-traditional": {
               "label": "Vereenvoudigd naar Traditioneel",
               "tooltip": "Zet Vereenvoudigd Chinees om naar Traditioneel Chinees"
@@ -842,7 +854,8 @@
               "label": "Traditioneel naar Vereenvoudigd",
               "tooltip": "Zet Traditioneel Chinees om naar Vereenvoudigd Chinees"
             }
-          }
+          },
+          "tooltip": "Converteer Chinees karakter naar Traditioneel of Vereenvoudigd"
         },
         "default-text-string": {
           "label": "Standaardteken tussen songteksten",
@@ -870,6 +883,24 @@
           },
           "tooltip": "Kies het effect dat u op de huidige regel wilt toepassen"
         },
+        "lyrics-font-size": {
+          "label": "Lettergrootte songtekst",
+          "submenu": {
+            "large": {
+              "label": "Groot",
+              "tooltip": "Gebruik de originele grotere songtekstgrootte"
+            },
+            "medium": {
+              "label": "Middel",
+              "tooltip": "Gebruik een gebalanceerde songtekstgrootte"
+            },
+            "small": {
+              "label": "Klein",
+              "tooltip": "Gebruik een compactere songtekstgrootte"
+            }
+          },
+          "tooltip": "Kies hoe groot de songtekst moet zijn"
+        },
         "precise-timing": {
           "label": "Zorg ervoor dat de songteksten perfect gesynchroniseerd zijn",
           "tooltip": "Bereken tot op de milliseconde de weergave van de volgende regel (kan een kleine impact hebben op de prestaties)"
@@ -893,6 +924,125 @@
         "show-time-codes": {
           "label": "Toon tijdcodes",
           "tooltip": "Toon de tijdcodes naast de songtekst"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Vertalingscache wissen",
+            "tooltip": "Verwijder alle gecachte vertalingen op schijf."
+          },
+          "configure": {
+            "label": "API-sleutel & model configureren…",
+            "tooltip": "Stel providerspecifieke vertaalopties in."
+          },
+          "enabled": {
+            "label": "Vertaling inschakelen",
+            "tooltip": "Toon een vertaalde regel onder elke originele songtekstregel."
+          },
+          "label": "Songtekstvertaling",
+          "provider": {
+            "label": "Aanbieder",
+            "tooltip": "Welke service te gebruiken voor vertaling."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Gebruikt de native Anthropic Messages API.",
+              "prompt-title": "Anthropic instellingen"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Gebruikt Google Generative Language API (generateContent).",
+              "prompt-title": "Gemini instellingen"
+            },
+            "google-translate": {
+              "host": "Gastheer",
+              "name": "Google Translate",
+              "prompt-label": "Gebruikt het onofficiële gratis Google Translate eindpunt. Geen API-sleutel nodig, maar Google kan snelheidsbeperkingen toepassen.",
+              "prompt-title": "Google Translate instellingen"
+            },
+            "local-cli": {
+              "command": "Opdracht",
+              "engine": "Lokale CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokale CLI",
+              "prompt-label": "Gebruik een lokaal ingelogde Claude Code, Codex of Gemini CLI. De opdracht en model zijn automatisch; de CLI gebruikt zijn eigen ingelogde standaard.",
+              "prompt-title": "Lokale CLI instellingen",
+              "timeout": "Timeout seconden (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API-modus (responses / auto / chat-completions)",
+              "base-url": "Basis-URL",
+              "name": "OpenAI compatibel",
+              "prompt-label": "Gebruik OpenAI-compatibele servers, inclusief Ollama (basis-URL http://127.0.0.1:11434/v1, API-modus auto of chat-completions).",
+              "prompt-title": "OpenAI-compatibele instellingen"
+            },
+            "shared": {
+              "api-key": "API-sleutel",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Doeltaal",
+            "options": {
+              "ar": "العربية",
+              "auto": "Volg app-taal",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "De taal waarin songteksten vertaald moeten worden."
+          },
+          "tooltip": "Vertaal songteksten en toon het vertaalde resultaat regel voor regel."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Gebruik YTM-teksten zonder proxy",
+          "tooltip": "Sla de YTM-browseproxy over en bel YouTube Music rechtstreeks via de geverifieerde sessie van de app. Nuttig als u uw netwerk/regio vertrouwt om directe browse-oproepen toe te staan."
+        },
+        "show-custom-search-button": {
+          "label": "Toon aangepaste zoekknop",
+          "tooltip": "Toon een zoekknop in de tekstkiezer waarmee je de zoekopdracht en artiest voor het huidige nummer kunt overschrijven."
         }
       },
       "name": "Gesynchroniseerde songteksten",
@@ -976,6 +1126,25 @@
         "visualizer-type": "Visualisatietype"
       },
       "name": "Visualisator"
+    },
+    "audio-only": {
+      "description": "Forceert alleen-audio modus — blokkeert alle videostreams op netwerk- en playerniveau om RAM en bandbreedte te besparen",
+      "name": "Alleen Audio"
+    },
+    "playback-recovery": {
+      "description": "Herstelt automatisch van vastgelopen, stilstaande of dode afspeelstatussen",
+      "menu": {
+        "log-to-console": "Log herstelgebeurtenissen naar console"
+      },
+      "name": "Afspeelherstel"
+    },
+    "playlist-search": {
+      "description": "Voegt een zoekveld toe om afspeellijsten te filteren in de zijbalk en het dialoogvenster 'Toevoegen aan afspeellijst'",
+      "name": "Playlist zoeken",
+      "templates": {
+        "search-placeholder": "Zoek afspeellijsten",
+        "no-results": "Geen afspeellijsten gevonden"
+      }
     }
   }
 }

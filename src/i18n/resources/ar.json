@@ -109,7 +109,8 @@
                   "title": "ضع proxy"
                 }
               },
-              "toggle-dev-tools": "تثبيت أدوات التطوير"
+              "toggle-dev-tools": "تثبيت أدوات التطوير",
+              "force-smtc": "فرض استخدام SMTC الخارجي"
             }
           },
           "always-on-top": "دائما في المقدمة",
@@ -144,7 +145,9 @@
               "disabled": "غير مفعل",
               "enabled-and-hide-app": "مفعل وإخفاء التطبيق",
               "enabled-and-show-app": "مفعل وأظهر التطبيق",
-              "play-pause-on-click": "تشغيل/إيقاف عند النقر"
+              "play-pause-on-click": "تشغيل/إيقاف عند النقر",
+              "move-to-current-desktop": "الانتقال إلى سطح المكتب الافتراضي الحالي عند الإظهار",
+              "force-white-icons": "فرض استخدام الأيقونات البيضاء"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "أعجبني",
+      "dislike": "كره",
+      "unlike": "على عكس",
+      "undislike": "إلغاء الإعجاب"
     }
   },
   "plugins": {
@@ -235,6 +242,10 @@
         "enable-seekbar": "تفعيل تخصيص لون شريط التمرير"
       },
       "name": "سمة ألوان الألبوم"
+    },
+    "audio-only": {
+      "description": "يفرض وضع الصوت فقط — يحظر جميع تدفقات الفيديو على مستوى الشبكة والمشغل لتوفير الذاكرة وعرض النطاق الترددي",
+      "name": "الصوت فقط"
     },
     "ambient-mode": {
       "description": "يطبق تأثير إضاءة عن طريق إسقاط ألوان ناعمة من الفيديو على خلفية شاشتك",
@@ -683,6 +694,7 @@
           "label": "إعدادات تفاعلية",
           "submenu": {
             "hide-button-text": "إخفاء نص الزر",
+            "hover-controls": "إظهار مشغل مصغر عند التمرير على الأيقونة",
             "refresh-on-play-pause": "اعادة تحميل عند التشغيل/الإيقاف",
             "tray-controls": "فتح/إغلاق عند النقر على علامة الشريط"
           }
@@ -696,6 +708,13 @@
     "performance-improvement": {
       "description": "تحسين الأداء عبر تفعيل السكريبتات التجريبية",
       "name": "تحسين الأداء [نسخة تجريبية]"
+    },
+    "playback-recovery": {
+      "description": "يستعيد تلقائيًا من حالات التشغيل العالقة أو المتوقفة أو الميتة",
+      "menu": {
+        "log-to-console": "تسجيل أحداث الاستعادة في وحدة التحكم"
+      },
+      "name": "استعادة التشغيل"
     },
     "picture-in-picture": {
       "description": "يسمح بتحويل التطبيق إلى وضع الصورة داخل الصورة",
@@ -822,10 +841,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "يتخطى الأغاني الغير معجب فيها",
-      "name": "تخطي الأغاني الغير معجب فيها"
-    },
     "skip-silences": {
       "description": "تخطي أقسام التي ليس لها صوت تلقائيًا في الأغاني",
       "name": "تخطي الفترات التي ليس لها صوت"
@@ -885,6 +900,24 @@
           },
           "tooltip": "اختر التأثير لتطبيقه على السطر الحالي"
         },
+        "lyrics-font-size": {
+          "label": "حجم خط الكلمات",
+          "submenu": {
+            "large": {
+              "label": "كبير",
+              "tooltip": "استخدم الحجم الأكبر الأصلي للكلمات"
+            },
+            "medium": {
+              "label": "متوسط",
+              "tooltip": "استخدم حجم كلمات متوازن"
+            },
+            "small": {
+              "label": "صغير",
+              "tooltip": "استخدم حجم كلمات أكثر ضغطًا"
+            }
+          },
+          "tooltip": "اختر مدى كبر حجم نص الكلمات"
+        },
         "precise-timing": {
           "label": "اجعل كلمات الأغنية متزامنة بشكل مثالي",
           "tooltip": "احسب بدقة الملي ثانية عرض السطر التالي (قد يكون له تأثير صغير على الأداء)"
@@ -908,6 +941,125 @@
         "show-time-codes": {
           "label": "أظهر الرموز الزمنية",
           "tooltip": "أظهر الرموز الزمنية بجانب كلمات الأغنية"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "مسح ذاكرة التخزين المؤقت للترجمة",
+            "tooltip": "حذف جميع الترجمات المخزنة مؤقتًا على القرص."
+          },
+          "configure": {
+            "label": "تكوين مفتاح API والنموذج…",
+            "tooltip": "تعيين خيارات الترجمة الخاصة بالمزود."
+          },
+          "enabled": {
+            "label": "تفعيل الترجمة",
+            "tooltip": "عرض سطر مترجم تحت كل سطر كلمات أصلي."
+          },
+          "label": "ترجمة الكلمات",
+          "provider": {
+            "label": "المزود",
+            "tooltip": "الخدمة المستخدمة للترجمة."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "أنثروبيك كلود",
+              "prompt-label": "يستخدم واجهة برمجة تطبيقات Anthropic الأصلية.",
+              "prompt-title": "إعدادات Anthropic"
+            },
+            "gemini": {
+              "name": "جوجل جيميني",
+              "prompt-label": "يستخدم واجهة برمجة تطبيقات اللغة التوليدية من Google (generateContent).",
+              "prompt-title": "إعدادات Gemini"
+            },
+            "google-translate": {
+              "host": "المضيف",
+              "name": "ترجمة Google",
+              "prompt-label": "يستخدم نقطة النهاية المجانية غير الرسمية لترجمة Google. لا يتطلب مفتاح API، ولكن قد تفرض Google قيودًا على المعدل.",
+              "prompt-title": "إعدادات ترجمة Google"
+            },
+            "local-cli": {
+              "command": "أمر",
+              "engine": "CLI المحلي",
+              "engine-claude": "كود كلود",
+              "engine-codex": "كودكس",
+              "engine-gemini": "جميني كوال",
+              "name": "CLI المحلي",
+              "prompt-label": "استخدم Claude Code أو Codex أو Gemini CLI المسجل دخولها محليًا. الأمر والنموذج تلقائيان؛ يستخدم CLI الإعدادات الافتراضية المسجلة.",
+              "prompt-title": "إعدادات CLI المحلي",
+              "timeout": "ثواني المهلة (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "وضع API (استجابات / تلقائي / chat-completions)",
+              "base-url": "عنوان URL الأساسي",
+              "name": "متوافق مع OpenAI",
+              "prompt-label": "استخدم خوادم متوافقة مع OpenAI، بما في ذلك Ollama (عنوان URL الأساسي http://127.0.0.1:11434/v1، وضع API تلقائي أو chat-completions).",
+              "prompt-title": "إعدادات متوافقة مع OpenAI"
+            },
+            "shared": {
+              "api-key": "مفتاح API",
+              "model": "النموذج"
+            }
+          },
+          "target-language": {
+            "label": "اللغة الهدف",
+            "options": {
+              "ar": "العربية",
+              "auto": "اتبع لغة التطبيق",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "اللغة التي سيتم ترجمة الكلمات إليها."
+          },
+          "tooltip": "ترجمة الكلمات وعرض النتيجة المترجمة سطراً بسطر."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "استخدم كلمات أغاني YTM بدون بروكسي",
+          "tooltip": "تجاوز وكيل تصفح YTM واتصل بـ YouTube Music مباشرة باستخدام جلسة التطبيق الموثقة. مفيد إذا كنت تثق في شبكتك/منطقتك للسماح بمكالمات التصفح المباشرة."
+        },
+        "show-custom-search-button": {
+          "label": "إظهار زر البحث المخصص",
+          "tooltip": "عرض زر بحث في منتقي الكلمات الذي يتيح لك تجاوز استعلام البحث والفنان للأغنية الحالية."
         }
       },
       "name": "كلمات متزامنة",
@@ -993,6 +1145,14 @@
         "visualizer-type": "نوع المعاين البصري"
       },
       "name": "معاين بصري"
+    },
+    "playlist-search": {
+      "description": "يضيف حقل بحث لتصفية قوائم التشغيل في الشريط الجانبي ومربع حوار الإضافة إلى قائمة التشغيل",
+      "name": "بحث قائمة التشغيل",
+      "templates": {
+        "search-placeholder": "البحث في قوائم التشغيل",
+        "no-results": "لم يتم العثور على قوائم تشغيل"
+      }
     }
   }
 }

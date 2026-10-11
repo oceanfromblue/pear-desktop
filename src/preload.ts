@@ -44,10 +44,14 @@ window.addEventListener('load', () => adapterScriptObserver.disconnect(), {
   once: true,
 });
 
-loadI18n().then(async () => {
-  await setLanguage(config.get('options.language') ?? 'en');
-  await loadAllPreloadPlugins();
-});
+loadI18n()
+  .then(async () => {
+    await setLanguage(config.get('options.language') ?? 'en');
+    await loadAllPreloadPlugins();
+  })
+  .catch((err) => {
+    console.error('Failed to load preload plugins:', err);
+  });
 
 // While nobody can see the page (e.g. hidden in the tray), free the memory it doesn't need:
 // clears Blink's memory cache and sends a memory pressure signal (garbage collection, caches)
@@ -136,5 +140,14 @@ if (path) {
   webFrame.executeJavaScript(script, true, () => (blocked = false));
 }
 
-// HACK: Wait for the script to be executed
-while (blocked);
+// HACK: Wait for the script to be executed (with timeout safety)
+// Use a self-invoking async function to avoid top-level await (CJS output)
+(async () => {
+  if (!path && !script) return;
+
+  const startTime = Date.now();
+  const TIMEOUT = 10_000;
+  while (blocked && Date.now() - startTime < TIMEOUT) {
+    await new Promise((resolve) => setTimeout(resolve, 1));
+  }
+})();

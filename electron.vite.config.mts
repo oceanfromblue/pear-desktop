@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,10 +26,37 @@ const resolveAlias = {
   '@assets': resolve(__dirname, './assets'),
 };
 
+// Baked into the main bundle for the About window (src/app-info.ts). CI sets both;
+// locally the channel stays unbaked (dev) and the commit comes from the checkout.
+const gitCommit = () => {
+  try {
+    return execFileSync('git', ['rev-parse', '--short', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    return '';
+  }
+};
+const buildInfo = {
+  __PEAR_CHANNEL__: JSON.stringify(process.env.PEAR_CHANNEL?.trim() || 'dev'),
+  __PEAR_COMMIT__: JSON.stringify(
+    (process.env.PEAR_COMMIT?.trim() || gitCommit()).slice(0, 7),
+  ),
+};
+
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
 
-  const mainAndPreloadExcludes = ['electron', 'custom-electron-prompt', ...builtinModules];
+  // node-smtc is a Windows-only optional dependency, so it is not installed
+  // anywhere else. Left to the bundler, its dynamic import in src/index.ts is
+  // resolved at build time and fails the whole build on macOS/Linux; keeping it
+  // external leaves the import for the `is.windows()` guard to reach (or not).
+  const mainAndPreloadExcludes = [
+    'electron',
+    'custom-electron-prompt',
+    'node-smtc',
+    ...builtinModules,
+  ];
 
   // By default, every key of a JSON file becomes a named export (a getter function),
   // which is very costly in memory for big dictionaries (e.g. ~55k getters for hanja)
@@ -47,6 +75,7 @@ export default defineConfig(({ mode }) => {
     define: {
       __dirname: 'import.meta.dirname',
       __filename: 'import.meta.filename',
+      ...buildInfo,
     },
     build: {
       lib: {

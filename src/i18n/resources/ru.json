@@ -109,7 +109,8 @@
                   "title": "Задать прокси"
                 }
               },
-              "toggle-dev-tools": "Включить DevTools"
+              "toggle-dev-tools": "Включить DevTools",
+              "force-smtc": "Принудительно использовать внешний SMTC"
             }
           },
           "always-on-top": "Поверх остальных окон",
@@ -144,7 +145,9 @@
               "disabled": "Отключено",
               "enabled-and-hide-app": "Включено и скрывать приложение",
               "enabled-and-show-app": "Включено и показывать приложение",
-              "play-pause-on-click": "Пауза/продолжить при нажатии"
+              "play-pause-on-click": "Пауза/продолжить при нажатии",
+              "move-to-current-desktop": "Перемещать на текущий виртуальный рабочий стол при показе",
+              "force-white-icons": "Принудительное использование белых иконок"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Нравится",
+      "dislike": "Не нравится",
+      "unlike": "В отличие от",
+      "undislike": "Отменить дизлайк"
     }
   },
   "plugins": {
@@ -509,14 +516,14 @@
         "dialog": {
           "error": {
             "buttons": {
-              "ok": "OK"
+              "ok": "ОК"
             },
             "message": "Ой-ой! Прошу простить, загрузка дала сбой…",
-            "title": "Error in download!"
+            "title": "Ошибка при загрузке!"
           },
           "start-download-playlist": {
             "buttons": {
-              "ok": "OK"
+              "ok": "ОК"
             },
             "detail": "({{playlistSize}} песен)",
             "message": "Скачиваем плейлист {{playlistTitle}}",
@@ -528,7 +535,7 @@
           "converting": "Конвертация…",
           "done": "Выполнено: {{filePath}}",
           "download-info": "Скачиваем {{artist}}-{{title}} {{videoId}}",
-          "download-progress": "Download: {{percent}}%",
+          "download-progress": "Загрузка: {{percent}}%",
           "downloading": "Скачиваем…",
           "downloading-counter": "Скачиваем {{current}}/{{total}}…",
           "downloading-playlist": "Скачиваем плейлист \"{{playlistTitle}}\" - {{playlistSize}} песен {{playlistId}}",
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Скрыть текст кнопки",
             "refresh-on-play-pause": "Перезагрузка при воспроизведении/паузе",
-            "tray-controls": "Открывать/закрывать по нажатию в трее"
+            "tray-controls": "Открывать/закрывать по нажатию в трее",
+            "hover-controls": "Показывать мини-плеер при наведении на трей"
           }
         },
         "priority": "Приоритет уведомлений",
@@ -723,6 +731,9 @@
     },
     "playback-speed": {
       "description": "Слушайте быстро, слушайте медленно! Добавляет ползунок, регулирующий скорость композиции",
+      "menu": {
+        "no-preserves-pitch": "Без сохранения тональности"
+      },
       "name": "Скорость воспроизведения",
       "templates": {
         "button": "Скорость"
@@ -777,6 +788,10 @@
             "message": "Не удалось войти с помощью Last.fm\nСкрыть сообщение до следующего запуска.",
             "title": "Ошибка аунтефикации"
           }
+        },
+        "invalid-regex": {
+          "title": "Некорректное регулярное выражение",
+          "message": "Регулярное выражение в строке {{line}} некорректно: {{error}}"
         }
       },
       "menu": {
@@ -788,7 +803,10 @@
         },
         "scrobble-alternative-artist": "Использовать альтернативных исполнителей",
         "scrobble-alternative-title": "Использовать альтернативные названия",
-        "scrobble-other-media": "Скробблинг других медиа"
+        "scrobble-other-media": "Скробблинг других медиа",
+        "regex-filters": "Фильтры через регулярные выражения",
+        "use-musicbrainz": "Использовать MusicBrainz для коррекции метаданных",
+        "musicbrainz-email": "Контактная почта для MusicBrainz"
       },
       "name": "Скробблер",
       "prompt": {
@@ -801,6 +819,13 @@
             "label": "Введите токен пользователя ListenBrainz:",
             "title": "Токен ListenBrainz"
           }
+        },
+        "regex-filter-multi": {
+          "label": "Введите одно рег.выр. на каждую строку:"
+        },
+        "musicbrainz-email": {
+          "title": "Контактная почта для MusicBrainz",
+          "label": "Введите email для MusicBrainz API:"
         }
       }
     },
@@ -822,10 +847,6 @@
           "title": "Глобальные привязки клавиш"
         }
       }
-    },
-    "skip-disliked-songs": {
-      "description": "Пропускает непонравившиеся песни",
-      "name": "Пропустить непонравившиеся песни"
     },
     "skip-silences": {
       "description": "Автоматически пропускает тихие моменты в песнях",
@@ -886,6 +907,24 @@
           },
           "tooltip": "Выберите эффект применяемый к текущей строке"
         },
+        "lyrics-font-size": {
+          "label": "Размер шрифта текста",
+          "submenu": {
+            "large": {
+              "label": "Большой",
+              "tooltip": "Использовать оригинальный большой размер текста"
+            },
+            "medium": {
+              "label": "Средний",
+              "tooltip": "Использовать сбалансированный размер текста"
+            },
+            "small": {
+              "label": "Маленький",
+              "tooltip": "Использовать более компактный размер текста"
+            }
+          },
+          "tooltip": "Выберите размер текста слов"
+        },
         "precise-timing": {
           "label": "Идеально синхронизировать слова",
           "tooltip": "До миллисекунды рассчитывает отображение следующей строки(может оказать небольшое влияние на производительность)"
@@ -909,6 +948,125 @@
         "show-time-codes": {
           "label": "Показывать временные метки",
           "tooltip": "Показывает временные метки рядом со словами"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Очистить кеш переводов",
+            "tooltip": "Удалить все кешированные переводы, сохранённые на диске."
+          },
+          "configure": {
+            "label": "Настроить ключ API и модель…",
+            "tooltip": "Установить параметры перевода для конкретного провайдера."
+          },
+          "enabled": {
+            "label": "Включить перевод",
+            "tooltip": "Показывать переведённую строку под каждой оригинальной строкой текста."
+          },
+          "label": "Перевод текста",
+          "provider": {
+            "label": "Провайдер",
+            "tooltip": "Какой сервис использовать для перевода."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Использует нативный API Anthropic Messages.",
+              "prompt-title": "Настройки Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Использует Google Generative Language API (generateContent).",
+              "prompt-title": "Настройки Gemini"
+            },
+            "google-translate": {
+              "host": "Хост",
+              "name": "Google Перевод",
+              "prompt-label": "Использует неофициальную бесплатную конечную точку Google Перевод. Ключ API не требуется, но Google может ограничивать частоту запросов.",
+              "prompt-title": "Настройки Google Перевод"
+            },
+            "local-cli": {
+              "command": "Команда",
+              "engine": "Локальный CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Кодекс",
+              "engine-gemini": "Gemini CLI",
+              "name": "Локальный CLI",
+              "prompt-label": "Использовать локально авторизованный Claude Code, Codex или Gemini CLI. Команда и модель автоматические; CLI использует свой авторизованный по умолчанию.",
+              "prompt-title": "Настройки локального CLI",
+              "timeout": "Таймаут в секундах (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Режим API (responses / auto / chat-completions)",
+              "base-url": "Базовый URL",
+              "name": "Совместимый с OpenAI",
+              "prompt-label": "Использовать серверы, совместимые с OpenAI, включая Ollama (базовый URL http://127.0.0.1:11434/v1, режим API auto или chat-completions).",
+              "prompt-title": "Настройки совместимости с OpenAI"
+            },
+            "shared": {
+              "api-key": "Ключ API",
+              "model": "Модель"
+            }
+          },
+          "target-language": {
+            "label": "Целевой язык",
+            "options": {
+              "ar": "العربية",
+              "auto": "Следовать языку приложения",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Язык, на который переводить текст песен."
+          },
+          "tooltip": "Переводить текст песен и показывать переведённый результат построчно."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Использовать тексты YTM без прокси",
+          "tooltip": "Пропустить прокси-обход YTM и обращаться к YouTube Music напрямую через аутентифицированную сессию приложения. Полезно, если вы доверяете своей сети/региону для прямых запросов."
+        },
+        "show-custom-search-button": {
+          "label": "Показать кнопку пользовательского поиска",
+          "tooltip": "Показывать кнопку поиска в выборе текста песни, позволяющую переопределить поисковый запрос и исполнителя для текущей песни."
         }
       },
       "name": "Синхронизированные тексты песен",
@@ -997,6 +1155,25 @@
         "visualizer-type": "Вид визуализации"
       },
       "name": "Визуализатор"
+    },
+    "audio-only": {
+      "description": "Принудительный режим только аудио — блокирует все видеопотоки на уровне сети и плеера для экономии ОЗУ и трафика",
+      "name": "Только Аудио"
+    },
+    "playback-recovery": {
+      "description": "Автоматически восстанавливает зависшее, остановленное или неработающее воспроизведение",
+      "menu": {
+        "log-to-console": "Записывать события восстановления в консоль"
+      },
+      "name": "Восстановление Воспроизведения"
+    },
+    "playlist-search": {
+      "description": "Добавляет поле поиска для фильтрации плейлистов на боковой панели и в диалоге «Добавить в плейлист»",
+      "name": "Поиск плейлистов",
+      "templates": {
+        "search-placeholder": "Поиск плейлистов",
+        "no-results": "Плейлисты не найдены"
+      }
     }
   }
 }

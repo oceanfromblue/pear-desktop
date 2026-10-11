@@ -18,8 +18,10 @@ import {
 } from './components';
 import { LyricsPicker } from './components/LyricsPicker';
 import { reactiveOwner } from './reactive-root';
-import { currentLyrics } from './store';
+import { currentLyrics, splitPlainLyrics } from './store';
 import { selectors } from './utils';
+
+import { hasLyricText } from '../providers';
 
 import type { LineLyrics, SyncedLyricsPluginConfig } from '../types';
 
@@ -27,18 +29,49 @@ export const [isVisible, setIsVisible] = createSignal<boolean>(false);
 export const [config, setConfig] =
   createSignal<SyncedLyricsPluginConfig | null>(null);
 
+const lyricsFontSizes = {
+  small: {
+    fancy: '28px',
+    padding: '12px',
+    standard: '28px',
+  },
+  medium: {
+    fancy: '36px',
+    padding: '14px',
+    standard: '36px',
+  },
+  large: {
+    fancy: '48px',
+    padding: '18px',
+    standard: '48px',
+  },
+} as const;
+
+const currentFontStyle = () => {
+  const size = config()?.lyricsFontSize;
+  if (!size) return null; // use CSS default (clamp)
+  return lyricsFontSizes[size];
+};
+
 runWithOwner(reactiveOwner, () => {
   createEffect(() => {
     if (!config()?.enabled) return;
     const root = document.documentElement;
+    const fontStyle = currentFontStyle();
 
     // Set the line effect
     switch (config()?.lineEffect) {
       case 'fancy':
-        root.style.setProperty('--lyrics-font-size', '3rem');
+        root.style.setProperty(
+          '--lyrics-font-size',
+          fontStyle?.fancy ?? '3rem',
+        );
         root.style.setProperty('--lyrics-line-height', '1.333');
         root.style.setProperty('--lyrics-width', '100%');
-        root.style.setProperty('--lyrics-padding', '2rem');
+        root.style.setProperty(
+          '--lyrics-padding',
+          fontStyle?.padding ?? '2rem',
+        );
         root.style.setProperty(
           '--lyrics-animations',
           'lyrics-glow var(--lyrics-glow-duration) forwards, lyrics-wobble var(--lyrics-wobble-duration) forwards',
@@ -57,7 +90,7 @@ runWithOwner(reactiveOwner, () => {
       case 'scale':
         root.style.setProperty(
           '--lyrics-font-size',
-          'clamp(1.4rem, 1.1vmax, 3rem)',
+          fontStyle?.standard ?? 'clamp(1.4rem, 1.1vmax, 3rem)',
         );
         root.style.setProperty(
           '--lyrics-line-height',
@@ -80,7 +113,7 @@ runWithOwner(reactiveOwner, () => {
       case 'offset':
         root.style.setProperty(
           '--lyrics-font-size',
-          'clamp(1.4rem, 1.1vmax, 3rem)',
+          fontStyle?.standard ?? 'clamp(1.4rem, 1.1vmax, 3rem)',
         );
         root.style.setProperty(
           '--lyrics-line-height',
@@ -103,7 +136,7 @@ runWithOwner(reactiveOwner, () => {
       case 'focus':
         root.style.setProperty(
           '--lyrics-font-size',
-          'clamp(1.4rem, 1.1vmax, 3rem)',
+          fontStyle?.standard ?? 'clamp(1.4rem, 1.1vmax, 3rem)',
         );
         root.style.setProperty(
           '--lyrics-line-height',
@@ -210,22 +243,24 @@ export const LyricsRenderer = () => {
         return [{ kind: 'Error', error: error! }];
       }
 
-      if (data?.lines) {
+      if (data?.lines?.some((line) => line.text.trim())) {
         return data.lines.map((line) => ({
           kind: 'SyncedLine' as const,
           line,
         }));
       }
 
-      if (data?.lyrics) {
-        const lines = data.lyrics.split('\n').filter((line) => line.trim());
+      if (data?.lyrics?.trim()) {
+        const lines = splitPlainLyrics(data.lyrics);
         return lines.map((line) => ({
           kind: 'PlainLine' as const,
           line,
         }));
       }
 
-      return [{ kind: 'NotFoundKaomoji' }];
+      return hasLyricText(data)
+        ? [{ kind: 'LoadingKaomoji' }]
+        : [{ kind: 'NotFoundKaomoji' }];
     });
   });
 
@@ -262,7 +297,7 @@ export const LyricsRenderer = () => {
   createEffect(() => {
     const current = currentLyrics();
     const idx = currentIndex();
-    const maxIdx = untrack(statuses).length - 1;
+    const maxIdx = untrack(statuses).length; // data is [lyricsPicker, ...lines], so line j is at index j+1 and the last line at index N
 
     if (!scroller() || !current.data?.lines) return;
 
@@ -309,7 +344,7 @@ export const LyricsRenderer = () => {
               );
             }
             case 'PlainLine': {
-              return <PlainLyrics {...props} />;
+              return <PlainLyrics {...props} index={idx() - 1} />;
             }
           }
         }}

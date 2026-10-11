@@ -109,7 +109,8 @@
                   "title": "הגדר שרת proxy"
                 }
               },
-              "toggle-dev-tools": "שנה את מצב כלי המפתחים"
+              "toggle-dev-tools": "שנה את מצב כלי המפתחים",
+              "force-smtc": "אלץ שימוש ב-SMTC חיצוני"
             }
           },
           "always-on-top": "השאר מקדימה",
@@ -144,7 +145,9 @@
               "disabled": "מושבת",
               "enabled-and-hide-app": "מופעל והסתר אפליקציה",
               "enabled-and-show-app": "מופעל והמציג את האפליקציה",
-              "play-pause-on-click": "הפעל/השהה בלחיצה"
+              "play-pause-on-click": "הפעל/השהה בלחיצה",
+              "move-to-current-desktop": "העבר לשולחן עבודה וירטואלי נוכחי בעת הצגה",
+              "force-white-icons": "השתמש בכוח באייקונים לבנים"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "אהבתי",
+      "dislike": "לא אוהב",
+      "unlike": "שלא",
+      "undislike": "בטל דיסלייק"
     }
   },
   "plugins": {
@@ -644,7 +651,499 @@
         "disconnected": "Music Together נותק",
         "host-failed": "נכשל באירוח Music Together",
         "id-copied": "מזהה מארח הועתק ללוח",
-        "id-copy-failed": "נכשל בהעתקת מזהה המארח ללוח"
+        "id-copy-failed": "נכשל בהעתקת מזהה המארח ללוח",
+        "join-failed": "הצטרפות ל-Music Together נכשלה",
+        "joined": "הצטרפת ל-Music Together",
+        "permission-changed": "הרשאת Music Together שונתה ל-\"{{permission}}\"",
+        "remove-song-failed": "הסרת השיר נכשלה",
+        "user-connected": "{{name}} הצטרף ל-Music Together",
+        "user-disconnected": "{{name}} עזב את Music Together"
+      }
+    },
+    "navigation": {
+      "description": "חצאי ניווט קדימה/אחורה משולבים ישירות בממשק, כמו בדפדפן המועדף עליך",
+      "name": "ניווט",
+      "templates": {
+        "back": {
+          "title": "עבור לדף הקודם"
+        },
+        "forward": {
+          "title": "עבור לדף הבא"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "הסר כפתורי וקישורי התחברות של Google מהממשק",
+      "name": "ללא התחברות Google"
+    },
+    "notifications": {
+      "description": "הצג התראה כאשר שיר מתחיל להתנגן (התראות אינטראקטיביות זמינות ב-Windows)",
+      "menu": {
+        "interactive": "התראות אינטראקטיביות",
+        "interactive-settings": {
+          "label": "הגדרות אינטראקטיביות",
+          "submenu": {
+            "hide-button-text": "הסתר טקסט כפתור",
+            "refresh-on-play-pause": "רענן בעת ניגון/השהיה",
+            "tray-controls": "פתח/סגור בלחיצה על המגש",
+            "hover-controls": "הצג נגן קטן בעת ריחוף על המגש"
+          }
+        },
+        "priority": "עדיפות התראות",
+        "toast-style": "סגנון התראה",
+        "unpause-notification": "הצג התראה בעת ביטול השהיה"
+      },
+      "name": "התראות"
+    },
+    "performance-improvement": {
+      "description": "שפר ביצועים על ידי הפעלת סקריפטים ניסיוניים",
+      "name": "שיפור ביצועים [בטא]"
+    },
+    "picture-in-picture": {
+      "description": "מאפשר להעביר את האפליקציה למצב תמונה-בתוך-תמונה",
+      "menu": {
+        "always-on-top": "תמיד למעלה",
+        "hotkey": {
+          "label": "מקש חם",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "מקש חם"
+            },
+            "label": "בחר מקש חם להפעלת תמונה-בתוך-תמונה",
+            "title": "מקש חם לתמונה-בתוך-תמונה"
+          }
+        },
+        "save-window-position": "שמור מיקום חלון",
+        "save-window-size": "שמור גודל חלון",
+        "use-native-pip": "השתמש ב-PiP המקורי של הדפדפן"
+      },
+      "name": "תמונה בתוך תמונה",
+      "templates": {
+        "button": "תמונה-בתוך-תמונה"
+      }
+    },
+    "playback-speed": {
+      "description": "האזן מהר, האזן לאט! מוסיף מחוון השולט במהירות השיר",
+      "name": "מהירות השמעה",
+      "templates": {
+        "button": "מהירות"
+      }
+    },
+    "precise-volume": {
+      "description": "שלוט בעוצמת הווליום במדויק באמצעות גלגלת/מקשים חמים, עם HUD מותאם אישית ושלבי ווליום ניתנים להתאמה",
+      "menu": {
+        "arrows-shortcuts": "בקרות מקומיות של מקשי חצים",
+        "custom-volume-steps": "הגדר שלבי ווליום מותאמים",
+        "global-shortcuts": "מקשים חמים גלובליים"
+      },
+      "name": "עוצמה מדויקת",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "הפחת ווליום",
+            "increase": "הגבר ווליום"
+          },
+          "label": "בחר קיצורי ווליום גלובליים:",
+          "title": "קיצורי ווליום גלובליים"
+        },
+        "volume-steps": {
+          "label": "בחר שלבי הגברה/הפחתת ווליום",
+          "title": "שלבי ווליום"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "איכות נוכחית: {{quality}}",
+            "message": "בחר איכות וידאו:",
+            "title": "בחר איכות וידאו"
+          }
+        }
+      },
+      "description": "מאפשר לשנות את איכות הווידאו באמצעות כפתור על שכבת הווידאו",
+      "name": "משנה איכות וידאו",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "פתח משנה איכות נגן"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "הוסף תמיכת scrobbling (כגון last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "האימות מול Last.fm נכשל\nהסתר את החלון הקופץ עד להפעלה מחדש.",
+            "title": "האימות נכשל"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "הגדרות API של Last.fm"
+        },
+        "listenbrainz": {
+          "token": "הזן אסימון משתמש ListenBrainz"
+        },
+        "scrobble-alternative-artist": "השתמש באמנים חלופיים",
+        "scrobble-alternative-title": "השתמש בכותרות חלופיות",
+        "scrobble-other-media": "Scrobble מדיה אחרת"
+      },
+      "name": "סקרובלר",
+      "prompt": {
+        "lastfm": {
+          "api-key": "מפתח API של Last.fm",
+          "api-secret": "סוד API של Last.fm"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "הזן את אסימון המשתמש של ListenBrainz:",
+            "title": "אסימון ListenBrainz"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "מאפשר הגדרת מקשים חמים גלובליים לניגון (נגן/השהה/הבא/הקודם) וכיבוי OSD מדיה על ידי דריסת מקשי מדיה, הפעלת Ctrl/CMD + F לחיפוש, הפעלת תמיכת MPRIS בלינוקס למקשי מדיה, ומקשים חמים מותאמים אישית למשתמשים מתקדמים",
+      "menu": {
+        "override-media-keys": "דרוס מקשי מדיה",
+        "set-keybinds": "הגדר בקרות שירים גלובליות"
+      },
+      "name": "קיצורי דרך (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "הבא",
+            "play-pause": "נגן / השהה",
+            "previous": "הקודם"
+          },
+          "label": "בחר קיצורי מקלדת גלובליים לשליטה בשירים:",
+          "title": "קיצורי מקלדת גלובליים"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "דלג אוטומטית על קטעי שקט בשירים",
+      "name": "דלג על שקט"
+    },
+    "sponsorblock": {
+      "description": "מדלג אוטומטית על חלקים שאינם מוזיקה כמו פתיח/סיום או חלקים בסרטוני מוזיקה שבהם השיר לא מתנגן",
+      "name": "חסימת ספונסרים"
+    },
+    "synced-lyrics": {
+      "description": "מספק מילים מסונכרנות לשירים, באמצעות ספקים כמו LRClib.",
+      "errors": {
+        "fetch": "⚠️\tאירעה שגיאה במהלך שליפת המילים.\n\tאנא נסה שוב מאוחר יותר.",
+        "not-found": "⚠️ לא נמצאו מילים לשיר זה."
+      },
+      "menu": {
+        "convert-chinese-character": {
+          "label": "המר תווים סיניים",
+          "submenu": {
+            "disabled": {
+              "label": "מושבת",
+              "tooltip": "השבת המרת תווים סיניים"
+            },
+            "simplified-to-traditional": {
+              "label": "מפושט למסורתי",
+              "tooltip": "המר סינית מפושטת לסינית מסורתית"
+            },
+            "traditional-to-simplified": {
+              "label": "מסורתי למפושט",
+              "tooltip": "המר סינית מסורתית לסינית מפושטת"
+            }
+          },
+          "tooltip": "המר תווים סיניים למסורתיים או מפושטים"
+        },
+        "default-text-string": {
+          "label": "תו ברירת מחדל בין מילים",
+          "tooltip": "בחר את התו שישמש כברירת מחדל לרווח בין המילים"
+        },
+        "line-effect": {
+          "label": "אפקט שורה",
+          "submenu": {
+            "fancy": {
+              "label": "מהודר",
+              "tooltip": "השתמש באפקטים גדולים דמויי אפליקציה על השורה הנוכחית"
+            },
+            "focus": {
+              "label": "מיקוד",
+              "tooltip": "הפוך רק את השורה הנוכחית ללבנה"
+            },
+            "offset": {
+              "label": "הסטה",
+              "tooltip": "הסט ימינה את השורה הנוכחית"
+            },
+            "scale": {
+              "label": "קנה מידה",
+              "tooltip": "שנה קנה מידה של השורה הנוכחית"
+            }
+          },
+          "tooltip": "בחר את האפקט להחלה על השורה הנוכחית"
+        },
+        "lyrics-font-size": {
+          "label": "גודל גופן מילים",
+          "submenu": {
+            "large": {
+              "label": "גדול",
+              "tooltip": "השתמש בגודל המילים הגדול המקורי"
+            },
+            "medium": {
+              "label": "בינוני",
+              "tooltip": "השתמש בגודל מילים מאוזן"
+            },
+            "small": {
+              "label": "קטן",
+              "tooltip": "השתמש בגודל מילים קומפקטי יותר"
+            }
+          },
+          "tooltip": "בחר כמה גדול טקסט המילים צריך להיות"
+        },
+        "precise-timing": {
+          "label": "הפוך את המילים למסונכרנות בצורה מושלמת",
+          "tooltip": "חשב באלפית השנייה את תצוגת השורה הבאה (עלולה להיות השפעה קלה על הביצועים)"
+        },
+        "preferred-provider": {
+          "label": "ספק מועדף",
+          "none": {
+            "label": "ללא",
+            "tooltip": "אין ספק מועדף"
+          },
+          "tooltip": "בחר את הספק המוגדר כברירת מחדל לשימוש"
+        },
+        "romanization": {
+          "label": "תעתיק לטיני של מילים",
+          "tooltip": "אם המילים בשפה שונה, נסה להציג גרסה לטינית."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "הצג מילים גם אם אינן מדויקות",
+          "tooltip": "אם השיר לא נמצא, התוסף מנסה שוב עם שאילתת חיפוש שונה.\nייתכן שהתוצאה מהניסיון השני לא תהיה מדויקת."
+        },
+        "show-time-codes": {
+          "label": "הצג קודי זמן",
+          "tooltip": "הצג את קודי הזמן לצד המילים"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "נקה מטמון תרגומים",
+            "tooltip": "מחק את כל התרגומים השמורים במטמון בדיסק."
+          },
+          "configure": {
+            "label": "הגדר מפתח API ומודל…",
+            "tooltip": "הגדר אפשרויות תרגום ספציפיות לספק."
+          },
+          "enabled": {
+            "label": "הפעל תרגום",
+            "tooltip": "הצג שורה מתורגמת מתחת לכל שורת מילים מקורית."
+          },
+          "label": "תרגום מילים",
+          "provider": {
+            "label": "ספק",
+            "tooltip": "באיזה שירות להשתמש לתרגום."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "אנתרופיק קלוד",
+              "prompt-label": "משתמש ב-API ההודעות המקורי של Anthropic.",
+              "prompt-title": "הגדרות Anthropic"
+            },
+            "gemini": {
+              "name": "גוגל ג'מיני",
+              "prompt-label": "משתמש ב-API השפה הגנרטיבית של Google (generateContent).",
+              "prompt-title": "הגדרות Gemini"
+            },
+            "google-translate": {
+              "host": "מארח",
+              "name": "גוגל תרגום",
+              "prompt-label": "משתמש בנקודת הקצה החינמית הלא רשמית של Google Translate. אין צורך במפתח API, אך Google עשויה להגביל את הקצב.",
+              "prompt-title": "הגדרות Google Translate"
+            },
+            "local-cli": {
+              "command": "פקודה",
+              "engine": "CLI מקומי",
+              "engine-claude": "קלוד קוד",
+              "engine-codex": "קודקס",
+              "engine-gemini": "ג'מיני CLI",
+              "name": "CLI מקומי",
+              "prompt-label": "השתמש ב-Claude Code, Codex או Gemini CLI המחוברים מקומית. הפקודה והמודל אוטומטיים; ה-CLI משתמש בברירת המחדל המחוברת שלו.",
+              "prompt-title": "הגדרות CLI מקומי",
+              "timeout": "זמן קצוב בשניות (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "מצב API (responses / auto / chat-completions)",
+              "base-url": "כתובת בסיס",
+              "name": "תואם OpenAI",
+              "prompt-label": "השתמש בשרתים תואמי OpenAI, כולל Ollama (כתובת בסיס http://127.0.0.1:11434/v1, מצב API אוטומטי או chat-completions).",
+              "prompt-title": "הגדרות תואמות OpenAI"
+            },
+            "shared": {
+              "api-key": "מפתח API",
+              "model": "מודל"
+            }
+          },
+          "target-language": {
+            "label": "שפת יעד",
+            "options": {
+              "ar": "العربية",
+              "auto": "Follow app language",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "לאיזו שפה לתרגם את המילים."
+          },
+          "tooltip": "תרגם מילים והצג את התוצאה המתורגמת שורה אחר שורה."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "השתמש במילות YTM ללא פרוקסי",
+          "tooltip": "דלג על פרוקסי ה-YTM והתקשר ישירות ל-YouTube Music באמצעות הסשן המאומת של האפליקציה. שימושי אם אתה סומך על הרשת/אזור שלך לאפשר קריאות ישירות."
+        },
+        "show-custom-search-button": {
+          "label": "הצג כפתור חיפוש מותאם אישית",
+          "tooltip": "הצג כפתור חיפוש בבוחר המילים המאפשר לעקוף את שאילתת החיפוש והאמן לשיר הנוכחי."
+        }
+      },
+      "name": "מילים מסונכרנות",
+      "refetch-btn": {
+        "fetching": "שולף...",
+        "normal": "שלוף מילים מחדש"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - ייתכן שהמילים אינן מסונכרנות עקב אי התאמה במשך.",
+        "inexact": "⚠️ - ייתכן שהמילים לשיר זה אינן מדויקות",
+        "instrumental": "⚠️ - זהו שיר אינסטרומנטלי"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "שלוט בניגון משורת המשימות של Windows",
+      "name": "בקרת מדיה בשורת המשימות"
+    },
+    "touchbar": {
+      "description": "מוסיף וידג'ט TouchBar למשתמשי macOS",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "הופך את חלון האפליקציה לשקוף",
+      "menu": {
+        "opacity": {
+          "label": "אטימות",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "סוג",
+          "submenu": {
+            "acrylic": "אקרילי",
+            "mica": "מיקה",
+            "none": "ללא",
+            "tabbed": "לשוניות"
+          }
+        }
+      },
+      "name": "נגן שקוף"
+    },
+    "tuna-obs": {
+      "description": "אינטגרציה עם תוסף Tuna של OBS",
+      "name": "טונה OBS"
+    },
+    "unobtrusive-player": {
+      "description": "מונע מהנגן לקפוץ בעת ניגון שיר",
+      "name": "נגן לא פולשני"
+    },
+    "video-toggle": {
+      "description": "מוסיף כפתור למעבר בין מצב וידאו/שיר. ניתן גם להסיר לחלוטין את לשונית הווידאו",
+      "menu": {
+        "align": {
+          "label": "יישור",
+          "submenu": {
+            "left": "שמאל",
+            "middle": "מרכז",
+            "right": "ימין"
+          }
+        },
+        "force-hide": "הסר בכוח לשונית וידאו",
+        "mode": {
+          "label": "מצב",
+          "submenu": {
+            "custom": "מתג מותאם",
+            "disabled": "מושבת",
+            "native": "מתג מקורי"
+          }
+        }
+      },
+      "name": "מתג וידאו",
+      "templates": {
+        "button-song": "שיר",
+        "button-video": "וידאו"
+      }
+    },
+    "visualizer": {
+      "description": "מוסיף ויזואלייזר לנגן",
+      "menu": {
+        "visualizer-type": "סוג ויזואלייזר"
+      },
+      "name": "ויזואלייזר"
+    },
+    "audio-only": {
+      "description": "מכריח מצב שמע בלבד — חוסם את כל זרמי הווידאו ברמת הרשת והנגן כדי לחסוך בזיכרון וברוחב פס",
+      "name": "שמע בלבד"
+    },
+    "playback-recovery": {
+      "description": "משחזר אוטומטית ממצבי השמעה תקועים, קפואים או מתים",
+      "menu": {
+        "log-to-console": "תעד אירועי שחזור למסוף"
+      },
+      "name": "שחזור השמעה"
+    },
+    "playlist-search": {
+      "description": "מוסיף שדה חיפוש לסינון רשימות השמעה בסרגל הצד ובתיבת הדו-שיח \"הוסף לרשימת השמעה\"",
+      "name": "חיפוש פלייליסט",
+      "templates": {
+        "search-placeholder": "חיפוש פלייליסטים",
+        "no-results": "לא נמצאו פלייליסטים"
       }
     }
   }

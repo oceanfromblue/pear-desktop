@@ -51,10 +51,17 @@ export const renderer = createRenderer<
   async onPlayerApiReady(_: MusicPlayer, context) {
     this.options = await context.getConfig();
     // Only needed to get the device labels
-    const microphone = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
-    });
+    let microphone: MediaStream | undefined;
+    try {
+      microphone = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
+    } catch (error) {
+      // No capture device / permission denied — the plugin can still set the
+      // output sink id on the audio context, so continue setup.
+      console.warn('custom-output-device: no audio input available', error);
+    }
     navigator.mediaDevices.ondevicechange = async () =>
       await updateDeviceList(context);
 
@@ -70,7 +77,7 @@ export const renderer = createRenderer<
       await updateDeviceList(context);
     } finally {
       // Don't keep the microphone open for the whole session
-      microphone.getTracks().forEach((track) => track.stop());
+      microphone?.getTracks().forEach((track) => track.stop());
     }
   },
 

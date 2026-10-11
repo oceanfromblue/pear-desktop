@@ -36,10 +36,17 @@ export const setupSeekedListener = singleton(() => {
 });
 
 export const setupTimeChangedListener = singleton(() => {
+  let lastSent = 0;
+  const THROTTLE_MS = 250;
+
   const progressObserver = new MutationObserver((mutations) => {
+    const now = Date.now();
+    if (now - lastSent < THROTTLE_MS) return;
+
     for (const mutation of mutations) {
       const target = mutation.target as Node & { value: string };
       const numberValue = Number(target.value);
+      lastSent = now;
       window.ipcRenderer.send('peard:time-changed', numberValue);
       songInfo.elapsedSeconds = numberValue;
     }
@@ -64,7 +71,9 @@ export const setupRepeatChangedListener = singleton(() => {
       ).__dataHost.getState().queue.repeatMode,
     );
   });
-  repeatObserver.observe(document.querySelector('#right-controls .repeat')!, {
+  const repeatEl = document.querySelector('#right-controls .repeat');
+  if (!repeatEl) return;
+  repeatObserver.observe(repeatEl, {
     attributeFilter: ['title'],
   });
 
@@ -186,7 +195,8 @@ export const setupAutoPlayChangedListener = singleton(() => {
     window.ipcRenderer.send('peard:autoplay-changed');
   });
 
-  observer.observe(autoplaySlider!, {
+  if (!autoplaySlider) return;
+  observer.observe(autoplaySlider, {
     attributes: true,
     childList: false,
     subtree: false,
@@ -243,6 +253,20 @@ export const setupSongInfo = (api: MusicPlayer) => {
     pause: (e: Event) => playPausedHandler(e, 'pause'),
   };
 
+  let currentVideo: HTMLMediaElement | null = null;
+
+  const attachPlayPauseListeners = (video: HTMLMediaElement) => {
+    if (currentVideo && currentVideo !== video) {
+      for (const status of ['playing', 'pause'] as const) {
+        currentVideo.removeEventListener(status, playPausedHandlers[status]);
+      }
+    }
+    currentVideo = video;
+    for (const status of ['playing', 'pause'] as const) {
+      video.addEventListener(status, playPausedHandlers[status]);
+    }
+  };
+
   const videoEventDispatcher = async (
     name: string,
     videoData: VideoDataChangeValue,
@@ -279,9 +303,8 @@ export const setupSongInfo = (api: MusicPlayer) => {
       const video = getMediaElement();
       video?.dispatchEvent(srcChangedEvent);
 
-      for (const status of ['playing', 'pause'] as const) {
-        // for fix issue that pause event not fired
-        video?.addEventListener(status, playPausedHandlers[status]);
+      if (video) {
+        attachPlayPauseListeners(video);
       }
 
       clearVideoTimeout(videoData.videoId);
@@ -302,9 +325,7 @@ export const setupSongInfo = (api: MusicPlayer) => {
   const video = getMediaElement();
 
   if (video) {
-    for (const status of ['playing', 'pause'] as const) {
-      video.addEventListener(status, playPausedHandlers[status]);
-    }
+    attachPlayPauseListeners(video);
 
     if (!isNaN(video.duration)) {
       const {

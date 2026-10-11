@@ -84,8 +84,37 @@ type PathValue<T, K extends string> =
 export const get = <Key extends Paths<typeof defaultConfig>>(key: Key) =>
   store.get(key) as PathValue<typeof defaultConfig, typeof key>;
 
+export type ThemeOverrides = Record<string, Record<string, string>>;
+
+// `PathValue` collapses nested records, so these are typed by hand. A config
+// stored before these keys existed has no entry, so fall back to an empty one.
+export const getThemeOverrides = (): ThemeOverrides =>
+  (store.get('options.themeOverrides') as ThemeOverrides) ?? {};
+
+export const setThemeOverrides = (value: ThemeOverrides) =>
+  store.set('options.themeOverrides', value);
+
+/** Preset name per theme id, `custom` for the user's own palette. */
+export type ThemePresetSelection = Record<string, string>;
+
+export const getThemePresets = (): ThemePresetSelection =>
+  (store.get('options.themePresets') as ThemePresetSelection) ?? {};
+
+export const setThemePresets = (value: ThemePresetSelection) =>
+  store.set('options.themePresets', value);
+
+export type ThemeConsent = Record<string, string>;
+
+export const getThemeConsent = (): ThemeConsent =>
+  (store.get('options.themeConsent') as ThemeConsent) ?? {};
+
+export const setThemeConsent = (value: ThemeConsent) =>
+  store.set('options.themeConsent', value);
+
 export const edit = () => store.openInEditor();
 
+export const getStore = () => store.store as unknown as typeof defaultConfig;
+
 export const watch = (cb: Parameters<IStore['onDidAnyChange']>[0]) => {
-  store.onDidAnyChange(cb);
+  return store.onDidAnyChange(cb);
 };

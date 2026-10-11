@@ -22,7 +22,7 @@ export class LyricsGenius implements LyricProvider {
     }
 
     const data = (await response.json()) as LyricsGeniusSearch;
-    const hits = data.response.sections[0].hits;
+    const hits = data.response.sections?.[0]?.hits ?? [];
 
     hits.sort(
       ({
@@ -36,10 +36,10 @@ export class LyricsGenius implements LyricProvider {
           primary_artist: { name: artistB },
         },
       }) => {
-        const pointsA = (titleA === title ? 1 : 0) +
-          (artistA.includes(artist) ? 1 : 0);
-        const pointsB = (titleB === title ? 1 : 0) +
-          (artistB.includes(artist) ? 1 : 0);
+        const pointsA = (titleA.toLowerCase() === title.toLowerCase() ? 1 : 0) +
+          (artistA.toLowerCase().includes(artist.toLowerCase()) ? 1 : 0);
+        const pointsB = (titleB.toLowerCase() === title.toLowerCase() ? 1 : 0) +
+          (artistB.toLowerCase().includes(artist.toLowerCase()) ? 1 : 0);
 
         return pointsB - pointsA;
       },
@@ -102,7 +102,7 @@ interface LyricsGeniusSearch {
 }
 
 interface Response {
-  sections: Section[];
+  sections?: Section[];
 }
 
 interface Section {

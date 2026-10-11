@@ -109,7 +109,8 @@
                   "title": "Set proksi"
                 }
               },
-              "toggle-dev-tools": "Togol DevTools"
+              "toggle-dev-tools": "Togol DevTools",
+              "force-smtc": "Paksa penggunaan SMTC luaran"
             }
           },
           "always-on-top": "Sentiasa di atas",
@@ -144,7 +145,9 @@
               "disabled": "Dilumpuhkan",
               "enabled-and-hide-app": "Didayakan dan sembunyikan aplikasi",
               "enabled-and-show-app": "Didayakan dan paparkan aplikasi",
-              "play-pause-on-click": "Main / Hentikan pada klik"
+              "play-pause-on-click": "Main / Hentikan pada klik",
+              "move-to-current-desktop": "Alih ke desktop maya semasa apabila dipaparkan",
+              "force-white-icons": "Paksa penggunaan ikon putih"
             }
           },
           "visual-tweaks": {
@@ -161,7 +164,8 @@
                 "default": "Lalai",
                 "force-show": "Paksa pamer",
                 "hide": "Sembunyi",
-                "label": "Butang suka"
+                "label": "Butang suka",
+                "swap": "Tukar susunan butang suka"
               },
               "remove-upgrade-button": "Buang butang naik taraf",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Suka",
+      "dislike": "Tidak suka",
+      "unlike": "tidak seperti",
+      "undislike": "Nyah suka"
     }
   },
   "plugins": {
@@ -230,7 +238,8 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Dayakan tema bar carian"
       },
       "name": "Tema Warna Album"
     },
@@ -258,7 +267,7 @@
         "quality": {
           "label": "Kualiti",
           "submenu": {
-            "pixels": "{{kualiti}} piksel"
+            "pixels": "{{quality}} piksel"
           }
         },
         "size": {
@@ -270,7 +279,7 @@
         "smoothness-transition": {
           "label": "Kelancaran transisi",
           "submenu": {
-            "during": "Semasa {{masaInterpolasi}}s"
+            "during": "Semasa {{interpolationTime}}s"
           }
         },
         "use-fullscreen": {
@@ -312,6 +321,22 @@
         },
         "hostname": {
           "label": "Nama perumah"
+        },
+        "https": {
+          "label": "HTTPS & Sijil",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "Pilih fail sijil HTTPS",
+              "label": "Fail sijil (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "Dayakan HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Pilih fail kunci persendirian HTTPS",
+              "label": "Fail kunci persendirian (.key/.pem)"
+            }
+          }
         },
         "port": {
           "label": "Port"
@@ -374,7 +399,7 @@
       "name": "Pemilih kapsyen",
       "prompt": {
         "selector": {
-          "label": "Bahasa kapsyen sekarang: {{bahasa}}",
+          "label": "Bahasa kapsyen sekarang: {{language}}",
           "none": "Tiada",
           "title": "Pilih bahasa kapsyen"
         }
@@ -387,6 +412,17 @@
         "caption-disabled": "Sarikata dimatikan",
         "no-captions": "Tiada sarikata untuk lagu ini"
       }
+    },
+    "clock": {
+      "description": "Tambah jam pada bar navigasi",
+      "menu": {
+        "format": {
+          "24-hour-format": "Format 24 Jam",
+          "display-seconds": "Papar Saat",
+          "label": "Format"
+        }
+      },
+      "name": "Jam"
     },
     "compact-sidebar": {
       "description": "Sentiasa tetapkan bar sisi dalam mod padat",
@@ -454,8 +490,8 @@
         "set-status-display-type": {
           "label": "Teks status",
           "submenu": {
-            "artist": "Sedang mendengar {artist}",
             "application": "Mendengar {{applicationName}}",
+            "artist": "Sedang mendengar {artist}",
             "title": "Sedang mendengar {tajuk lagu}"
           }
         }
@@ -550,10 +586,12 @@
             "bass-booster": "Penggalak bass"
           }
         }
-      }
+      },
+      "name": "Penyama"
     },
     "exponential-volume": {
-      "description": "Menjadikan gelangsar kelantangan eksponen supaya lebih mudah memilih kelantangan yang lebih rendah."
+      "description": "Menjadikan gelangsar kelantangan eksponen supaya lebih mudah memilih kelantangan yang lebih rendah.",
+      "name": "Kelantangan Eksponen"
     },
     "in-app-menu": {
       "description": "Memberi bar menu rupa yang mewah, gelap atau warna album",
@@ -583,6 +621,7 @@
       },
       "internal": {
         "save": "Simpan",
+        "track-source": "Sumber Trek",
         "unknown-user": "Pengguna tidak diketahui"
       },
       "menu": {
@@ -612,51 +651,453 @@
         "disconnected": "Music Together terputus",
         "host-failed": "Gagal untuk menjadi hos Music Together",
         "id-copied": "ID hos disalin ke papan keratan",
-        "id-copy-failed": "Gagal menyalin ID Hos ke papan keratan"
+        "id-copy-failed": "Gagal menyalin ID Hos ke papan keratan",
+        "join-failed": "Gagal menyertai Muzik Bersama",
+        "joined": "Menyertai Muzik Bersama",
+        "permission-changed": "Kebenaran Muzik Bersama ditukar kepada \"{{permission}}\"",
+        "remove-song-failed": "Gagal mengalih keluar lagu",
+        "user-connected": "{{name}} menyertai Muzik Bersama",
+        "user-disconnected": "{{name}} meninggalkan Muzik Bersama"
       }
     },
     "navigation": {
-      "name": "Navigasi"
+      "description": "Anak panah navigasi Seterusnya/Kembali yang disepadukan terus dalam antara muka",
+      "name": "Navigasi",
+      "templates": {
+        "back": {
+          "title": "Pergi ke halaman sebelumnya"
+        },
+        "forward": {
+          "title": "Pergi ke halaman seterusnya"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "Alih keluar butang dan pautan log masuk Google dari antara muka",
+      "name": "Tiada Log Masuk Google"
     },
     "notifications": {
+      "description": "Paparkan pemberitahuan apabila lagu mula dimainkan (pemberitahuan interaktif tersedia pada Windows)",
+      "menu": {
+        "interactive": "Pemberitahuan Interaktif",
+        "interactive-settings": {
+          "label": "Tetapan Interaktif",
+          "submenu": {
+            "hide-button-text": "Sembunyikan teks butang",
+            "refresh-on-play-pause": "Segar semula pada Main/Jeda",
+            "tray-controls": "Buka/Tutup pada klik dulang",
+            "hover-controls": "Papar pemain mini apabila melayang di dulang"
+          }
+        },
+        "priority": "Keutamaan Pemberitahuan",
+        "toast-style": "Gaya toast",
+        "unpause-notification": "Tunjuk pemberitahuan semasa nyahjeda"
+      },
       "name": "Notifikasi"
     },
+    "performance-improvement": {
+      "description": "Tingkatkan prestasi dengan mendayakan skrip eksperimen",
+      "name": "Peningkatan prestasi [Beta]"
+    },
+    "picture-in-picture": {
+      "description": "Membolehkan menukar aplikasi ke mod gambar-dalam-gambar",
+      "menu": {
+        "always-on-top": "Sentiasa di atas",
+        "hotkey": {
+          "label": "Kekunci Pantas",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "Kekunci Pantas"
+            },
+            "label": "Pilih kekunci pantas untuk menogol gambar-dalam-gambar",
+            "title": "Kekunci Pantas Gambar-dalam-gambar"
+          }
+        },
+        "save-window-position": "Simpan kedudukan tetingkap",
+        "save-window-size": "Simpan saiz tetingkap",
+        "use-native-pip": "Guna PiP asli pelayar"
+      },
+      "name": "Gambar-dalam-gambar",
+      "templates": {
+        "button": "Gambar-dalam-gambar"
+      }
+    },
+    "playback-speed": {
+      "description": "Dengar laju, dengar perlahan! Menambah peluncur yang mengawal kelajuan lagu",
+      "name": "Kelajuan Main Balik",
+      "templates": {
+        "button": "Kelajuan"
+      }
+    },
+    "precise-volume": {
+      "description": "Kawal kelantangan dengan tepat menggunakan roda tetikus/kekunci pantas, dengan HUD tersuai dan langkah kelantangan boleh disesuaikan",
+      "menu": {
+        "arrows-shortcuts": "Kawalan Kekunci Anak Panah Setempat",
+        "custom-volume-steps": "Tetapkan Langkah Kelantangan Tersuai",
+        "global-shortcuts": "Kekunci Pantas Global"
+      },
+      "name": "Kelantangan Tepat",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "Kurangkan Kelantangan",
+            "increase": "Tingkatkan Kelantangan"
+          },
+          "label": "Pilih Ikatan Kunci Kelantangan Global:",
+          "title": "Ikatan Kunci Kelantangan Global"
+        },
+        "volume-steps": {
+          "label": "Pilih Langkah Peningkatan/Pengurangan Kelantangan",
+          "title": "Langkah Kelantangan"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "Kualiti Semasa: {{quality}}",
+            "message": "Pilih Kualiti Video:",
+            "title": "Pilih Kualiti Video"
+          }
+        }
+      },
+      "description": "Membolehkan menukar kualiti video dengan butang pada tindanan video",
+      "name": "Penukar Kualiti Video",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "Buka penukar kualiti pemain"
+        }
+      }
+    },
     "scrobbler": {
+      "description": "Tambah sokongan scrobbling (cth. last.fm, Listenbrainz)",
       "dialog": {
         "lastfm": {
           "auth-failed": {
+            "message": "Gagal mengesahkan dengan Last.fm\nSembunyikan pop timbul sehingga mula semula seterusnya.",
             "title": "Atuntikasi Gagal"
           }
         }
       },
+      "menu": {
+        "lastfm": {
+          "api-settings": "Tetapan API Last.fm"
+        },
+        "listenbrainz": {
+          "token": "Masukkan token pengguna ListenBrainz"
+        },
+        "scrobble-alternative-artist": "Guna artis alternatif",
+        "scrobble-alternative-title": "Guna tajuk alternatif",
+        "scrobble-other-media": "Scrobble media lain"
+      },
+      "name": "Scrobbler",
       "prompt": {
         "lastfm": {
           "api-key": "kunci API Last.fm",
           "api-secret": "rahasia API Last.fm"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "Masukkan token pengguna ListenBrainz anda:",
+            "title": "Token ListenBrainz"
+          }
         }
       }
     },
+    "shortcuts": {
+      "description": "Membolehkan menetapkan kekunci pantas global untuk main balik (main/jeda/seterusnya/sebelumnya) dan mematikan OSD media dengan mengatasi kekunci media, menghidupkan Ctrl/CMD + F untuk mencari, menghidupkan sokongan MPRIS Linux, dan kekunci pantas tersuai untuk pengguna lanjutan",
+      "menu": {
+        "override-media-keys": "Mengatasi Kekunci Media",
+        "set-keybinds": "Tetapkan Kawalan Lagu Global"
+      },
+      "name": "Pintasan (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "Seterusnya",
+            "play-pause": "Main / Jeda",
+            "previous": "Sebelumnya"
+          },
+          "label": "Pilih Ikatan Kunci Global untuk Kawalan Lagu:",
+          "title": "Ikatan Kunci Global"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "Langkau bahagian senyap dalam lagu secara automatik",
+      "name": "Langkau Senyap"
+    },
+    "sponsorblock": {
+      "description": "Melangkau bahagian bukan muzik seperti intro/outro atau bahagian video muzik di mana lagu tidak dimainkan secara automatik",
+      "name": "SponsorBlock"
+    },
     "synced-lyrics": {
+      "description": "Menyediakan lirik yang diselaraskan untuk lagu, menggunakan pembekal seperti LRClib.",
       "errors": {
+        "fetch": "⚠️\tRalat berlaku semasa mengambil lirik.\n\tSila cuba lagi kemudian.",
         "not-found": "⚠️ Tak ada liriks untuk lagu ini."
       },
       "menu": {
+        "convert-chinese-character": {
+          "label": "Tukar aksara Cina",
+          "submenu": {
+            "disabled": {
+              "label": "Dilumpuhkan",
+              "tooltip": "Lumpuhkan penukaran aksara Cina"
+            },
+            "simplified-to-traditional": {
+              "label": "Ringkas ke Tradisional",
+              "tooltip": "Tukar Cina Ringkas ke Cina Tradisional"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradisional ke Ringkas",
+              "tooltip": "Tukar Cina Tradisional ke Cina Ringkas"
+            }
+          },
+          "tooltip": "Tukar aksara Cina kepada Tradisional atau Ringkas"
+        },
+        "default-text-string": {
+          "label": "Aksara lalai antara lirik",
+          "tooltip": "Pilih aksara lalai untuk digunakan bagi jurang antara lirik"
+        },
+        "line-effect": {
+          "label": "Kesan baris",
+          "submenu": {
+            "fancy": {
+              "label": "Mewah",
+              "tooltip": "Guna kesan besar seperti aplikasi pada baris semasa"
+            },
+            "focus": {
+              "label": "Fokus",
+              "tooltip": "Jadikan hanya baris semasa putih"
+            },
+            "offset": {
+              "label": "Ofset",
+              "tooltip": "Ofsetkan baris semasa ke kanan"
+            },
+            "scale": {
+              "label": "Skala",
+              "tooltip": "Skalakan baris semasa"
+            }
+          },
+          "tooltip": "Pilih kesan untuk digunakan pada baris semasa"
+        },
+        "lyrics-font-size": {
+          "label": "Saiz fon lirik",
+          "submenu": {
+            "large": {
+              "label": "Besar",
+              "tooltip": "Guna saiz lirik lebih besar yang asal"
+            },
+            "medium": {
+              "label": "Sederhana",
+              "tooltip": "Guna saiz lirik yang seimbang"
+            },
+            "small": {
+              "label": "Kecil",
+              "tooltip": "Guna saiz lirik yang lebih padat"
+            }
+          },
+          "tooltip": "Pilih seberapa besar teks lirik sepatutnya"
+        },
+        "precise-timing": {
+          "label": "Jadikan lirik diselaraskan dengan sempurna",
+          "tooltip": "Kira paparan baris seterusnya hingga milisaat (boleh memberi kesan kecil pada prestasi)"
+        },
+        "preferred-provider": {
+          "label": "Pembekal Pilihan",
+          "none": {
+            "label": "Tiada",
+            "tooltip": "Tiada pembekal pilihan"
+          },
+          "tooltip": "Pilih pembekal lalai untuk digunakan"
+        },
+        "romanization": {
+          "label": "Romanisasikan lirik",
+          "tooltip": "Jika lirik dalam bahasa yang berbeza, cuba paparkan versi latin."
+        },
         "show-lyrics-even-if-inexact": {
           "label": "Tunjukkan lirik walaupun tidak tepat",
           "tooltip": "Jika lagu tidak ditemui, plugin cuba lagi dengan pertanyaan carian yang berbeza. \nHasil dari percubaan kedua mungkin tidak tepat."
         },
         "show-time-codes": {
+          "label": "Tunjuk kod masa",
           "tooltip": "Tunjukkan kod masa di sebelah lirik"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Kosongkan cache terjemahan",
+            "tooltip": "Padam semua terjemahan cache yang disimpan pada cakera."
+          },
+          "configure": {
+            "label": "Konfigurasikan kunci API & model…",
+            "tooltip": "Tetapkan pilihan terjemahan khusus pembekal."
+          },
+          "enabled": {
+            "label": "Dayakan terjemahan",
+            "tooltip": "Tunjuk baris terjemahan di bawah setiap baris lirik asal."
+          },
+          "label": "Terjemahan lirik",
+          "provider": {
+            "label": "Pembekal",
+            "tooltip": "Perkhidmatan mana yang hendak digunakan untuk terjemahan."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Menggunakan API Mesej Anthropic asli.",
+              "prompt-title": "Tetapan Anthropic"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Menggunakan API Bahasa Generatif Google (generateContent).",
+              "prompt-title": "Tetapan Gemini"
+            },
+            "google-translate": {
+              "host": "Tuan rumah",
+              "name": "Terjemahan Google",
+              "prompt-label": "Menggunakan titik akhir terjemahan Google percuma tidak rasmi. Tiada kunci API diperlukan, tetapi Google mungkin mengehadkan kadarnya.",
+              "prompt-title": "Tetapan Terjemahan Google"
+            },
+            "local-cli": {
+              "command": "Perintah",
+              "engine": "CLI setempat",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Kodis",
+              "engine-gemini": "Gemini CLI",
+              "name": "CLI setempat",
+              "prompt-label": "Gunakan Claude Code, Codex, atau Gemini CLI yang telah log masuk secara setempat. Perintah dan model adalah automatik; CLI menggunakan lalai log masuknya sendiri.",
+              "prompt-title": "Tetapan CLI setempat",
+              "timeout": "Masa tamat (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "Mod API (responses / auto / chat-completions)",
+              "base-url": "URL Asas",
+              "name": "Serasi OpenAI",
+              "prompt-label": "Gunakan pelayan yang serasi dengan OpenAI, termasuk Ollama (URL asas http://127.0.0.1:11434/v1, mod API auto atau chat-completions).",
+              "prompt-title": "Tetapan serasi OpenAI"
+            },
+            "shared": {
+              "api-key": "Kunci API",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Bahasa sasaran",
+            "options": {
+              "ar": "العربية",
+              "auto": "Ikut bahasa aplikasi",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Bahasa untuk menterjemahkan lirik."
+          },
+          "tooltip": "Terjemah lirik dan paparkan hasil terjemahan baris demi baris."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Gunakan lirik YTM tanpa proksi",
+          "tooltip": "Langkau proksi semakan YTM dan panggil YouTube Music secara terus menggunakan sesi terautentikasi aplikasi. Berguna jika anda percaya rangkaian/wilayah anda membenarkan panggilan semakan terus."
+        },
+        "show-custom-search-button": {
+          "label": "Tunjukkan butang carian tersuai",
+          "tooltip": "Tunjukkan butang carian dalam pemilih lirik yang membolehkan anda mengatasi pertanyaan carian dan artis untuk lagu semasa."
         }
+      },
+      "name": "Lirik Diselaraskan",
+      "refetch-btn": {
+        "fetching": "Mendapatkan...",
+        "normal": "Dapatkan semula lirik"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Lirik mungkin tidak selari kerana ketidakpadanan tempoh.",
+        "inexact": "⚠️ - Lirik untuk lagu ini mungkin tidak tepat",
+        "instrumental": "⚠️ - Ini adalah lagu instrumental"
       }
     },
     "taskbar-mediacontrol": {
       "description": "Kawalan main balik dari bar tugas Windows anda",
       "name": "Kawalan Media Bar Tugas"
     },
+    "touchbar": {
+      "description": "Menambah widget TouchBar untuk pengguna macOS",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "Menjadikan tetingkap aplikasi telus",
+      "menu": {
+        "opacity": {
+          "label": "Kelegapan",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Jenis",
+          "submenu": {
+            "acrylic": "Akrilik",
+            "mica": "Mika",
+            "none": "Tiada",
+            "tabbed": "Bertab"
+          }
+        }
+      },
+      "name": "Pemain Lutsinar"
+    },
+    "tuna-obs": {
+      "description": "Integrasi dengan pemalam Tuna OBS",
+      "name": "Tuna OBS"
+    },
+    "unobtrusive-player": {
+      "description": "Menghalang pemain daripada muncul apabila memainkan lagu",
+      "name": "Pemain Tidak Mengganggu"
+    },
     "video-toggle": {
+      "description": "Menambah butang untuk menukar antara mod Video/Lagu. boleh juga mengalih keluar keseluruhan tab video",
       "menu": {
         "align": {
+          "label": "Penjajaran",
           "submenu": {
             "left": "Kiri",
             "middle": "Tengah",
@@ -665,13 +1106,44 @@
         },
         "force-hide": "Alih Keluar Tab Video",
         "mode": {
+          "label": "Mod",
           "submenu": {
-            "disabled": "Tidak Aktif"
+            "custom": "Togol tersuai",
+            "disabled": "Tidak Aktif",
+            "native": "Togol asli"
           }
         }
       },
+      "name": "Togol Video",
       "templates": {
-        "button-song": "Lagu"
+        "button-song": "Lagu",
+        "button-video": "Video"
+      }
+    },
+    "visualizer": {
+      "description": "Menambah visualizer pada pemain",
+      "menu": {
+        "visualizer-type": "Jenis Visualizer"
+      },
+      "name": "Visualizer"
+    },
+    "audio-only": {
+      "description": "Memaksa mod audio sahaja — menyekat semua strim video di peringkat rangkaian dan pemain untuk menjimatkan RAM dan lebar jalur",
+      "name": "Audio Sahaja"
+    },
+    "playback-recovery": {
+      "description": "Memulihkan secara automatik daripada keadaan main balik yang tersekat, terhenti, atau mati",
+      "menu": {
+        "log-to-console": "Log peristiwa pemulihan ke konsol"
+      },
+      "name": "Pemulihan Main Balik"
+    },
+    "playlist-search": {
+      "description": "Menambahkan input carian untuk menapis senarai main di bar sisi dan dialog Tambah ke senarai main",
+      "name": "Carian Senarai Main",
+      "templates": {
+        "search-placeholder": "Cari senarai main",
+        "no-results": "Tiada senarai main ditemui"
       }
     }
   }

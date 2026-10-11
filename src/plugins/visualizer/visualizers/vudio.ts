@@ -26,7 +26,7 @@ class VudioVisualizer extends Visualizer {
       width: canvas.width,
       height: canvas.height,
       // Visualizer config
-      ...config,
+      ...config.vudio,
     });
 
     this.visualizer.dance();

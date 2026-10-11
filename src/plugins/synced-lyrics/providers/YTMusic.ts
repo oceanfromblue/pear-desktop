@@ -1,3 +1,5 @@
+import { config } from '../renderer/renderer';
+
 import type { LyricProvider, LyricResult, SearchSongInfo } from '../types';
 import type { MusicPlayerAppElement } from '@/types/music-player-app-element';
 
@@ -39,7 +41,9 @@ export class YTMusic implements LyricProvider {
     const { browseId } = lyricsTab?.tabRenderer?.endpoint?.browseEndpoint ?? {};
     if (!browseId) return null;
 
-    const { contents } = await this.fetchBrowse(browseId);
+    const browseData = await this.fetchBrowse(browseId);
+    if (!browseData) return null;
+    const { contents } = browseData;
     if (!contents) return null;
 
     /*
@@ -97,8 +101,10 @@ export class YTMusic implements LyricProvider {
 
   private millisToTime(millis: number) {
     const minutes = Math.floor(millis / 60000);
-    const seconds = Math.floor((millis - ((minutes * 60) * 1000)) / 1000);
-    const remaining = (millis - ((minutes * 60) * 1000) - (seconds * 1000)) / 10;
+    const seconds = Math.floor((millis - minutes * 60 * 1000) / 1000);
+    const remaining = Math.floor(
+      (millis - minutes * 60 * 1000 - seconds * 1000) / 10,
+    );
     return `${minutes.toString().padStart(2, '0')}:${seconds
       .toString()
       .padStart(2, '0')}.${remaining.toString().padStart(2, '0')}`;
@@ -122,7 +128,11 @@ export class YTMusic implements LyricProvider {
     });
   }
 
-  private fetchBrowse(browseId: string) {
+  private fetchBrowse(browseId: string): Promise<BrowseData | null> {
+    if (config()?.useYTMLyricsWithoutProxy) {
+      return this.fetchBrowseDirect(browseId);
+    }
+
     return fetch(this.PROXIED_ENDPOINT + 'browse?prettyPrint=false', {
       headers,
       method: 'POST',
@@ -132,9 +142,27 @@ export class YTMusic implements LyricProvider {
       }),
     }).then((res) => res.json()) as Promise<BrowseData>;
   }
+
+  // Calls YouTube Music's browse endpoint directly via the app's authenticated
+  // network manager, which injects the visitor/auth tokens that the request
+  // would otherwise be missing when called from regions where the unauthenticated
+  // call is geo-restricted.
+  private async fetchBrowseDirect(
+    browseId: string,
+  ): Promise<BrowseData | null> {
+    const app = document.querySelector<MusicPlayerAppElement>('ytmusic-app');
+    if (!app) {
+      return null;
+    }
+
+    return await app.networkManager.fetch<BrowseData, { browseId: string }>(
+      '/browse?prettyPrint=false',
+      { browseId },
+    );
+  }
 }
 
-interface NextData {
+export interface NextData {
   contents: {
     singleColumnMusicWatchNextResultsRenderer: {
       tabbedRenderer: {
@@ -151,12 +179,25 @@ interface NextData {
                   };
                 };
               };
+              content: {
+                musicQueueRenderer: {
+                  content: {
+                    playlistPanelRenderer: {
+                      contents: Array<{
+                        playlistPanelVideoRenderer: unknown;
+                      }>;
+                    };
+                  };
+                };
+              };
             };
           }[];
         };
       };
     };
   };
+  queueContextParams: string;
+  playerOverlays: unknown;
 }
 
 interface BrowseData {

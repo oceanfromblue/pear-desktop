@@ -4,7 +4,6 @@ import { fileURLToPath } from 'node:url';
 import { globSync } from 'glob';
 import { Project } from 'ts-morph';
 
-// HACK: DO NOT USE @ ALIAS IN THIS FILE, IT WILL CAUSE PROBLEMS
 import { Platform } from '../src/types/plugins';
 
 const kebabToCamel = (text: string) =>

@@ -22,9 +22,8 @@ export class LRCLib implements LyricProvider {
       track_name: title,
     });
 
-    query.set('album_name', album!);
-    if (query.get('album_name') === 'undefined') {
-      query.delete('album_name');
+    if (album) {
+      query.set('album_name', album);
     }
 
     let url = `${this.baseUrl}/api/search?${query.toString()}`;
@@ -77,10 +76,11 @@ export class LRCLib implements LyricProvider {
     }
 
     const filteredResults = [];
+    const artists = artist.split(/[&,]/g).map((i) => i.trim());
+
     for (const item of data) {
       const { artistName } = item;
 
-      const artists = artist.split(/[&,]/g).map((i) => i.trim());
       const itemArtists = artistName.split(/[&,]/g).map((i) => i.trim());
 
       // Try to match using artist name first

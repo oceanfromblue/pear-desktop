@@ -85,32 +85,16 @@ export const loadAllPreloadPlugins = async () => {
 
   for (const [pluginId, pluginDef] of Object.entries(await preloadPlugins())) {
     const config = deepmerge(
-      pluginDef.config ?? { enable: false },
+      pluginDef.config ?? { enabled: false },
       pluginConfigs[pluginId] ?? {},
     );
 
-    if (config.enabled) {
-      forceLoadPreloadPlugin(pluginId);
+    if (pluginDef.essential || config.enabled) {
+      await forceLoadPreloadPlugin(pluginId);
     } else {
       if (loadedPluginMap[pluginId]) {
-        forceUnloadPreloadPlugin(pluginId);
+        await forceUnloadPreloadPlugin(pluginId);
       }
     }
   }
-};
-
-export const unloadAllPreloadPlugins = async () => {
-  for (const id of Object.keys(loadedPluginMap)) {
-    await forceUnloadPreloadPlugin(id);
-  }
-};
-
-export const getLoadedPreloadPlugin = (
-  id: string,
-): PluginDef<unknown, unknown, unknown> | undefined => {
-  return loadedPluginMap[id];
-};
-
-export const getAllLoadedPreloadPlugins = () => {
-  return loadedPluginMap;
 };

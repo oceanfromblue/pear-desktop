@@ -19,22 +19,34 @@ import * as config from './config';
 import { getAllMenuTemplate, loadAllMenuPlugins } from './loader/menu';
 import { restart } from './providers/app-controls';
 import { startingPages } from './providers/extracted-data';
+import { setYouTubeLanguage, youtubeLanguage } from './providers/language-sync';
+import { applyOptionEffects } from './providers/option-effects';
 import promptOptions from './providers/prompt-options';
+import { stripMusicSubdomain } from './providers/share-url';
+import {
+  createThemeFromCssFiles,
+  loadThemes,
+  notifyThemesChanged,
+  openThemesFolder,
+  selectTheme,
+  setThemePreset,
+} from './themes/main';
+import { CUSTOM_PRESET, defaultPreset, keyLabel } from './themes/types';
 
 import packageJson from '../package.json';
 
 export type MenuTemplate = Electron.MenuItemConstructorOptions[];
 
 // True only if in-app-menu was loaded on launch
-const inAppMenuActive = await config.plugins.isEnabled('in-app-menu');
+let inAppMenuActivePromise: Promise<boolean> | undefined;
 
 const pluginEnabledMenu = async (
   plugin: string,
   label = '',
-  description?: string ,
+  description?: string,
   isNew = false,
   hasSubmenu = false,
-  refreshMenu?: (() => void) ,
+  refreshMenu?: () => void,
 ): Promise<Electron.MenuItemConstructorOptions> => ({
   label: label || plugin,
   sublabel: isNew ? t('main.menu.plugins.new') : undefined,
@@ -56,7 +68,8 @@ const pluginEnabledMenu = async (
 
 export const refreshMenu = async (win: BrowserWindow) => {
   await setApplicationMenu(win);
-  if (inAppMenuActive) {
+  inAppMenuActivePromise ??= config.plugins.isEnabled('in-app-menu');
+  if (await inAppMenuActivePromise) {
     win.webContents.send('refresh-in-app-menu');
   }
 };
@@ -116,7 +129,8 @@ export const mainMenuTemplate = async (
     }),
   );
 
-  const availablePlugins = Object.keys(await allPlugins());
+  const availablePlugins = Object.keys(allPluginsStubs);
+  const menuResultMap = new Map(menuResult);
   const pluginMenus = await Promise.all(
     availablePlugins
       .sort((a, b) => {
@@ -126,8 +140,8 @@ export const mainMenuTemplate = async (
         return aPluginLabel.localeCompare(bPluginLabel);
       })
       .map(async (id) => {
-        const predefinedTemplate = menuResult.find((it) => it[0] === id);
-        if (predefinedTemplate) return predefinedTemplate[1];
+        const predefinedTemplate = menuResultMap.get(id);
+        if (predefinedTemplate) return predefinedTemplate;
 
         const plugin = allPluginsStubs[id];
         const pluginLabel = plugin?.name?.() ?? id;
@@ -172,6 +186,47 @@ export const mainMenuTemplate = async (
           },
         },
         {
+          label: t('main.menu.options.submenu.shared-links.label'),
+          submenu: [
+            {
+              label: t(
+                'main.menu.options.submenu.shared-links.submenu.strip-music',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.stripMusicFromSharedLinks'),
+              click(item: MenuItem) {
+                config.setMenuOption(
+                  'options.stripMusicFromSharedLinks',
+                  item.checked,
+                );
+                applyOptionEffects(
+                  'options.stripMusicFromSharedLinks',
+                  item.checked,
+                  win,
+                );
+              },
+            },
+            {
+              label: t(
+                'main.menu.options.submenu.shared-links.submenu.strip-si',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.stripSIFromSharedLinks'),
+              click(item: MenuItem) {
+                config.setMenuOption(
+                  'options.stripSIFromSharedLinks',
+                  item.checked,
+                );
+                applyOptionEffects(
+                  'options.stripSIFromSharedLinks',
+                  item.checked,
+                  win,
+                );
+              },
+            },
+          ],
+        },
+        {
           label: t('main.menu.options.submenu.starting-page.label'),
           submenu: (() => {
             const subMenuArray: Electron.MenuItemConstructorOptions[] =
@@ -208,6 +263,17 @@ export const mainMenuTemplate = async (
                   'options.removeUpgradeButton',
                   item.checked,
                 );
+              },
+            },
+            {
+              label: t(
+                'main.menu.options.submenu.visual-tweaks.submenu.use-ytm-icons',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.useYtmIcons'),
+              click(item: MenuItem) {
+                config.setMenuOption('options.useYtmIcons', item.checked);
+                applyOptionEffects('options.useYtmIcons', item.checked, win);
               },
             },
             {
@@ -298,69 +364,148 @@ export const mainMenuTemplate = async (
               label: t(
                 'main.menu.options.submenu.visual-tweaks.submenu.theme.label',
               ),
-              submenu: [
-                ...((config.get('options.themes')?.length ?? 0) === 0
-                  ? [
-                      {
-                        label: t(
-                          'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.no-theme',
-                        ),
-                      },
-                    ]
-                  : []),
-                ...(config.get('options.themes')?.map((theme: string) => ({
-                  type: 'normal' as const,
-                  label: theme,
-                  async click() {
-                    const { response } = await dialog.showMessageBox(win, {
-                      type: 'question',
-                      defaultId: 1,
-                      title: t(
-                        'main.menu.options.submenu.visual-tweaks.submenu.theme.dialog.remove-theme',
-                      ),
-                      message: t(
-                        'main.menu.options.submenu.visual-tweaks.submenu.theme.dialog.remove-theme-message',
-                        { theme },
-                      ),
-                      buttons: [
-                        t(
-                          'main.menu.options.submenu.visual-tweaks.submenu.theme.dialog.button.cancel',
-                        ),
-                        t(
-                          'main.menu.options.submenu.visual-tweaks.submenu.theme.dialog.button.remove',
-                        ),
-                      ],
-                    });
+              submenu: (() => {
+                const themes = loadThemes();
+                const selected = themes.find(
+                  (theme) => theme.id === config.get('options.theme'),
+                );
 
-                    if (response === 1) {
-                      config.set(
-                        'options.themes',
-                        config
-                          .get('options.themes')
-                          ?.filter((t) => t !== theme) ?? [],
+                // Selecting a theme deliberately does NOT rebuild this menu.
+                // `refreshMenu` is asynchronous, so a rebuild can land while the
+                // user has the menu open again (very likely when switching
+                // quickly), and replacing the open native menu corrupts it: the
+                // labels stop rendering and only the submenu arrows survive.
+                // Native radio items update their own checked state, and the
+                // Colors submenu below is built per theme rather than from the
+                // selection, so nothing here needs repopulating.
+                const select = async (id: string) => {
+                  if (await selectTheme(id, win)) notifyThemesChanged(win);
+                };
+
+                return [
+                  {
+                    label: t(
+                      'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.no-theme',
+                    ),
+                    type: 'radio' as const,
+                    checked: !selected,
+                    click: () => {
+                      select('').catch((err) =>
+                        console.error('Failed to switch theme:', err),
                       );
-                      innerRefreshMenu();
-                    }
+                    },
                   },
-                })) ?? []),
-                { type: 'separator' },
-                {
-                  label: t(
-                    'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.import-css-file',
-                  ),
-                  type: 'normal',
-                  async click() {
-                    const { filePaths } = await dialog.showOpenDialog({
-                      filters: [{ name: 'CSS Files', extensions: ['css'] }],
-                      properties: ['openFile', 'multiSelections'],
-                    });
-                    if (filePaths) {
-                      config.set('options.themes', filePaths);
-                      innerRefreshMenu();
-                    }
+                  ...themes.map((theme) => ({
+                    label: theme.name,
+                    toolTip: theme.description,
+                    type: 'radio' as const,
+                    checked: selected?.id === theme.id,
+                    click: () => {
+                      select(theme.id).catch((err) =>
+                        console.error('Failed to switch theme:', err),
+                      );
+                    },
+                  })),
+                  { type: 'separator' as const },
+                  {
+                    label: t(
+                      'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.presets.label',
+                    ),
+                    enabled: themes.some(
+                      (theme) => Object.keys(theme.presets ?? {}).length > 0,
+                    ),
+                    // Built per theme, not from the selection: the selection
+                    // must not require a menu rebuild (see `select` above), so
+                    // the preset list cannot be filtered by it. Each theme also
+                    // gets its own Default and Custom entries. Variables are
+                    // edited in the settings UI, not here.
+                    submenu: themes
+                      .filter(
+                        (theme) => Object.keys(theme.presets ?? {}).length > 0,
+                      )
+                      .map((theme) => {
+                        const chosen = defaultPreset(
+                          theme.palette,
+                          theme.presets,
+                          config.getThemePresets()[theme.id],
+                        );
+                        // A `palette` key, even an empty one, is a Default to
+                        // fall back on; without it there is none to offer, so
+                        // the first preset stands in - see `defaultPreset`.
+                        const offersDefault = theme.palette !== undefined;
+                        const pick = (preset: string) => {
+                          setThemePreset(theme.id, preset);
+                          notifyThemesChanged(win);
+                        };
+                        const presetEntries = Object.keys(
+                          theme.presets ?? {},
+                        ).map((preset) => ({
+                          label: keyLabel(preset),
+                          type: 'radio' as const,
+                          checked: chosen === preset,
+                          click: () => pick(preset),
+                        }));
+
+                        return {
+                          label: theme.name,
+                          submenu: [
+                            ...(offersDefault
+                              ? [
+                                  {
+                                    label: t(
+                                      'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.presets.default',
+                                    ),
+                                    type: 'radio' as const,
+                                    checked: chosen === '',
+                                    click: () => pick(''),
+                                  },
+                                ]
+                              : []),
+                            ...presetEntries,
+                            {
+                              label: t(
+                                'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.presets.custom',
+                              ),
+                              type: 'radio' as const,
+                              checked: chosen === CUSTOM_PRESET,
+                              click: () => pick(CUSTOM_PRESET),
+                            },
+                          ],
+                        };
+                      }),
                   },
-                },
-              ],
+                  { type: 'separator' as const },
+                  {
+                    label: t(
+                      'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.import-css-file',
+                    ),
+                    type: 'normal' as const,
+                    async click() {
+                      const { filePaths } = await dialog.showOpenDialog(win, {
+                        filters: [{ name: 'CSS Files', extensions: ['css'] }],
+                        properties: ['openFile', 'multiSelections'],
+                      });
+                      if (filePaths.length === 0) return;
+
+                      const id = createThemeFromCssFiles(filePaths);
+                      if (!id) return;
+
+                      config.set('options.theme', id);
+                      notifyThemesChanged(win);
+                      await refreshMenu(win);
+                    },
+                  },
+                  {
+                    label: t(
+                      'main.menu.options.submenu.visual-tweaks.submenu.theme.submenu.open-themes-folder',
+                    ),
+                    type: 'normal' as const,
+                    click() {
+                      openThemesFolder();
+                    },
+                  },
+                ];
+              })(),
             },
           ],
         },
@@ -382,7 +527,7 @@ export const mainMenuTemplate = async (
           checked: config.get('options.alwaysOnTop'),
           click(item: MenuItem) {
             config.setMenuOption('options.alwaysOnTop', item.checked);
-            win.setAlwaysOnTop(item.checked);
+            applyOptionEffects('options.alwaysOnTop', item.checked, win);
           },
         },
         ...((is.windows() || is.linux()
@@ -403,6 +548,7 @@ export const mainMenuTemplate = async (
                         'main.menu.options.submenu.hide-menu.dialog.message',
                       ),
                     });
+                    config.set('options.hideMenuWarned', true);
                   }
                 },
               },
@@ -418,6 +564,7 @@ export const mainMenuTemplate = async (
                 checked: config.get('options.startAtLogin'),
                 click(item) {
                   config.setMenuOption('options.startAtLogin', item.checked);
+                  applyOptionEffects('options.startAtLogin', item.checked, win);
                 },
               },
             ]
@@ -472,6 +619,37 @@ export const mainMenuTemplate = async (
                 );
               },
             },
+            {
+              label: t(
+                'main.menu.options.submenu.tray.submenu.move-to-current-desktop',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.trayMoveToCurrentDesktop'),
+              click(item: MenuItem) {
+                config.setMenuOption(
+                  'options.trayMoveToCurrentDesktop',
+                  item.checked,
+                );
+              },
+            },
+            {
+              label: t(
+                'main.menu.options.submenu.tray.submenu.force-white-icons',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.trayForceWhiteIcons'),
+              click(item: MenuItem) {
+                config.setMenuOption(
+                  'options.trayForceWhiteIcons',
+                  item.checked,
+                );
+                applyOptionEffects(
+                  'options.trayForceWhiteIcons',
+                  item.checked,
+                  win,
+                );
+              },
+            },
           ],
         },
         {
@@ -506,6 +684,57 @@ export const mainMenuTemplate = async (
                 shell.openExternal(url);
               },
             } as Electron.MenuItemConstructorOptions,
+            {
+              label: t('main.menu.options.submenu.language.submenu.sync.label'),
+              submenu: [
+                {
+                  label: t(
+                    'main.menu.options.submenu.language.submenu.sync.submenu.from-youtube',
+                  ),
+                  type: 'normal',
+                  async click() {
+                    const ytLang = await youtubeLanguage(win);
+
+                    if (!ytLang) {
+                      dialog.showMessageBoxSync(win, {
+                        title: t(
+                          'main.menu.options.submenu.language.submenu.sync.failure.dialog.title',
+                        ),
+                        message: t(
+                          'main.menu.options.submenu.language.submenu.sync.failure.dialog.message',
+                        ),
+                      });
+                      return;
+                    }
+
+                    config.setMenuOption('options.language', ytLang);
+                    refreshMenu(win);
+                    setLanguage(ytLang);
+                    dialog.showMessageBox(win, {
+                      title: t(
+                        'main.menu.options.submenu.language.dialog.title',
+                      ),
+                      message: t(
+                        'main.menu.options.submenu.language.dialog.message',
+                      ),
+                    });
+                  },
+                },
+                {
+                  label: t(
+                    'main.menu.options.submenu.language.submenu.sync.submenu.to-youtube',
+                  ),
+                  type: 'normal',
+                  click() {
+                    setYouTubeLanguage(
+                      win,
+                      config.get('options.language') ?? 'en',
+                    );
+                  },
+                },
+              ],
+            } as Electron.MenuItemConstructorOptions,
+            { type: 'separator' } as Electron.MenuItemConstructorOptions,
           ].concat(
             availableLanguages
               .map(
@@ -529,7 +758,7 @@ export const mainMenuTemplate = async (
                   },
                 }),
               )
-              .sort((a, b) => a.label!.localeCompare(b.label!)),
+              .sort((a, b) => (a.label ?? '').localeCompare(b.label ?? '')),
           ),
         },
         { type: 'separator' },
@@ -631,6 +860,21 @@ export const mainMenuTemplate = async (
                 config.edit();
               },
             },
+            ...((is.windows()
+              ? [
+                  {
+                    label: t(
+                      'main.menu.options.submenu.advanced-options.submenu.force-smtc',
+                    ),
+                    type: 'checkbox',
+                    checked: config.get('options.forceSmtc'),
+                    click(item: MenuItem) {
+                      // TODO: prompt restart
+                      config.setMenuOption('options.forceSmtc', item.checked);
+                    },
+                  },
+                ]
+              : []) satisfies Electron.MenuItemConstructorOptions[]),
           ],
         },
       ],
@@ -651,23 +895,11 @@ export const mainMenuTemplate = async (
           label: t('main.menu.view.submenu.zoom-in'),
           role: 'zoomIn',
           accelerator: 'CmdOrCtrl+=',
-          visible: false,
-        },
-        {
-          label: t('main.menu.view.submenu.zoom-in'),
-          role: 'zoomIn',
-          accelerator: 'CmdOrCtrl+Plus',
         },
         {
           label: t('main.menu.view.submenu.zoom-out'),
           role: 'zoomOut',
           accelerator: 'CmdOrCtrl+-',
-        },
-        {
-          label: t('main.menu.view.submenu.zoom-out'),
-          role: 'zoomOut',
-          accelerator: 'CmdOrCtrl+Shift+-',
-          visible: false,
         },
         {
           label: t('main.menu.view.submenu.reset-zoom'),
@@ -703,7 +935,19 @@ export const mainMenuTemplate = async (
           label: t('main.menu.navigation.submenu.copy-current-url'),
           click() {
             const currentURL = win.webContents.getURL();
-            clipboard.writeText(currentURL);
+            clipboard.writeText(
+              config.get('options.stripMusicFromSharedLinks')
+                ? stripMusicSubdomain(currentURL)
+                : currentURL,
+            );
+          },
+        },
+        {
+          // The modal lives in the renderer, so it has to be asked for; the
+          // sidebar entry that used to be the way in can be switched off.
+          label: t('main.menu.navigation.submenu.open-settings'),
+          click() {
+            win.webContents.send('ytmd-sui:open');
           },
         },
         {

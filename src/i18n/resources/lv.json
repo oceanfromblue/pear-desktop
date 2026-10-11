@@ -109,7 +109,8 @@
                   "title": "Iestatīt proxy"
                 }
               },
-              "toggle-dev-tools": "Ieslēgt DevTools"
+              "toggle-dev-tools": "Ieslēgt DevTools",
+              "force-smtc": "Piespieduši izmantot ārējo SMTC"
             }
           },
           "always-on-top": "Vienmēr priekšā",
@@ -144,7 +145,9 @@
               "disabled": "Izslēgts",
               "enabled-and-hide-app": "Teknīte ieslēgta, paslēpt lietotnes logu",
               "enabled-and-show-app": "Ielsēgts un rādīt lietotni",
-              "play-pause-on-click": "Atskaņot/Pauzēt piespiežot"
+              "move-to-current-desktop": "Rādot pārvietot uz pašreizējo virtuālo darbvirsmu",
+              "play-pause-on-click": "Atskaņot/Pauzēt piespiežot",
+              "force-white-icons": "Piespiediet baltu ikonu lietošanu"
             }
           },
           "visual-tweaks": {
@@ -154,14 +157,15 @@
                 "label": "Pielāgots loga nosaukums",
                 "prompt": {
                   "label": "Ievadiet pielāgotu loga nosaukumu: (atstājiet tukšu, lai atspējotu)",
-                  "placeholder": "Piemērs: Pear mūzika"
+                  "placeholder": "Piemērs: {{applicationName}}"
                 }
               },
               "like-buttons": {
                 "default": "Noklusējums",
                 "force-show": "Vienmēr rādīt",
                 "hide": "Paslēpt",
-                "label": "Like pogas"
+                "label": "Like pogas",
+                "swap": "Apmainīt Patīk pogu secību"
               },
               "remove-upgrade-button": "Noslēpt Premium pogu",
               "theme": {
@@ -210,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Patīk",
+      "dislike": "Nepatīk",
+      "unlike": "Atšķirībā no",
+      "undislike": "Nepatīk"
     }
   },
   "plugins": {
@@ -230,9 +238,14 @@
           "submenu": {
             "percent": "{{ratio}}%"
           }
-        }
+        },
+        "enable-seekbar": "Iespējot meklēšanas joslas tematiskošanu"
       },
       "name": "Albuma krāsu tēma"
+    },
+    "audio-only": {
+      "description": "Piespiedu tikai audio režīms — bloķē visus video straumes tīkla un atskaņotāja līmenī, lai ietaupītu RAM un joslas platumu",
+      "name": "Tikai Audio"
     },
     "ambient-mode": {
       "description": "Pielieto apgaismojuma efektu, kas maigā krāsā atstaro video attēlu uz ekrāna fona",
@@ -313,6 +326,22 @@
         "hostname": {
           "label": "Hosta nosaukums"
         },
+        "https": {
+          "label": "HTTPS un Sertifikāti",
+          "submenu": {
+            "cert": {
+              "dialogTitle": "Izvēlieties HTTPS sertifikāta failu",
+              "label": "Sertifikāta fails (.crt/.pem)"
+            },
+            "enable-https": {
+              "label": "Iespējot HTTPS"
+            },
+            "key": {
+              "dialogTitle": "Izvēlieties HTTPS privātās atslēgas failu",
+              "label": "Privātās atslēgas fails (.key/.pem)"
+            }
+          }
+        },
         "port": {
           "label": "Ports"
         }
@@ -388,6 +417,17 @@
         "no-captions": "Subtitri nav pieejami priekš šīs dziesmas"
       }
     },
+    "clock": {
+      "description": "Pievieno pulksteni navigācijas joslai",
+      "menu": {
+        "format": {
+          "24-hour-format": "24 Stundu Formāts",
+          "display-seconds": "Rādīt Sekundes",
+          "label": "Formāts"
+        }
+      },
+      "name": "Pulkstenis"
+    },
     "compact-sidebar": {
       "description": "Vienmēr iestatīt malējo paneli kompaktajā režīmā",
       "name": "Kompakts malējais panelis"
@@ -454,6 +494,7 @@
         "set-status-display-type": {
           "label": "Statusa teksts",
           "submenu": {
+            "application": "Klausās {{applicationName}}",
             "artist": "Klausos {mākslinieku}",
             "title": "Klausos {dziesmas nosaukums}"
           }
@@ -612,7 +653,497 @@
         "add-song-failed": "Neizdevās pievienot dziesmu",
         "closed": "Mūzika Kopā slēgta",
         "disconnected": "Mūzika Kopā atvienota",
-        "host-failed": "Neizdevās uzsākt Mūziku Kopā"
+        "host-failed": "Neizdevās uzsākt Mūziku Kopā",
+        "id-copied": "Resursdatora ID nokopēts starpliktuvē",
+        "id-copy-failed": "Neizdevās nokopēt resursdatora ID starpliktuvē",
+        "join-failed": "Neizdevās pievienoties Mūzikai Kopā",
+        "joined": "Pievienojies Mūzikai Kopā",
+        "permission-changed": "Mūzikas Kopā atļauja mainīta uz \"{{permission}}\"",
+        "remove-song-failed": "Neizdevās noņemt dziesmu",
+        "user-connected": "{{name}} pievienojās Mūzikai Kopā",
+        "user-disconnected": "{{name}} atstāja Mūziku Kopā"
+      }
+    },
+    "navigation": {
+      "description": "Nākamās/Atpakaļ navigācijas bultiņas tieši integrētas saskarnē, tāpat kā jūsu iecienītajā pārlūkā",
+      "name": "Navigācija",
+      "templates": {
+        "back": {
+          "title": "Doties uz iepriekšējo lapu"
+        },
+        "forward": {
+          "title": "Doties uz nākamo lapu"
+        }
+      }
+    },
+    "no-google-login": {
+      "description": "Noņemt Google pieteikšanās pogas un saites no saskarnes",
+      "name": "Bez Google Pieteikšanās"
+    },
+    "notifications": {
+      "description": "Rādīt paziņojumu, kad sāk atskaņot dziesmu (interaktīvi paziņojumi pieejami Windows)",
+      "menu": {
+        "interactive": "Interaktīvi Paziņojumi",
+        "interactive-settings": {
+          "label": "Interaktīvie Iestatījumi",
+          "submenu": {
+            "hide-button-text": "Paslēpt pogas tekstu",
+            "hover-controls": "Rādīt mini atskaņotāju uz teknītes kursora",
+            "refresh-on-play-pause": "Atsvaidzināt pēc Atskaņošanas/Pauzēšanas",
+            "tray-controls": "Atvērt/Aizvērt uz teknītes klikšķa"
+          }
+        },
+        "priority": "Paziņojumu Prioritāte",
+        "toast-style": "Paziņojumu stils",
+        "unpause-notification": "Rādīt paziņojumu atsākot atskaņošanu"
+      },
+      "name": "Paziņojumi"
+    },
+    "performance-improvement": {
+      "description": "Uzlabot veiktspēju, iespējojot eksperimentālus skriptus",
+      "name": "Veiktspējas uzlabojums [Beta]"
+    },
+    "playback-recovery": {
+      "description": "Automātiski atjauno no iesprūdušiem, apstādinātiem vai mirušiem atskaņošanas stāvokļiem",
+      "menu": {
+        "log-to-console": "Reģistrēt atjaunošanas notikumus konsolē"
+      },
+      "name": "Atskaņošanas Atjaunošana"
+    },
+    "picture-in-picture": {
+      "description": "Ļauj pārslēgt lietotni uz attēls-attēlā režīmu",
+      "menu": {
+        "always-on-top": "Vienmēr virspusē",
+        "hotkey": {
+          "label": "Karstais taustiņš",
+          "prompt": {
+            "keybind-options": {
+              "hotkey": "Karstais taustiņš"
+            },
+            "label": "Izvēlieties karsto taustiņu, lai pārslēgtu attēls-attēlā",
+            "title": "Attēls-Attēlā Karstais taustiņš"
+          }
+        },
+        "save-window-position": "Saglabāt loga pozīciju",
+        "save-window-size": "Saglabāt loga izmēru",
+        "use-native-pip": "Izmantot pārlūka dabisko PiP"
+      },
+      "name": "Attēls-Attēlā",
+      "templates": {
+        "button": "Attēls-Attēlā"
+      }
+    },
+    "playback-speed": {
+      "description": "Klausies ātri, klausies lēni! Pievieno slīdni, kas kontrolē dziesmas ātrumu",
+      "name": "Atskaņošanas Ātrums",
+      "templates": {
+        "button": "Ātrums"
+      }
+    },
+    "precise-volume": {
+      "description": "Precīzi kontrolējiet skaļumu izmantojot peles ritenīti/karstos taustiņus, ar pielāgotu HUD un pielāgojamiem skaļuma soļiem",
+      "menu": {
+        "arrows-shortcuts": "Lokālās Bulttaustiņu Vadības",
+        "custom-volume-steps": "Iestatīt Pielāgotus Skaļuma Soļus",
+        "global-shortcuts": "Globālie Karstie Taustiņi"
+      },
+      "name": "Precīzs Skaļums",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "Samazināt Skaļumu",
+            "increase": "Palielināt Skaļumu"
+          },
+          "label": "Izvēlieties Globālos Skaļuma Karstos Taustiņus:",
+          "title": "Globālie Skaļuma Karstie Taustiņi"
+        },
+        "volume-steps": {
+          "label": "Izvēlieties Skaļuma Palielināšanas/Samazināšanas Soļus",
+          "title": "Skaļuma Soļi"
+        }
+      }
+    },
+    "quality-changer": {
+      "backend": {
+        "dialog": {
+          "quality-changer": {
+            "detail": "Pašreizējā Kvalitāte: {{quality}}",
+            "message": "Izvēlieties Video Kvalitāti:",
+            "title": "Izvēlieties Video Kvalitāti"
+          }
+        }
+      },
+      "description": "Ļauj mainīt video kvalitāti ar pogu uz video pārklājuma",
+      "name": "Video Kvalitātes Mainītājs",
+      "renderer": {
+        "quality-settings-button": {
+          "label": "Atvērt atskaņotāja kvalitātes mainītāju"
+        }
+      }
+    },
+    "scrobbler": {
+      "description": "Pievieno scrobbling atbalstu (piem., last.fm, Listenbrainz)",
+      "dialog": {
+        "lastfm": {
+          "auth-failed": {
+            "message": "Neizdevās autentificēties ar Last.fm\nPaslēpiet uznirstošo logu līdz nākamajai restartēšanai.",
+            "title": "Autentifikācija Neizdevās"
+          }
+        }
+      },
+      "menu": {
+        "lastfm": {
+          "api-settings": "Last.fm API Iestatījumi"
+        },
+        "listenbrainz": {
+          "token": "Ievadiet ListenBrainz lietotāja marķieri"
+        },
+        "scrobble-alternative-artist": "Izmantot alternatīvos izpildītājus",
+        "scrobble-alternative-title": "Izmantot alternatīvos nosaukumus",
+        "scrobble-other-media": "Scrobble citus medijus"
+      },
+      "name": "Skrobolētājs",
+      "prompt": {
+        "lastfm": {
+          "api-key": "Last.fm API atslēga",
+          "api-secret": "Last.fm API noslēpums"
+        },
+        "listenbrainz": {
+          "token": {
+            "label": "Ievadiet savu ListenBrainz lietotāja marķieri:",
+            "title": "ListenBrainz marķieris"
+          }
+        }
+      }
+    },
+    "shortcuts": {
+      "description": "Ļauj iestatīt globālos karstos taustiņus atskaņošanai (atskaņot/pauzēt/nākamais/iepriekšējais) un izslēgt mediju OSD pārrakstot mediju taustiņus, ieslēgt Ctrl/CMD + F meklēšanai, ieslēgt Linux MPRIS atbalstu mediju taustiņiem, un pielāgotus karstos taustiņus pieredzējušiem lietotājiem",
+      "menu": {
+        "override-media-keys": "Pārrakstīt Mediju Taustiņus",
+        "set-keybinds": "Iestatīt Globālās Dziesmu Vadības"
+      },
+      "name": "Īsceļi (& MPRIS)",
+      "prompt": {
+        "keybind": {
+          "keybind-options": {
+            "next": "Nākamais",
+            "play-pause": "Atskaņot / Pauzēt",
+            "previous": "Iepriekšējais"
+          },
+          "label": "Izvēlieties Globālos Karstos Taustiņus Dziesmu Vadībai:",
+          "title": "Globālie Karstie Taustiņi"
+        }
+      }
+    },
+    "skip-silences": {
+      "description": "Automātiski izlaist klusuma daļas dziesmās",
+      "name": "Izlaist Klusumus"
+    },
+    "sponsorblock": {
+      "description": "Automātiski izlaiž nemuzikālās daļas, piemēram, ievadus/izvadus vai mūzikas video daļas, kurās dziesma netiek atskaņota",
+      "name": "SponsorBlock"
+    },
+    "synced-lyrics": {
+      "description": "Nodrošina sinhronizētus dziesmu tekstus, izmantojot tādus pakalpojumu sniedzējus kā LRClib.",
+      "errors": {
+        "fetch": "⚠️\tRadās kļūda iegūstot dziesmu tekstus.\n\tLūdzu, mēģiniet vēlreiz vēlāk.",
+        "not-found": "⚠️ Šai dziesmai nav atrasti dziesmu teksti."
+      },
+      "menu": {
+        "convert-chinese-character": {
+          "label": "Konvertēt Ķīniešu Rakstzīmes",
+          "submenu": {
+            "disabled": {
+              "label": "Atspējots",
+              "tooltip": "Atspējot ķīniešu rakstzīmju konvertēšanu"
+            },
+            "simplified-to-traditional": {
+              "label": "Vienkāršoto uz Tradicionālo",
+              "tooltip": "Konvertēt vienkāršoto ķīniešu valodu uz tradicionālo ķīniešu valodu"
+            },
+            "traditional-to-simplified": {
+              "label": "Tradicionālo uz Vienkāršoto",
+              "tooltip": "Konvertēt tradicionālo ķīniešu valodu uz vienkāršoto ķīniešu valodu"
+            }
+          },
+          "tooltip": "Konvertēt ķīniešu rakstzīmes uz tradicionālo vai vienkāršoto"
+        },
+        "default-text-string": {
+          "label": "Noklusējuma rakstzīme starp dziesmu tekstiem",
+          "tooltip": "Izvēlieties noklusējuma rakstzīmi, ko izmantot atstarpei starp dziesmu tekstiem"
+        },
+        "line-effect": {
+          "label": "Līnijas efekts",
+          "submenu": {
+            "fancy": {
+              "label": "Greznīgs",
+              "tooltip": "Izmantot lielus, lietotnei līdzīgus efektus pašreizējai rindai"
+            },
+            "focus": {
+              "label": "Fokuss",
+              "tooltip": "Padarīt tikai pašreizējo rindu baltu"
+            },
+            "offset": {
+              "label": "Nobīde",
+              "tooltip": "Nobīdīt pa labi pašreizējo rindu"
+            },
+            "scale": {
+              "label": "Mērogs",
+              "tooltip": "Mērogot pašreizējo rindu"
+            }
+          },
+          "tooltip": "Izvēlieties efektu, ko piemērot pašreizējai rindai"
+        },
+        "lyrics-font-size": {
+          "label": "Dziesmu Tekstu Fonta Izmērs",
+          "submenu": {
+            "large": {
+              "label": "Liels",
+              "tooltip": "Izmantot oriģinālo lielāko dziesmu tekstu izmēru"
+            },
+            "medium": {
+              "label": "Vidējs",
+              "tooltip": "Izmantot sabalansētu dziesmu tekstu izmēru"
+            },
+            "small": {
+              "label": "Mazs",
+              "tooltip": "Izmantot kompaktāku dziesmu tekstu izmēru"
+            }
+          },
+          "tooltip": "Izvēlieties, cik lielam jābūt dziesmu teksta izmēram"
+        },
+        "precise-timing": {
+          "label": "Padarīt dziesmu tekstus perfekti sinhronizētus",
+          "tooltip": "Aprēķināt līdz milisekundei nākamās rindas attēlošanu (var nedaudz ietekmēt veiktspēju)"
+        },
+        "preferred-provider": {
+          "label": "Vēlamais Pakalpojumu Sniedzējs",
+          "none": {
+            "label": "Neviens",
+            "tooltip": "Nav vēlamā pakalpojumu sniedzēja"
+          },
+          "tooltip": "Izvēlieties noklusējuma pakalpojumu sniedzēju"
+        },
+        "romanization": {
+          "label": "Romanizēt dziesmu tekstus",
+          "tooltip": "Ja dziesmu teksti ir citā valodā, mēģināt parādīt latīņu versiju."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "Rādīt dziesmu tekstus pat ja neprecīzi",
+          "tooltip": "Ja dziesma nav atrasta, spraudnis mēģina vēlreiz ar citu meklēšanas vaicājumu.\nOtrā mēģinājuma rezultāts var nebūt precīzs."
+        },
+        "show-time-codes": {
+          "label": "Rādīt laika kodus",
+          "tooltip": "Rādīt laika kodus blakus dziesmu tekstiem"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Iztīrīt tulkošanas kešatmiņu",
+            "tooltip": "Dzēst visas kešatmiņā saglabātās tulkojumus no diska."
+          },
+          "configure": {
+            "label": "Konfigurēt API atslēgu un modeli…",
+            "tooltip": "Iestatīt pakalpojumu sniedzējam raksturīgās tulkošanas opcijas."
+          },
+          "enabled": {
+            "label": "Iespējot tulkošanu",
+            "tooltip": "Rādīt tulkoto rindu zem katras oriģinālās dziesmu teksta rindas."
+          },
+          "label": "Dziesmu Tekstu Tulkošana",
+          "provider": {
+            "label": "Pakalpojumu Sniedzējs",
+            "tooltip": "Kuru pakalpojumu izmantot tulkošanai."
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Izmanto dabisko Anthropic Messages API.",
+              "prompt-title": "Anthropic iestatījumi"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Izmanto Google Ģeneratīvās Valodas API (generateContent).",
+              "prompt-title": "Gemini iestatījumi"
+            },
+            "google-translate": {
+              "host": "Resursdators",
+              "name": "Google Translate",
+              "prompt-label": "Izmanto neoficiālo bezmaksas Google Translate galapunktu. API atslēga nav nepieciešama, bet Google var piemērot ātruma ierobežojumus.",
+              "prompt-title": "Google Translate iestatījumi"
+            },
+            "local-cli": {
+              "command": "Komanda",
+              "engine": "Lokālā CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Kodekss",
+              "engine-gemini": "Gemini CLI",
+              "name": "Lokālā CLI",
+              "prompt-label": "Izmanto lokāli pieslēgtu Claude Code, Codex vai Gemini CLI. Komanda un modelis ir automātiski; CLI izmanto savu pieslēgto noklusējumu.",
+              "prompt-title": "Lokālās CLI iestatījumi",
+              "timeout": "Taimauts sekundēs (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API režīms (responses / auto / chat-completions)",
+              "base-url": "Bāzes URL",
+              "name": "OpenAI Savietojams",
+              "prompt-label": "Izmanto OpenAI savietojamus serverus, ieskaitot Ollama (bāzes URL http://127.0.0.1:11434/v1, API režīms auto vai chat-completions).",
+              "prompt-title": "OpenAI savietojamie iestatījumi"
+            },
+            "shared": {
+              "api-key": "API atslēga",
+              "model": "Modelis"
+            }
+          },
+          "target-language": {
+            "label": "Mērķa valoda",
+            "options": {
+              "ar": "العربية",
+              "auto": "Sekot lietotnes valodai",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Valoda, kurā tulkot dziesmu tekstus."
+          },
+          "tooltip": "Tulkot dziesmu tekstus un rādīt tulkoto rezultātu rindu pa rindai."
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "Izmantot YTM dziesmu vārdus bez starpniekservera",
+          "tooltip": "Izlaist YTM pārlūkošanas starpniekserveri un izsaukt YouTube Music tieši, izmantojot lietotnes autentificēto sesiju. Noderīgi, ja uzticaties savam tīklam/reģionam, lai atļautu tiešus pārlūkošanas zvanus."
+        },
+        "show-custom-search-button": {
+          "label": "Rādīt pielāgoto meklēšanas pogu",
+          "tooltip": "Rādīt meklēšanas pogu dziesmu tekstu izvēlē, kas ļauj pārrakstīt meklēšanas vaicājumu un izpildītāju pašreizējai dziesmai."
+        }
+      },
+      "name": "Sinhronizētie Dziesmu Teksti",
+      "refetch-btn": {
+        "fetching": "Iegūst...",
+        "normal": "Atkārtoti iegūt dziesmu tekstus"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Dziesmu teksti var būt nesinhronizēti ilguma nesakritības dēļ.",
+        "inexact": "⚠️ - Šīs dziesmas teksti var nebūt precīzi",
+        "instrumental": "⚠️ - Šī ir instrumentāla dziesma"
+      }
+    },
+    "taskbar-mediacontrol": {
+      "description": "Kontrolējiet atskaņošanu no Windows uzdevumjoslas",
+      "name": "Uzdevumjoslas Mediju Vadība"
+    },
+    "touchbar": {
+      "description": "Pievieno TouchBar logrīku macOS lietotājiem",
+      "name": "TouchBar"
+    },
+    "transparent-player": {
+      "description": "Padara lietotnes logu caurspīdīgu",
+      "menu": {
+        "opacity": {
+          "label": "Caurspīdīgums",
+          "submenu": {
+            "percent": "{{opacity}}%"
+          }
+        },
+        "type": {
+          "label": "Tips",
+          "submenu": {
+            "acrylic": "Akrils",
+            "mica": "Vizla",
+            "none": "Neviens",
+            "tabbed": "Cilnes"
+          }
+        }
+      },
+      "name": "Caurspīdīgs Atskaņotājs"
+    },
+    "tuna-obs": {
+      "description": "Integrācija ar OBS spraudni Tuna",
+      "name": "Tuna OBS"
+    },
+    "unobtrusive-player": {
+      "description": "Novērš atskaņotāja uznirstošo logu, kad tiek atskaņota dziesma",
+      "name": "Neuzbāzīgs Atskaņotājs"
+    },
+    "video-toggle": {
+      "description": "Pievieno pogu, lai pārslēgtos starp Video/Dziesmas režīmu. Var arī pēc izvēles noņemt visu video cilni",
+      "menu": {
+        "align": {
+          "label": "Izlīdzināšana",
+          "submenu": {
+            "left": "Pa kreisi",
+            "middle": "Pa vidu",
+            "right": "Pa labi"
+          }
+        },
+        "force-hide": "Piespiedu kārtā noņemt video cilni",
+        "mode": {
+          "label": "Režīms",
+          "submenu": {
+            "custom": "Pielāgota pārslēgšana",
+            "disabled": "Atspējots",
+            "native": "Dabiskā pārslēgšana"
+          }
+        }
+      },
+      "name": "Video Pārslēgs",
+      "templates": {
+        "button-song": "Dziesma",
+        "button-video": "Video"
+      }
+    },
+    "visualizer": {
+      "description": "Pievieno vizualizētāju atskaņotājam",
+      "menu": {
+        "visualizer-type": "Vizualizētāja Veids"
+      },
+      "name": "Vizualizētājs"
+    },
+    "playlist-search": {
+      "description": "Pievieno meklēšanas ievades lauku, lai filtrētu atskaņošanas sarakstus sānjoslā un dialoglodziņā \"Pievienot atskaņošanas sarakstam\"",
+      "name": "Atskaņot sarakstu Meklēšana",
+      "templates": {
+        "search-placeholder": "Meklēt atskaņošanas sarakstus",
+        "no-results": "Nav atrasts neviens atskaņošanas saraksts"
       }
     }
   }

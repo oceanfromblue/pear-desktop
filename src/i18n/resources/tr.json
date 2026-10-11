@@ -109,7 +109,8 @@
                   "title": "Proxy ayarla"
                 }
               },
-              "toggle-dev-tools": "DevTools'u Aç / Kapat"
+              "toggle-dev-tools": "DevTools'u Aç / Kapat",
+              "force-smtc": "Harici SMTC kullanımını zorla"
             }
           },
           "always-on-top": "Her zaman üstte",
@@ -144,7 +145,9 @@
               "disabled": "Devre Dışı",
               "enabled-and-hide-app": "Uygulamayı etkinleştirin gizleyin",
               "enabled-and-show-app": "Etkinleştir ve uygulamayı göster",
-              "play-pause-on-click": "Tıklandığında Oynat/Duraklat"
+              "play-pause-on-click": "Tıklandığında Oynat/Duraklat",
+              "move-to-current-desktop": "Gösterildiğinde mevcut sanal masaüstüne taşı",
+              "force-white-icons": "Beyaz simgelerin kullanımını zorla"
             }
           },
           "visual-tweaks": {
@@ -211,7 +214,11 @@
       "tooltip": {
         "default": "{{applicationName}}",
         "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
-      }
+      },
+      "like": "Beğen",
+      "dislike": "Beğenme",
+      "unlike": "Unlike",
+      "undislike": "Beğenmeme"
     }
   },
   "plugins": {
@@ -685,7 +692,8 @@
           "submenu": {
             "hide-button-text": "Buton metnini gizle",
             "refresh-on-play-pause": "Oynat/Duraklat'ta Yenile",
-            "tray-controls": "Tepsi tıklamasıyla Aç/Kapat"
+            "tray-controls": "Tepsi tıklamasıyla Aç/Kapat",
+            "hover-controls": "Tepsi üzerine gelince mini oynatıcıyı göster"
           }
         },
         "priority": "Bildirim Önceliği",
@@ -823,10 +831,6 @@
         }
       }
     },
-    "skip-disliked-songs": {
-      "description": "Beğenmediğin şarkıları atlar",
-      "name": "Beğenmediklerini Atla"
-    },
     "skip-silences": {
       "description": "Şarkılardaki sessiz bölümleri otomatik olarak atlar",
       "name": "Sessizlikleri Atla"
@@ -886,6 +890,24 @@
           },
           "tooltip": "Geçerli satıra uygulanacak efekti seçin"
         },
+        "lyrics-font-size": {
+          "label": "Şarkı sözü yazı tipi boyutu",
+          "submenu": {
+            "large": {
+              "label": "Büyük",
+              "tooltip": "Orijinal daha büyük şarkı sözü boyutunu kullan"
+            },
+            "medium": {
+              "label": "Orta",
+              "tooltip": "Dengeli bir şarkı sözü boyutu kullan"
+            },
+            "small": {
+              "label": "Küçük",
+              "tooltip": "Daha kompakt bir şarkı sözü boyutu kullan"
+            }
+          },
+          "tooltip": "Şarkı sözü metninin ne kadar büyük olacağını seçin"
+        },
         "precise-timing": {
           "label": "Şarkı sözlerini mükemmel şekilde senkronize edin",
           "tooltip": "Bir sonraki satırın görüntülenmesini milisaniyesine kadar hesaplayın (performans üzerinde küçük bir etkisi olabilir)"
@@ -909,6 +931,125 @@
         "show-time-codes": {
           "label": "Zaman kodlarını göster",
           "tooltip": "Şarkı sözlerinin yanında zaman kodlarını gösterin"
+        },
+        "translation": {
+          "clear-cache": {
+            "label": "Çeviri önbelleğini temizle",
+            "tooltip": "Diskte depolanan tüm önbelleğe alınmış çevirileri sil"
+          },
+          "configure": {
+            "label": "API anahtarını ve modeli yapılandır…",
+            "tooltip": "Sağlayıcıya özel çeviri seçeneklerini ayarla"
+          },
+          "enabled": {
+            "label": "Çeviriyi etkinleştir",
+            "tooltip": "Her orijinal şarkı sözü satırının altında çevrilmiş bir satır göster"
+          },
+          "label": "Şarkı sözü çevirisi",
+          "provider": {
+            "label": "Sağlayıcı",
+            "tooltip": "Çeviri için hangi hizmetin kullanılacağı"
+          },
+          "providers": {
+            "anthropic": {
+              "name": "Anthropic Claude",
+              "prompt-label": "Yerel Anthropic Messages API'sini kullanır.",
+              "prompt-title": "Anthropic ayarları"
+            },
+            "gemini": {
+              "name": "Google Gemini",
+              "prompt-label": "Google Generative Language API (generateContent) kullanır.",
+              "prompt-title": "Gemini ayarları"
+            },
+            "google-translate": {
+              "host": "Ana makine",
+              "name": "Google Çeviri",
+              "prompt-label": "Resmi olmayan ücretsiz Google Translate uç noktasını kullanır. API anahtarı gerekmez, ancak Google hız sınırlaması uygulayabilir.",
+              "prompt-title": "Google Translate ayarları"
+            },
+            "local-cli": {
+              "command": "Komut",
+              "engine": "Yerel CLI",
+              "engine-claude": "Claude Code",
+              "engine-codex": "Codex",
+              "engine-gemini": "Gemini CLI",
+              "name": "Yerel CLI",
+              "prompt-label": "Yerel olarak oturum açmış Claude Code, Codex veya Gemini CLI kullan. Komut ve model otomatiktir; CLI kendi varsayılan oturumunu kullanır.",
+              "prompt-title": "Yerel CLI ayarları",
+              "timeout": "Zaman aşımı saniyesi (15-600)"
+            },
+            "openai-compatible": {
+              "api-mode": "API modu (responses / auto / chat-completions)",
+              "base-url": "Temel URL",
+              "name": "OpenAI uyumlu",
+              "prompt-label": "Ollama dahil OpenAI uyumlu sunucuları kullan (base URL http://127.0.0.1:11434/v1, API modu auto veya chat-completions).",
+              "prompt-title": "OpenAI uyumlu ayarlar"
+            },
+            "shared": {
+              "api-key": "API anahtarı",
+              "model": "Model"
+            }
+          },
+          "target-language": {
+            "label": "Hedef dil",
+            "options": {
+              "ar": "العربية",
+              "auto": "Uygulama dilini takip et",
+              "bg": "Български",
+              "bn": "বাংলা",
+              "cs": "Čeština",
+              "da": "Dansk",
+              "de": "Deutsch",
+              "el": "Ελληνικά",
+              "en": "English",
+              "es": "Español",
+              "fa": "فارسی",
+              "fi": "Suomi",
+              "fil": "Filipino",
+              "fr": "Français",
+              "he": "עברית",
+              "hi": "हिन्दी",
+              "hr": "Hrvatski",
+              "hu": "Magyar",
+              "id": "Bahasa Indonesia",
+              "it": "Italiano",
+              "ja": "日本語",
+              "ko": "한국어",
+              "lt": "Lietuvių",
+              "mr": "मराठी",
+              "ms": "Bahasa Melayu",
+              "nl": "Nederlands",
+              "no": "Norsk",
+              "pl": "Polski",
+              "pt-BR": "Português (Brasil)",
+              "pt-PT": "Português (Portugal)",
+              "ro": "Română",
+              "ru": "Русский",
+              "sk": "Slovenčina",
+              "sr": "Српски",
+              "sv": "Svenska",
+              "sw": "Kiswahili",
+              "ta": "தமிழ்",
+              "te": "తెలుగు",
+              "th": "ไทย",
+              "tr": "Türkçe",
+              "uk": "Українська",
+              "ur": "اردو",
+              "vi": "Tiếng Việt",
+              "zh-CN": "简体中文",
+              "zh-TW": "繁體中文"
+            },
+            "tooltip": "Şarkı sözlerinin çevrileceği dil"
+          },
+          "tooltip": "Şarkı sözlerini çevir ve çevrilen sonucu satır satır göster"
+        },
+        "use-ytm-lyrics-without-proxy": {
+          "label": "YTM şarkı sözlerini proxy olmadan kullan",
+          "tooltip": "YTM tarama proxy'sini atla ve uygulamanın kimliği doğrulanmış oturumunu kullanarak doğrudan YouTube Music'i çağır. Ağınıza/bölgenize güveniyorsanız ve doğrudan tarama çağrılarına izin veriyorsanız kullanışlıdır."
+        },
+        "show-custom-search-button": {
+          "label": "Özel arama düğmesini göster",
+          "tooltip": "Şarkı sözü seçicide, mevcut şarkı için arama sorgusunu ve sanatçıyı değiştirmenizi sağlayan bir arama düğmesi göster."
         }
       },
       "name": "Senkronize Şarkı Sözleri",
@@ -997,6 +1138,25 @@
         "visualizer-type": "Görselleştirici Tipi"
       },
       "name": "Görselleştirici"
+    },
+    "audio-only": {
+      "description": "Yalnızca ses modunu zorlar — RAM ve bant genişliğinden tasarruf için tüm video akışlarını ağ ve oynatıcı seviyesinde engeller",
+      "name": "Yalnızca Ses"
+    },
+    "playback-recovery": {
+      "description": "Takılı, durmuş veya ölü oynatma durumlarından otomatik olarak kurtulur",
+      "menu": {
+        "log-to-console": "Kurtarma olaylarını konsola kaydet"
+      },
+      "name": "Oynatma Kurtarma"
+    },
+    "playlist-search": {
+      "description": "Kenar çubuğundaki ve Listeye ekle iletişim kutusundaki çalma listelerini filtrelemek için bir arama girişi ekler",
+      "name": "Çalma Listesi Ara",
+      "templates": {
+        "search-placeholder": "Çalma listelerini ara",
+        "no-results": "Çalma listesi bulunamadı"
+      }
     }
   }
 }

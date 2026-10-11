@@ -103,8 +103,7 @@ export const hasChinese = (lines: string[]) =>
   lines.some((line) => /[\u4E00-\u9FFF]+/.test(line));
 
 // Scripts handled by the romanizer (Devanagari, Bengali, Thai, Hangul, Kana, CJK)
-const romanizableRegex =
-  /[\u0900-\u09FF\u0E00-\u0E7F\u1100-\u11FF\u3040-\u30FF\u3130-\u318F\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\uFF66-\uFF9F]/;
+const romanizableRegex = /[\u0900-\u09FF\u0E00-\u0E7F\u1100-\u11FF\u3040-\u30FF\u3130-\u318F\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\uFF66-\uFF9F]/;
 
 let romanizer: Promise<typeof import('./romanize')> | undefined;
 

@@ -14,6 +14,8 @@ export type VideoHiddenReason =
   | 'video-toggle'
   // video-toggle plugin: "force hide" option
   | 'video-force-hide'
+  // audio-only plugin
+  | 'audio-only-plugin'
   // the window has been hidden/minimized for a while
   | 'window-hidden';
 
