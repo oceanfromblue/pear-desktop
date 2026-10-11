@@ -66,7 +66,7 @@ export default createPlugin({
 
         const newQuality = qualityLevels[quality.response];
         // Don't let the video quality manager override the user's choice
-        setManualVideoQuality();
+        setManualVideoQuality(newQuality);
         api.setPlaybackQualityRange(newQuality);
         api.setPlaybackQuality(newQuality);
       };

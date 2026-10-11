@@ -17,10 +17,22 @@ const loadLanguage = async (language: string) => {
   }
 };
 
-// Mirrors the i18next fallback chain (e.g. 'be-Latn' -> 'be' -> 'en')
-const getLanguageHierarchy = (language: string) => [
-  ...new Set([language, language.split('-')[0], FALLBACK_LANGUAGE]),
-];
+// The languages i18next falls back to (e.g. 'be-Latn' -> 'be' -> 'en'), with normalized codes (e.g. 'zh-cn' -> 'zh-CN')
+const getLanguageHierarchy = (language: string) => {
+  const { languageUtils } = i18next.services as {
+    languageUtils?: { toResolveHierarchy?: (code: string) => string[] };
+  };
+  const hierarchy = languageUtils?.toResolveHierarchy?.(language) ?? [];
+
+  return [
+    ...new Set([
+      language,
+      ...hierarchy,
+      language.split('-')[0],
+      FALLBACK_LANGUAGE,
+    ]),
+  ];
+};
 
 export const loadI18n = async () => {
   const fallbackResource = await loadLanguageResource(FALLBACK_LANGUAGE);

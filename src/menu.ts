@@ -513,10 +513,11 @@ export const mainMenuTemplate = async (
                   label: `${languageNames[lang]?.name ?? 'Unknown'} (${languageNames[lang]?.localName ?? 'Unknown'})`,
                   type: 'checkbox',
                   checked: (config.get('options.language') ?? 'en') === lang,
-                  click() {
+                  async click() {
                     config.setMenuOption('options.language', lang);
+                    // The translations are loaded on demand
+                    await setLanguage(lang);
                     refreshMenu(win);
-                    setLanguage(lang);
                     dialog.showMessageBox(win, {
                       title: t(
                         'main.menu.options.submenu.language.dialog.title',

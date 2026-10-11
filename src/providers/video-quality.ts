@@ -5,7 +5,7 @@ import type { MusicPlayer } from '@/types/music-player';
 /**
  * Lowers the video quality to the minimum while nobody can see the video,
  * so the player doesn't download, buffer and decode HD video for nothing
- * (and restores the automatic quality as soon as the video is visible again).
+ * (and restores the user's quality as soon as the video is visible again).
  */
 export type VideoHiddenReason =
   // "Song" tracks (ATV): the player shows the album art instead of their still image video
@@ -30,7 +30,13 @@ let cappedVideoId: string | null = null;
 // Video id the user manually picked a quality for (e.g. with the quality-changer plugin)
 let manualQualityVideoId: string | null = null;
 let attempts = 0;
+// Quality to restore when the video is visible again ('auto' unless the user picked one)
+let userQuality: string | null = null;
+// The stored preference before the quality was lowered (null: nothing was stored)
+let savedPreference: { value: string | null } | null = null;
 let preferenceRestoreTimeouts: number[] = [];
+
+const QUALITY_REGEX = /^(?:auto|tiny|small|medium|large|highres|hd\d+)$/;
 
 const getVideoId = () => player?.getVideoData()?.video_id || null;
 
@@ -45,31 +51,52 @@ const cancelPreferenceRestore = () => {
   preferenceRestoreTimeouts = [];
 };
 
+const restorePreference = () => {
+  if (!savedPreference) return;
+
+  try {
+    if (savedPreference.value === null) {
+      localStorage.removeItem(QUALITY_PREFERENCE_KEY);
+    } else {
+      localStorage.setItem(QUALITY_PREFERENCE_KEY, savedPreference.value);
+    }
+  } catch {}
+};
+
 const keepQualityPreference = (callback: () => void) => {
   cancelPreferenceRestore();
 
-  let preference: string | null = null;
-  try {
-    preference = localStorage.getItem(QUALITY_PREFERENCE_KEY);
-  } catch {}
+  // Only read it once: afterwards it can contain the quality set below
+  if (!savedPreference) {
+    let value: string | null = null;
+    try {
+      value = localStorage.getItem(QUALITY_PREFERENCE_KEY);
+    } catch {}
+    savedPreference = { value };
+  }
 
   callback();
 
-  const restore = () => {
-    try {
-      if (preference === null) {
-        localStorage.removeItem(QUALITY_PREFERENCE_KEY);
-      } else {
-        localStorage.setItem(QUALITY_PREFERENCE_KEY, preference);
-      }
-    } catch {}
-  };
-  restore();
+  restorePreference();
   // The player can also persist it a bit later
-  preferenceRestoreTimeouts = [
-    window.setTimeout(restore, 1_000),
-    window.setTimeout(restore, 5_000),
-  ];
+  preferenceRestoreTimeouts.push(
+    window.setTimeout(restorePreference, 1_000),
+    window.setTimeout(() => {
+      restorePreference();
+      if (!cappedVideoId) savedPreference = null;
+    }, 5_000),
+  );
+};
+
+const getUserQuality = () => {
+  try {
+    const preference = player?.getUserPlaybackQualityPreference<[], unknown>();
+    if (typeof preference === 'string' && QUALITY_REGEX.test(preference)) {
+      return preference;
+    }
+  } catch {}
+
+  return 'auto';
 };
 
 const setQuality = (quality: string) =>
@@ -103,11 +130,13 @@ const updateVideoQuality = () => {
       if (attempts >= MAX_ATTEMPTS_PER_VIDEO) return;
 
       attempts++;
+      // Remember the quality used before lowering it the first time
+      if (!cappedVideoId) userQuality ??= getUserQuality();
       setQuality(lowestQuality);
       cappedVideoId = videoId;
     } else if (cappedVideoId) {
-      setQuality('auto');
       cappedVideoId = null;
+      setQuality(userQuality ?? 'auto');
     }
   } catch (error) {
     console.warn(LoggerPrefix, 'Failed to change the video quality', error);
@@ -128,12 +157,17 @@ export const setVideoHidden = (reason: VideoHiddenReason, hidden: boolean) => {
 };
 
 /**
- * The quality of the current video was picked by the user, don't change it
+ * The user picked a quality for the current video: don't change it,
+ * and restore it (instead of the automatic quality) after lowering the quality
  */
-export const setManualVideoQuality = () => {
+export const setManualVideoQuality = (quality: string) => {
+  // Keep the preference stored by the player for this choice
   cancelPreferenceRestore();
+  savedPreference = null;
+
   manualQualityVideoId = getVideoId();
   cappedVideoId = null;
+  userQuality = quality;
 };
 
 export const setupVideoQualityManager = (api: MusicPlayer) => {

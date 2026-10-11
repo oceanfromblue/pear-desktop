@@ -356,6 +356,10 @@ export default createPlugin({
     onConfigChange(newConfig) {
       this.config = newConfig;
       this.applyStyleClass(newConfig);
+      setVideoHidden(
+        'video-force-hide',
+        document.body.classList.contains('video-toggle-force-hide'),
+      );
     },
   },
 });
