@@ -57,7 +57,11 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
     // https://gist.github.com/cvan/042b2448fcecefafbb6a91469484cdf8
     try {
       const canvas = document.createElement('canvas');
-      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      const context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      // Free the probe context now instead of keeping it until garbage collection
+      const loseContext = context && context.getExtension('WEBGL_lose_context');
+      if (loseContext) loseContext.loseContext();
+      return !!context;
     } catch (e) {
       return false;
     }

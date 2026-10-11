@@ -2,7 +2,7 @@ import { createRenderer } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
 
 import { disposeReactiveRoot } from './reactive-root';
-import { setConfig, setCurrentTime } from './renderer';
+import { isVisible, setConfig, setCurrentTime } from './renderer';
 import { fetchLyrics } from './store';
 import { selectors, tabStates } from './utils';
 
@@ -54,10 +54,12 @@ export const renderer = createRenderer<
   },
   async videoDataChange() {
     if (!this.updateTimestampInterval) {
-      this.updateTimestampInterval = setInterval(
-        () => setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000),
-        100,
-      );
+      this.updateTimestampInterval = setInterval(() => {
+        // Nothing shows the lyrics: don't re-render them every 100ms
+        if (document.hidden || !isVisible()) return;
+
+        setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000);
+      }, 100);
     }
 
     // prettier-ignore

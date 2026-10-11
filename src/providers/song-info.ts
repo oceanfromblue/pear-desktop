@@ -163,7 +163,11 @@ const handleData = async (
 
     if (songInfo.imageSrc) songInfo.image = await getImage(songInfo.imageSrc);
 
-    win.webContents.send('peard:update-song-info', songInfo);
+    // The renderer doesn't use the image, which would be sent as an uncompressed bitmap
+    win.webContents.send('peard:update-song-info', {
+      ...songInfo,
+      image: undefined,
+    });
   }
 
   return songInfo;

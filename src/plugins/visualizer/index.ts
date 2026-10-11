@@ -62,6 +62,7 @@ type RenderProps = {
   audioContext: AudioContext | null;
   audioSource: MediaElementAudioSourceNode | null;
   observer: ResizeObserver | null;
+  audioCanPlayListener: ((e: CustomEvent<Compressor>) => void) | null;
 };
 
 export default createPlugin({
@@ -159,6 +160,7 @@ export default createPlugin({
       audioContext: null,
       audioSource: null,
       observer: null,
+      audioCanPlayListener: null,
     } as RenderProps,
 
     createVisualizer(
@@ -225,15 +227,40 @@ export default createPlugin({
     },
 
     onPlayerApiReady(_, { getConfig }) {
+      this.props.audioCanPlayListener = async (e) => {
+        // This event is sent for every song, but the audio graph stays the same:
+        // don't rebuild the visualizer (and its WebGL context) every time
+        if (
+          this.props.visualizerInstance &&
+          this.props.audioSource === e.detail.audioSource
+        ) {
+          return;
+        }
+
+        this.props.audioContext = e.detail.audioContext;
+        this.props.audioSource = e.detail.audioSource;
+        this.createVisualizer(await getConfig());
+      };
       document.addEventListener(
         'peard:audio-can-play',
-        async (e) => {
-          this.props.audioContext = e.detail.audioContext;
-          this.props.audioSource = e.detail.audioSource;
-          this.createVisualizer(await getConfig());
-        },
+        this.props.audioCanPlayListener,
         { passive: true },
       );
+    },
+
+    stop() {
+      if (this.props.audioCanPlayListener) {
+        document.removeEventListener(
+          'peard:audio-can-play',
+          this.props.audioCanPlayListener,
+        );
+        this.props.audioCanPlayListener = null;
+      }
+      this.props.visualizerInstance?.destroy();
+      this.props.visualizerInstance = null;
+      this.props.observer?.disconnect();
+      this.props.observer = null;
+      document.querySelector('#visualizer')?.remove();
     },
   },
 });

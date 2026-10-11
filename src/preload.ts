@@ -18,7 +18,7 @@ import {
 // @ts-expect-error dummy
 globalThis.customElements = { define() {} };
 
-new MutationObserver((mutations, observer) => {
+const adapterScriptObserver = new MutationObserver((mutations, observer) => {
   for (const mutation of mutations) {
     for (const node of mutation.addedNodes) {
       const elem = node as HTMLElement;
@@ -36,7 +36,13 @@ new MutationObserver((mutations, observer) => {
       return;
     }
   }
-}).observe(document, { subtree: true, childList: true });
+});
+adapterScriptObserver.observe(document, { subtree: true, childList: true });
+// The adapter is a parser-inserted script: if it isn't there once the page is loaded,
+// it never will be (don't keep observing every DOM change for the whole session)
+window.addEventListener('load', () => adapterScriptObserver.disconnect(), {
+  once: true,
+});
 
 loadI18n().then(async () => {
   await setLanguage(config.get('options.language') ?? 'en');

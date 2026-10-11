@@ -15,6 +15,10 @@ const history = 10;
 const speakingHistory = Array.from({ length: history }).fill(0) as number[];
 
 let playOrSeekHandler: (() => void) | undefined;
+// The audio graph is created once and kept for every song, so only set up the analyser once
+let analyserSource: MediaElementAudioSourceNode | undefined;
+let analyser: AnalyserNode | undefined;
+let looperTimeout: number | undefined;
 
 const getMaxVolume = (
   analyser: AnalyserNode,
@@ -32,23 +36,46 @@ const getMaxVolume = (
   return maxVolume;
 };
 
+const stopAnalyser = () => {
+  clearTimeout(looperTimeout);
+  looperTimeout = undefined;
+  try {
+    if (analyser) analyserSource?.disconnect(analyser);
+  } catch {}
+  analyserSource = undefined;
+  analyser = undefined;
+
+  if (playOrSeekHandler) {
+    const video = getMediaElement();
+    video?.removeEventListener('play', playOrSeekHandler);
+    video?.removeEventListener('seeked', playOrSeekHandler);
+    playOrSeekHandler = undefined;
+  }
+};
+
 const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
+  // This event is sent for every song: don't add another analyser, loop and listeners
+  if (analyserSource === e.detail.audioSource) return;
+  stopAnalyser();
+
   const video = getMediaElement();
   const { audioContext } = e.detail;
   const sourceNode = e.detail.audioSource;
 
   // Use an audio analyser similar to Hark
   // https://github.com/otalk/hark/blob/master/hark.bundle.js
-  const analyser = audioContext.createAnalyser();
-  analyser.fftSize = 512;
-  analyser.smoothingTimeConstant = smoothing;
-  const fftBins = new Float32Array(analyser.frequencyBinCount);
+  const songAnalyser = audioContext.createAnalyser();
+  songAnalyser.fftSize = 512;
+  songAnalyser.smoothingTimeConstant = smoothing;
+  const fftBins = new Float32Array(songAnalyser.frequencyBinCount);
 
-  sourceNode.connect(analyser);
+  sourceNode.connect(songAnalyser);
+  analyserSource = sourceNode;
+  analyser = songAnalyser;
 
   const looper = () => {
-    setTimeout(() => {
-      const currentVolume = getMaxVolume(analyser, fftBins);
+    looperTimeout = window.setTimeout(() => {
+      const currentVolume = getMaxVolume(songAnalyser, fftBins);
 
       let history = 0;
       if (currentVolume > threshold && isSilent) {
@@ -128,9 +155,5 @@ export const onRendererLoad = async ({
 export const onRendererUnload = () => {
   document.removeEventListener('peard:audio-can-play', audioCanPlayListener);
 
-  if (playOrSeekHandler) {
-    const video = getMediaElement();
-    video?.removeEventListener('play', playOrSeekHandler);
-    video?.removeEventListener('seeked', playOrSeekHandler);
-  }
+  stopAnalyser();
 };

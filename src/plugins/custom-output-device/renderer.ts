@@ -50,7 +50,11 @@ export const renderer = createRenderer<
 
   async onPlayerApiReady(_: MusicPlayer, context) {
     this.options = await context.getConfig();
-    await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    // Only needed to get the device labels
+    const microphone = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
+    });
     navigator.mediaDevices.ondevicechange = async () =>
       await updateDeviceList(context);
 
@@ -62,7 +66,12 @@ export const renderer = createRenderer<
         passive: true,
       },
     );
-    await updateDeviceList(context);
+    try {
+      await updateDeviceList(context);
+    } finally {
+      // Don't keep the microphone open for the whole session
+      microphone.getTracks().forEach((track) => track.stop());
+    }
   },
 
   stop() {

@@ -51,18 +51,34 @@ type SearchCacheData = Record<ProviderName, ProviderState>;
 interface SearchCache {
   state: 'loading' | 'done';
   data: SearchCacheData;
+  searching?: Promise<unknown>;
 }
+
+// Keep the lyrics of the last songs only, the cache was growing forever
+const MAX_CACHED_SONGS = 50;
 
 // TODO: Maybe use localStorage for the cache.
 const searchCache = new Map<VideoId, SearchCache>();
+const setSearchCache = (videoId: VideoId, cache: SearchCache) => {
+  searchCache.delete(videoId);
+  searchCache.set(videoId, cache);
+
+  // Maps keep the insertion order: the first key is the least recently used
+  while (searchCache.size > MAX_CACHED_SONGS) {
+    const oldestVideoId = searchCache.keys().next().value;
+    if (oldestVideoId === undefined) break;
+    searchCache.delete(oldestVideoId);
+  }
+};
+
 export const fetchLyrics = (info: SongInfo) => {
   if (searchCache.has(info.videoId)) {
     const cache = searchCache.get(info.videoId)!;
+    setSearchCache(info.videoId, cache);
 
     if (cache.state === 'loading') {
-      setTimeout(() => {
-        fetchLyrics(info);
-      });
+      // Wait for the search instead of polling
+      cache.searching?.then(() => fetchLyrics(info));
       return;
     }
 
@@ -81,7 +97,7 @@ export const fetchLyrics = (info: SongInfo) => {
     data: initialData(),
   };
 
-  searchCache.set(info.videoId, cache);
+  setSearchCache(info.videoId, cache);
   if (getSongInfo().videoId === info.videoId) {
     setLyricsStore('lyrics', () => {
       // weird bug with solid-js
@@ -138,9 +154,9 @@ export const fetchLyrics = (info: SongInfo) => {
     );
   }
 
-  Promise.allSettled(tasks).then(() => {
+  cache.searching = Promise.allSettled(tasks).then(() => {
     cache.state = 'done';
-    searchCache.set(info.videoId, cache);
+    cache.searching = undefined;
   });
 };
 

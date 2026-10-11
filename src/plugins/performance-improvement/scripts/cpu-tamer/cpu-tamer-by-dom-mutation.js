@@ -180,7 +180,8 @@ export const injectCpuTamerByDomMutation = ((__CONTEXT__) => {
           sr_.resolve();
         }
       });
-      mo.observe(document, { childList: true, subtree: true, attributes: true });
+      // Only the attribute changes of `dm` are needed (observing the whole document records every DOM change)
+      mo.observe(dm, { attributes: true });
       return () => {
         return sr || (sr = (dm._setAttribute(attributeName, ++j), (new PromiseExternal()))); // mutationcallback in next macrotask
       };

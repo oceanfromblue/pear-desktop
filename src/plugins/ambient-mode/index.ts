@@ -37,6 +37,7 @@ export default createPlugin({
     unregister: null as (() => void) | null,
     update: null as (() => void) | null,
     interval: null as NodeJS.Timeout | null,
+    observer: null as MutationObserver | null,
     lastMediaType: null as 'video' | 'image' | null,
     lastVideoSource: null as string | null,
     lastImageSource: null as string | null,
@@ -56,9 +57,12 @@ export default createPlugin({
       const image = songImage?.querySelector<HTMLImageElement>(
         'yt-img-shadow > img',
       );
-      const video = await waitForElement<HTMLVideoElement>(
-        '.html5-video-container > video',
+      // The player uses an <audio> element in audio only mode (no video to blur)
+      const mediaElement = await waitForElement<HTMLMediaElement>(
+        '.html5-video-container > video, #movie_player audio',
       );
+      const video =
+        mediaElement instanceof HTMLVideoElement ? mediaElement : null;
 
       const videoWrapper = document.querySelector(
         '#song-video > .player-wrapper',
@@ -165,10 +169,14 @@ export default createPlugin({
 
         /* hooking */
         let canvasInterval: NodeJS.Timeout | null = null;
-        canvasInterval = setInterval(
-          onSync,
-          Math.max(1, Math.ceil(1000 / this.buffer)),
-        );
+        // Draw a frame, so a paused video also has the effect
+        onSync();
+        if (!video.paused) {
+          canvasInterval = setInterval(
+            onSync,
+            Math.max(1, Math.ceil(1000 / this.buffer)),
+          );
+        }
 
         const onPause = () => {
           if (canvasInterval) clearInterval(canvasInterval);
@@ -181,8 +189,9 @@ export default createPlugin({
             Math.max(1, Math.ceil(1000 / this.buffer)),
           );
         };
-        songVideo.addEventListener('pause', onPause);
-        songVideo.addEventListener('play', onPlay);
+        // Media events don't bubble: listen on the media element itself
+        video.addEventListener('pause', onPause);
+        video.addEventListener('play', onPlay);
 
         /* injecting */
         videoWrapper.prepend(blurCanvas);
@@ -191,8 +200,8 @@ export default createPlugin({
         return () => {
           if (canvasInterval) clearInterval(canvasInterval);
 
-          songVideo.removeEventListener('pause', onPause);
-          songVideo.removeEventListener('play', onPlay);
+          video.removeEventListener('pause', onPause);
+          video.removeEventListener('play', onPlay);
 
           if (blurCanvas.isConnected) blurCanvas.remove();
         };
@@ -239,7 +248,8 @@ export default createPlugin({
       };
 
       /* needed for switching between different views (e.g. miniplayer) */
-      const observer = new MutationObserver((mutationsList) => {
+      this.observer?.disconnect();
+      this.observer = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
           if (mutation.type === 'attributes') {
             injectBlurElement(true);
@@ -249,7 +259,7 @@ export default createPlugin({
       });
 
       if (playerPage) {
-        observer.observe(playerPage, { attributes: true });
+        this.observer.observe(playerPage, { attributes: true });
 
         /* fallback ticker for when the observer isn't triggered */
         this.interval = setInterval(injectBlurElement, 1000);
@@ -269,7 +279,11 @@ export default createPlugin({
     stop() {
       this.update = null;
       this.unregister?.();
+      this.unregister = null;
+      this.observer?.disconnect();
+      this.observer = null;
       if (this.interval) clearInterval(this.interval);
+      this.interval = null;
     },
   },
 });

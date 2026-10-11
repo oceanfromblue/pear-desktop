@@ -97,6 +97,14 @@ export const forceLoadRendererPlugin = async (id: string) => {
         ...document.adoptedStyleSheets,
         ...styleSheetList,
       ];
+      // Remove them when the plugin is unloaded (they were kept, and added again on every re-enable)
+      unregisterStyleMap[id] = [
+        () => {
+          document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+            (styleSheet) => !styleSheetList.includes(styleSheet),
+          );
+        },
+      ];
     }
 
     console.log(

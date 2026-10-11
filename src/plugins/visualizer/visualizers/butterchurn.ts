@@ -45,7 +45,12 @@ class ButterchurnVisualizer extends Visualizer {
     if (this.animFrameHandle) cancelAnimationFrame(this.animFrameHandle);
     this.destroyed = true;
     try {
+      this.visualizer.disconnectAudio(this.audioNode);
       this.audioSource.disconnect(this.audioNode);
+    } catch {}
+    // Free its WebGL context now instead of whenever it gets garbage collected
+    try {
+      this.visualizer.loseGLContext();
     } catch {}
   }
 }
