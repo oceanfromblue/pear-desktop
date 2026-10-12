@@ -139,23 +139,27 @@ export const forceLoadRendererPlugin = async (id: string) => {
 
 export const loadAllRendererPlugins = async () => {
   // Check the enabled state before importing a plugin,
-  // so disabled plugins (and their dependencies) are never evaluated
-  for (const pluginId of rendererPluginIds) {
-    // One broken plugin must not prevent the others from loading
-    try {
-      if (await window.mainConfig.plugins.isEnabled(pluginId)) {
-        await forceLoadRendererPlugin(pluginId);
-      } else if (loadedPluginMap[pluginId]) {
-        await forceUnloadRendererPlugin(pluginId);
+  // so disabled plugins (and their dependencies) are never evaluated.
+  // The plugins are started concurrently: a plugin whose start waits for the page
+  // (e.g. for an element, up to 30s) must not delay the others (e.g. the in-app menu)
+  await Promise.all(
+    rendererPluginIds.map(async (pluginId) => {
+      // One broken plugin must not prevent the others from loading
+      try {
+        if (await window.mainConfig.plugins.isEnabled(pluginId)) {
+          await forceLoadRendererPlugin(pluginId);
+        } else if (loadedPluginMap[pluginId]) {
+          await forceUnloadRendererPlugin(pluginId);
+        }
+      } catch (error) {
+        console.error(
+          LoggerPrefix,
+          t('common.console.plugins.load-failed', { pluginName: pluginId }),
+          error,
+        );
       }
-    } catch (error) {
-      console.error(
-        LoggerPrefix,
-        t('common.console.plugins.load-failed', { pluginName: pluginId }),
-        error,
-      );
-    }
-  }
+    }),
+  );
 };
 
 export const getLoadedRendererPlugin = (
