@@ -460,6 +460,28 @@ export const menu = async (
       },
     },
     {
+      label: t('plugins.synced-lyrics.menu.korean-pronunciation.label'),
+      toolTip: t('plugins.synced-lyrics.menu.korean-pronunciation.tooltip'),
+      type: 'checkbox',
+      checked: config.koreanPronunciation,
+      click(item) {
+        ctx.setConfig({
+          koreanPronunciation: item.checked,
+        });
+      },
+    },
+    {
+      label: t('plugins.synced-lyrics.menu.korean-translation.label'),
+      toolTip: t('plugins.synced-lyrics.menu.korean-translation.tooltip'),
+      type: 'checkbox',
+      checked: config.koreanTranslation,
+      click(item) {
+        ctx.setConfig({
+          koreanTranslation: item.checked,
+        });
+      },
+    },
+    {
       label: t('plugins.synced-lyrics.menu.convert-chinese-character.label'),
       toolTip: t(
         'plugins.synced-lyrics.menu.convert-chinese-character.tooltip',

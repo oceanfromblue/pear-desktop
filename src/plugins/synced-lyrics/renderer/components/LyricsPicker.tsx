@@ -53,7 +53,10 @@ import {
   refreshCurrentLyrics,
   setLyricsStore,
 } from '../store';
-import { isChineseTranslationTarget } from '../translation-store';
+import {
+  effectiveTranslation,
+  isChineseTranslationTarget,
+} from '../translation-store';
 
 import type { PlayerAPIEvents } from '@/types/player-api-events';
 import type { VideoDataChanged } from '@/types/video-data-changed';
@@ -67,6 +70,7 @@ export const providerIdx = runWithOwner(reactiveOwner, () =>
 
 const pickBestProvider = (starred: ProviderName | null): ProviderName => {
   const cfg = config();
+  const translation = effectiveTranslation(cfg);
   return (
     pickWithStar({
       priority: resolvePriority(cfg?.providerPriority),
@@ -75,8 +79,8 @@ const pickBestProvider = (starred: ProviderName | null): ProviderName => {
       starred,
       usePriorityList: cfg?.usePriorityList ?? false,
       wantsOfficialTranslation: Boolean(
-        cfg?.translation.enabled &&
-        isChineseTranslationTarget(cfg.translation.targetLanguage),
+        translation?.enabled &&
+        isChineseTranslationTarget(translation.targetLanguage),
       ),
     }) ?? providerNames[0]
   );

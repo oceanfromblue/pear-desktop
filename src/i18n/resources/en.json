@@ -1084,6 +1084,14 @@
           "label": "Romanize lyrics",
           "tooltip": "If the lyrics are in a different language, try to display a latin version."
         },
+        "korean-pronunciation": {
+          "label": "Show Korean pronunciation",
+          "tooltip": "Show how Japanese, Chinese and English lyrics sound, written in Hangul (e.g. 君の名前 → 키미노 나마에). The Japanese and English dictionaries are downloaded the first time they are needed."
+        },
+        "korean-translation": {
+          "label": "Show Korean translation",
+          "tooltip": "Translate the lyrics into Korean. Uses the provider chosen under \"Lyrics translation\", or Google Translate (no API key needed) when that provider is not set up."
+        },
         "show-lyrics-even-if-inexact": {
           "label": "Show lyrics even if inexact",
           "tooltip": "If the song is not found, the plugin tries again with a different search query.\nThe result from the second attempt may not be exact."

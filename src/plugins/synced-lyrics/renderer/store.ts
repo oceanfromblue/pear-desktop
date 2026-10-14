@@ -1,14 +1,25 @@
-import { createEffect, createMemo, runWithOwner, untrack } from 'solid-js';
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  runWithOwner,
+  untrack,
+} from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 import { getSongInfo } from '@/providers/song-info-front';
 
 import { getCustomQuery } from './custom-query-store';
 import { translationDebug } from './debug';
+import {
+  detectPronunciationContext,
+  type PronunciationContext,
+} from './korean/context';
 import { reactiveOwner } from './reactive-root';
 import { config } from './renderer';
 import {
   clearCurrentTranslation,
+  effectiveTranslation,
   fetchTranslation,
   isChineseTranslationTarget,
   resolveTargetLanguage,
@@ -104,6 +115,34 @@ const getLyricLineTexts = (data?: LyricResult | null): string[] => {
     return data.lines.map((line) => line.text);
   }
   return data.lyrics ? splitPlainLyrics(data.lyrics) : [];
+};
+
+let pronunciationContextMemo: Accessor<PronunciationContext | null> | undefined;
+
+/**
+ * What the Korean pronunciation of a line needs to know about the whole song,
+ * `null` while it is turned off. Created on first use: the config isn't
+ * available yet while the modules load.
+ */
+export const pronunciationContext = () => {
+  pronunciationContextMemo ??= runWithOwner(reactiveOwner, () => {
+    const memo = createMemo(
+      () => {
+        if (!config()?.koreanPronunciation) return null;
+        return detectPronunciationContext(
+          getLyricLineTexts(currentLyrics()?.data),
+        );
+      },
+      null,
+      {
+        equals: (previous, next) =>
+          previous?.japanese === next?.japanese &&
+          previous?.english === next?.english,
+      },
+    );
+    return memo;
+  })!;
+  return pronunciationContextMemo();
 };
 
 const cloneLyricResult = (data: LyricResult): LyricResult => ({
@@ -458,12 +497,12 @@ export const translateCurrentLyrics = (
     });
   }
 
-  const cfg = config();
-  const resolvedTargetLanguage = cfg?.translation
-    ? resolveTargetLanguage(cfg.translation.targetLanguage)
+  const translation = effectiveTranslation(config());
+  const resolvedTargetLanguage = translation
+    ? resolveTargetLanguage(translation.targetLanguage)
     : null;
   const sameLanguage =
-    resolvedTargetLanguage && cfg?.translation?.enabled
+    resolvedTargetLanguage && translation?.enabled
       ? sourceLanguageMatchesTarget(lineTexts, resolvedTargetLanguage)
       : null;
   if (sameLanguage) {
@@ -479,15 +518,15 @@ export const translateCurrentLyrics = (
   }
 
   if (
-    cfg?.translation?.enabled &&
-    isChineseTranslationTarget(cfg.translation.targetLanguage)
+    translation?.enabled &&
+    isChineseTranslationTarget(translation.targetLanguage)
   ) {
     const officialLines = getOfficialChineseTranslationLines(data, lineTexts);
     if (officialLines) {
       setOfficialTranslation(
         info.videoId,
         resolvedTargetLanguage ??
-          resolveTargetLanguage(cfg.translation.targetLanguage),
+          resolveTargetLanguage(translation.targetLanguage),
         data.translation?.provider || lyricsStore.provider,
         lineTexts,
         officialLines,

@@ -10,6 +10,8 @@ import { TRANSLATION_STRATEGY_VERSION } from '../translation/version';
 
 import type { TranslationRequest } from '../translation/types';
 import type {
+  SyncedLyricsPluginConfig,
+  TranslationConfig,
   TranslationTargetLanguage,
   TranslationProviderName,
   TranslationProviderSettings,
@@ -38,6 +40,48 @@ export const [translationStore, setTranslationStore] =
   });
 
 const cache = new Map<string, VideoTranslation>();
+
+/** Whether the provider can work with what has been filled in for it */
+const isProviderSetUp = (
+  provider: TranslationProviderName,
+  providers: TranslationProviderSettings,
+): boolean => {
+  switch (provider) {
+    case 'openai-compatible': {
+      const { apiKey, baseUrl } = providers['openai-compatible'];
+      // A local server (e.g. Ollama) doesn't need a key
+      return Boolean(apiKey?.trim()) || !/api\.openai\.com/i.test(baseUrl);
+    }
+    case 'anthropic':
+    case 'gemini':
+      return Boolean(providers[provider].apiKey?.trim());
+    case 'local-cli':
+    case 'google-translate':
+      return true;
+  }
+};
+
+/**
+ * The translation settings in effect: "Korean translation" overrides the
+ * target language, and falls back to Google Translate (which needs no key)
+ * when the selected provider hasn't been set up.
+ */
+export const effectiveTranslation = (
+  cfg: SyncedLyricsPluginConfig | null | undefined,
+): TranslationConfig | null => {
+  if (!cfg?.translation) return null;
+  if (!cfg.koreanTranslation) return cfg.translation;
+
+  const { provider, providers } = cfg.translation;
+  return {
+    ...cfg.translation,
+    enabled: true,
+    targetLanguage: 'ko',
+    provider: isProviderSetUp(provider, providers)
+      ? provider
+      : 'google-translate',
+  };
+};
 
 export const resolveTargetLanguage = (
   target: TranslationTargetLanguage,
@@ -194,8 +238,8 @@ export const fetchTranslation = async (
   artists: string[],
   lines: string[],
 ) => {
-  const cfg = config();
-  if (!cfg?.translation?.enabled) {
+  const translation = effectiveTranslation(config());
+  if (!translation?.enabled) {
     translationDebug('translation disabled in config', { videoId });
     clearCurrentTranslation();
     return;
@@ -206,12 +250,12 @@ export const fetchTranslation = async (
     return;
   }
 
-  const providerName = cfg.translation.provider;
+  const providerName = translation.provider;
   const settings = plainProviderSettings(
     providerName,
-    cfg.translation.providers[providerName],
+    translation.providers[providerName],
   );
-  const language = resolveTargetLanguage(cfg.translation.targetLanguage);
+  const language = resolveTargetLanguage(translation.targetLanguage);
   const sameLanguage = sourceLanguageMatchesTarget(lines, language);
   if (sameLanguage) {
     translationDebug('translation skipped: source language matches target', {
@@ -261,7 +305,7 @@ export const fetchTranslation = async (
   const request: TranslationRequest = toPlainJson({
     title,
     artists,
-    targetLanguage: cfg.translation.targetLanguage,
+    targetLanguage: translation.targetLanguage,
     resolvedTargetLanguage: language,
     lines,
   });

@@ -2,14 +2,15 @@ import { romanize as romanizeThaiFrag } from '@dehoist/romanize-thai';
 import Sanscript from '@indic-transliteration/sanscript';
 import { romanize as esHangulRomanize } from 'es-hangul';
 // Only the translation table, the index also loads the (unused) stroke counts
-import { translate as hanjaTranslate } from 'hanja/lib/translate';
+import { translate as hanjaTranslate } from 'hanja/lib/translate.js';
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
-import { lazy } from 'lazy-var';
 import { pinyin } from 'pinyin-pro';
 import { detect } from 'tinyld';
 
 import { hasChinese } from './utils';
+
+import type { JapaneseToken } from './korean/kana';
 
 // Japanese Shinjitai
 const shinjitai = [
@@ -49,15 +50,24 @@ const shinjitai = [
 ].map((codePoint) => String.fromCodePoint(codePoint));
 const shinjitaiRegex = new RegExp(`[${shinjitai.join('')}]`);
 
-const kuroshiro = lazy(async () => {
-  const _kuroshiro = new Kuroshiro();
-  await _kuroshiro.init(
-    new KuromojiAnalyzer({
-      dictPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/',
-    }),
-  );
-  return _kuroshiro;
-});
+let kuroshiroInstance: Promise<Kuroshiro> | undefined;
+
+// The dictionary is downloaded: a failure (e.g. offline) is retried next time
+const getKuroshiro = () => {
+  kuroshiroInstance ??= (async () => {
+    const instance = new Kuroshiro();
+    await instance.init(
+      new KuromojiAnalyzer({
+        dictPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/',
+      }),
+    );
+    return instance;
+  })().catch((error: unknown) => {
+    kuroshiroInstance = undefined;
+    throw error;
+  });
+  return kuroshiroInstance;
+};
 
 const hasJapanese = (lines: string[]) =>
   lines.some(
@@ -67,7 +77,6 @@ const hasJapanese = (lines: string[]) =>
 // tests for Hangul characters, sufficient for our use case
 const hasKorean = (lines: string[]) =>
   lines.some((line) => /[ㄱ-ㅎㅏ-ㅣ가-힣]+/.test(line));
-
 
 // https://en.wikipedia.org/wiki/Thai_(Unicode_block)
 const hasThai = (lines: string[]) =>
@@ -80,10 +89,17 @@ const hasHindi = (lines: string[]) =>
   lines.some((line) => /[\u0900-\u097F]+/.test(line));
 
 export const romanizeJapanese = async (line: string) =>
-  (await kuroshiro.get()).convert(line, {
+  (await getKuroshiro()).convert(line, {
     to: 'romaji',
     mode: 'spaced',
   }) ?? line;
+
+/** Kuromoji tokens, sharing the (big) dictionary loaded for the romanization */
+export const tokenizeJapanese = async (line: string) => {
+  const analyzer = (await getKuroshiro())._analyzer;
+  if (!analyzer) return [];
+  return (await analyzer.parse(line)) as JapaneseToken[];
+};
 
 export const romanizeHangul = (line: string) =>
   esHangulRomanize(hanjaTranslate(line, 'SUBSTITUTION'));

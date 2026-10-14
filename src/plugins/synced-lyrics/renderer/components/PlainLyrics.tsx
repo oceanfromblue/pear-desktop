@@ -1,13 +1,20 @@
-import { createEffect, createMemo, createSignal, Show } from 'solid-js';
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+  untrack,
+} from 'solid-js';
 
 import { config } from '../renderer';
-import { lyricsStore } from '../store';
-import { getLineTranslation } from '../translation-store';
+import { lyricsStore, pronunciationContext } from '../store';
+import { effectiveTranslation, getLineTranslation } from '../translation-store';
 import {
   canonicalize,
   convertChineseCharacter,
   romanize,
   simplifyUnicode,
+  toKoreanPronunciation,
 } from '../utils';
 
 interface PlainLyricsProps {
@@ -39,8 +46,26 @@ export const PlainLyrics = (props: PlainLyricsProps) => {
       });
   });
 
+  const [koreanPronunciation, setKoreanPronunciation] = createSignal('');
+  createEffect(() => {
+    const context = pronunciationContext();
+    if (!context) return;
+
+    const input = canonicalize(text());
+    toKoreanPronunciation(input, context)
+      .then((result) => {
+        // A slower, outdated conversion must not overwrite a newer one
+        if (input === canonicalize(untrack(text))) {
+          setKoreanPronunciation(canonicalize(result));
+        }
+      })
+      .catch(() => {
+        // Best-effort too (e.g. a dictionary that couldn't be downloaded)
+      });
+  });
+
   const translation = createMemo(() => {
-    if (!config()?.translation?.enabled) return '';
+    if (!effectiveTranslation(config())?.enabled) return '';
     const videoId = lyricsStore.videoId;
     if (!videoId) return '';
     return getLineTranslation(videoId, props.index) ?? '';
@@ -71,6 +96,20 @@ export const PlainLyrics = (props: PlainLyricsProps) => {
           class="romaji"
           text={{
             runs: [{ text: romanization() }],
+          }}
+        />
+      </Show>
+      <Show
+        when={
+          config()?.koreanPronunciation &&
+          koreanPronunciation() &&
+          simplifyUnicode(text()) !== simplifyUnicode(koreanPronunciation())
+        }
+      >
+        <yt-formatted-string
+          class="korean-pronunciation"
+          text={{
+            runs: [{ text: koreanPronunciation() }],
           }}
         />
       </Show>

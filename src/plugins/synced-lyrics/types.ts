@@ -106,6 +106,13 @@ export type SyncedLyricsPluginConfig = {
   lineEffect: LineEffect;
   lyricsFontSize?: LyricsFontSize;
   romanization: boolean;
+  /** Show how non-Korean lines sound, written in Hangul */
+  koreanPronunciation: boolean;
+  /**
+   * Translate into Korean whatever `translation` says, with Google Translate
+   * when the selected provider isn't set up.
+   */
+  koreanTranslation: boolean;
   useYTMLyricsWithoutProxy: boolean;
   convertChineseCharacter?:
     | 'simplifiedToTraditional'
