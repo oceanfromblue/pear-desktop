@@ -298,6 +298,9 @@ export default (
   registerCallback((songInfo, event) => {
     if (event === SongInfoEvent.TimeChanged) {
       currentSeconds = songInfo.elapsedSeconds ?? 0;
+      // Sent several times a second: with "unpause notification" on, each
+      // tick showed a new toast (cropping and writing the cover every time)
+      return;
     }
     if (!songInfo.artist && !songInfo.title) {
       return;

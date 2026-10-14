@@ -66,15 +66,32 @@ export class DiscordService {
     this.initializeRpc();
   }
 
-  private initializeRpc() {
-    if (this.rpc) {
-      try {
-        this.rpc.destroy();
-      } catch {
-        // ignored
-      }
-      this.rpc.removeAllListeners();
+  /**
+   * Destroys the client, including the two timers of its REST manager that
+   * `destroy()` leaves running: they would keep every client created for a
+   * reconnection attempt (every 5s while Discord isn't running) alive.
+   */
+  private releaseRpc() {
+    if (!this.rpc) return;
+
+    // First, so that destroying it doesn't trigger a reconnection
+    this.rpc.removeAllListeners();
+    try {
+      this.rpc.destroy();
+    } catch {
+      // ignored
     }
+
+    // `rest` is private in the typings
+    const { rest } = this.rpc as unknown as {
+      rest?: { clearHashSweeper(): void; clearHandlerSweeper(): void };
+    };
+    rest?.clearHashSweeper();
+    rest?.clearHandlerSweeper();
+  }
+
+  private initializeRpc() {
+    this.releaseRpc();
 
     this.rpc = new DiscordClient({ clientId });
 
@@ -272,12 +289,7 @@ export class DiscordService {
     this.autoReconnect = false;
     this.timerManager.clear(TimerKey.DiscordConnectRetry);
     this.timerManager.clear(TimerKey.ClearActivity);
-    try {
-      this.rpc.removeAllListeners();
-      this.rpc.destroy();
-    } catch {
-      // ignored
-    }
+    this.releaseRpc();
     this.resetInfo(); // Reset internal state
   }
 

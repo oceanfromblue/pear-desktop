@@ -1,5 +1,7 @@
 import { app } from 'electron';
 
+import { debounce } from '@/providers/decorators';
+
 import type { PictureInPicturePluginConfig } from './index';
 import type { BackendContext } from '@/types/contexts';
 
@@ -104,17 +106,28 @@ export const onMainLoad = async ({
     togglePiP();
   });
 
+  // Moving or resizing sends many events a second, and each save rewrites
+  // the config file: only save where the window ends up
+  const savePosition = debounce(
+    (position: [number, number]) => setConfig({ 'pip-position': position }),
+    500,
+  );
+  const saveSize = debounce(
+    (size: [number, number]) => setConfig({ 'pip-size': size }),
+    500,
+  );
+
   window.on('move', () => {
     if (config.isInPiP && !config.useNativePiP) {
       const [x, y] = window.getPosition();
-      setConfig({ 'pip-position': [x, y] });
+      savePosition([x, y]);
     }
   });
 
   window.on('resize', () => {
     if (config.isInPiP && !config.useNativePiP) {
       const [width, height] = window.getSize();
-      setConfig({ 'pip-size': [width, height] });
+      saveSize([width, height]);
     }
   });
 };

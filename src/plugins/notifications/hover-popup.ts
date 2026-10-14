@@ -45,9 +45,29 @@ export const setupHoverPopup = (win: BrowserWindow): (() => void) => {
   // Measured rectangle of the tray overflow flyout, in physical pixels, as
   // long as the flyout window has been seen at least once.
   let flyoutRect: FlyoutRect | null = null;
-  const stopFlyoutWatch = watchTrayFlyout((rect) => {
-    flyoutRect = rect;
-  });
+  // The flyout is measured by a PowerShell process polling every 150ms: only
+  // run it around the times the popup is used, not for the whole session.
+  // The flyout doesn't move, so its last measured rectangle stays valid.
+  let stopFlyoutWatch: (() => void) | null = null;
+  let flyoutWatchIdleTimer: ReturnType<typeof setTimeout> | null = null;
+  const FLYOUT_WATCH_IDLE_MS = 10 * 60 * 1000;
+
+  const watchFlyout = () => {
+    if (flyoutWatchIdleTimer) clearTimeout(flyoutWatchIdleTimer);
+    flyoutWatchIdleTimer = setTimeout(() => {
+      flyoutWatchIdleTimer = null;
+      stopFlyoutWatch?.();
+      stopFlyoutWatch = null;
+    }, FLYOUT_WATCH_IDLE_MS);
+
+    stopFlyoutWatch ??= watchTrayFlyout((rect) => {
+      const moved =
+        rect.left !== flyoutRect?.left || rect.top !== flyoutRect?.top;
+      flyoutRect = rect;
+      // The first measurement can come after the popup is already shown
+      if (moved && _isVisible) positionPopup();
+    });
+  };
 
   const showMainWindow = () => {
     if (win.isDestroyed()) return;
@@ -223,6 +243,7 @@ export const setupHoverPopup = (win: BrowserWindow): (() => void) => {
 
   const doShow = () => {
     if (disposed) return;
+    watchFlyout();
     if (!popup) createPopup();
     if (!popup || !currentSongInfo) return;
 
@@ -310,7 +331,9 @@ export const setupHoverPopup = (win: BrowserWindow): (() => void) => {
     disposed = true;
     app.removeListener('before-quit', dispose);
     stopMouseTracking();
-    stopFlyoutWatch();
+    if (flyoutWatchIdleTimer) clearTimeout(flyoutWatchIdleTimer);
+    stopFlyoutWatch?.();
+    stopFlyoutWatch = null;
     popup?.close();
   };
 

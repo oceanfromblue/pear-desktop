@@ -85,6 +85,16 @@ export const setTrayOnMouseMove = (fn: MouseMoveEvent) => {
 
 export const getTrayBounds = () => tray?.getBounds();
 
+let trayLikeChangedListener:
+  | ((event: Electron.IpcMainEvent, status: LikeType) => void)
+  | null = null;
+
+const removeLikeChangedListener = () => {
+  if (!trayLikeChangedListener) return;
+  ipcMain.removeListener('peard:like-changed', trayLikeChangedListener);
+  trayLikeChangedListener = null;
+};
+
 export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
   if (!config.get('options.tray')) {
     tray?.destroy();
@@ -93,7 +103,7 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
       unregisterCallback(traySongInfoCallback);
       traySongInfoCallback = null;
     }
-    ipcMain.removeAllListeners('peard:like-changed');
+    removeLikeChangedListener();
     return;
   }
 
@@ -102,8 +112,9 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
     unregisterCallback(traySongInfoCallback);
   }
 
-  // Remove old like-changed listener before re-registering
-  ipcMain.removeAllListeners('peard:like-changed');
+  // Remove old like-changed listener before re-registering (only the tray's:
+  // taskbar-mediacontrol listens to it too)
+  removeLikeChangedListener();
 
   const { playPause, next, previous, like, dislike } = getSongControls(win);
 
@@ -217,12 +228,13 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
 
   // Listen for like status changes from the renderer
   win.webContents.send('peard:setup-like-changed-listener');
-  ipcMain.on('peard:like-changed', (_, status: LikeType) => {
+  trayLikeChangedListener = (_, status: LikeType) => {
     currentLikeStatus = status;
     if (tray) {
       tray.setContextMenu(buildTrayMenu());
     }
-  });
+  };
+  ipcMain.on('peard:like-changed', trayLikeChangedListener);
 
   traySongInfoCallback = (songInfo, event) => {
     if (event === SongInfoEvent.TimeChanged) return;

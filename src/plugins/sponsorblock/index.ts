@@ -1,3 +1,4 @@
+import { ipcMain, type IpcMainEvent } from 'electron';
 import is from 'electron-is';
 
 import { t } from '@/i18n';
@@ -23,6 +24,9 @@ export type SponsorBlockPluginConfig = {
 };
 
 let currentSegments: Segment[] = [];
+let videoSrcChangedListener:
+  | ((event: IpcMainEvent, data: GetPlayerResponse) => void)
+  | null = null;
 
 export default createPlugin({
   name: () => t('plugins.sponsorblock.name'),
@@ -129,10 +133,22 @@ export default createPlugin({
         ipc.send('sponsorblock-skip', segments);
       };
 
-      ipc.on('peard:video-src-changed', handleVideoSrcChanged);
+      // On ipcMain directly, so that stop() can remove this listener alone
+      videoSrcChangedListener = (_, data) => {
+        handleVideoSrcChanged(data).catch(() => {});
+      };
+      ipcMain.on('peard:video-src-changed', videoSrcChangedListener);
     },
-    stop({ ipc }) {
-      ipc.removeAllListeners('peard:video-src-changed');
+    stop() {
+      // Not removeAllListeners: the song info (used by every plugin) and the
+      // downloader listen to this event as well
+      if (videoSrcChangedListener) {
+        ipcMain.removeListener(
+          'peard:video-src-changed',
+          videoSrcChangedListener,
+        );
+        videoSrcChangedListener = null;
+      }
     },
   },
   renderer: {
