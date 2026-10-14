@@ -331,12 +331,12 @@ export default createPlugin({
         return;
       }
 
-      let canvas = document.querySelector<HTMLCanvasElement>('#visualizer');
-      if (!canvas) {
-        canvas = document.createElement('canvas');
-        canvas.id = 'visualizer';
-        visualizerContainer?.prepend(canvas);
-      }
+      // A new canvas for each visualizer: they keep listeners (holding
+      // themselves) on it, a reused canvas keeps every replaced one alive
+      document.querySelector('#visualizer')?.remove();
+      const canvas = document.createElement('canvas');
+      canvas.id = 'visualizer';
+      visualizerContainer.prepend(canvas);
 
       // Disconnect previous gainNode if present
       if (this.props.gainNode) {

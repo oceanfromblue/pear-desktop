@@ -1,3 +1,7 @@
+import {
+  isPageHidden,
+  onPageVisibilityChange,
+} from '@/providers/page-visibility';
 import { LoggerPrefix } from '@/utils';
 
 import type { MusicPlayer } from '@/types/music-player';
@@ -202,7 +206,7 @@ export const setupVideoQualityManager = (api: MusicPlayer) => {
   let windowHiddenTimeout: number | undefined;
   const onVisibilityChange = () => {
     clearTimeout(windowHiddenTimeout);
-    if (document.visibilityState === 'hidden') {
+    if (isPageHidden()) {
       windowHiddenTimeout = window.setTimeout(
         () => setVideoHidden('window-hidden', true),
         WINDOW_HIDDEN_DELAY_MS,
@@ -211,7 +215,7 @@ export const setupVideoQualityManager = (api: MusicPlayer) => {
       setVideoHidden('window-hidden', false);
     }
   };
-  document.addEventListener('visibilitychange', onVisibilityChange);
+  onPageVisibilityChange(onVisibilityChange);
   // The app can start hidden (e.g. in the tray)
   onVisibilityChange();
 

@@ -40,6 +40,29 @@ export const [translationStore, setTranslationStore] =
   });
 
 const cache = new Map<string, VideoTranslation>();
+// One entry per song (and translation settings): only the last ones are kept
+const MAX_CACHED_TRANSLATIONS = 50;
+
+const remember = (key: string, translation: VideoTranslation) => {
+  // Most recently used last, so that the oldest one goes first
+  cache.delete(key);
+  cache.set(key, translation);
+  if (cache.size > MAX_CACHED_TRANSLATIONS) {
+    cache.delete(cache.keys().next().value!);
+  }
+};
+
+/** A short fingerprint of the lyrics, instead of keeping all of them in the key */
+const fingerprint = (lines: string[]) => {
+  const text = JSON.stringify(lines);
+  // FNV-1a
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < text.length; index++) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `${(hash >>> 0).toString(36)}.${text.length.toString(36)}`;
+};
 
 /** Whether the provider can work with what has been filled in for it */
 const isProviderSetUp = (
@@ -213,11 +236,11 @@ export const setOfficialTranslation = (
     'official-lyrics',
     provider,
     sourceLines.length,
-    JSON.stringify(sourceLines),
+    fingerprint(sourceLines),
   );
   const done: VideoTranslation = { state: 'done', lines: translatedLines };
 
-  cache.set(key, done);
+  remember(key, done);
   if (translationStore.videoId === videoId && translationStore.key === key) {
     return;
   }
@@ -269,7 +292,7 @@ export const fetchTranslation = async (
   }
 
   const model = getTranslationModelId(providerName, settings);
-  const sourceSignature = JSON.stringify(lines);
+  const sourceSignature = fingerprint(lines);
   const key = cacheKeyFor(
     videoId,
     language,
@@ -299,7 +322,7 @@ export const fetchTranslation = async (
   }
 
   const pending: VideoTranslation = { state: 'fetching', lines: [] };
-  cache.set(key, pending);
+  remember(key, pending);
   setTranslationStore({ current: pending, videoId, key });
 
   const request: TranslationRequest = toPlainJson({
@@ -353,7 +376,7 @@ export const fetchTranslation = async (
       lines: result.lines.length,
     });
     const done: VideoTranslation = { state: 'done', lines: result.lines };
-    cache.set(key, done);
+    remember(key, done);
     if (translationStore.videoId === videoId && translationStore.key === key) {
       setTranslationStore({ current: done, videoId, key });
     }

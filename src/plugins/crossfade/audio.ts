@@ -83,8 +83,17 @@ export const createAudio = (
 export const releaseAudio = (audio: Howl) => {
   // Howler only stops an element it started itself, and this one was started
   // by the sync, so it is stopped here as well.
-  elementOf(audio).pause();
-  audioGains.get(audio)?.disconnect();
+  const element = elementOf(audio);
+  element.pause();
+  const gain = audioGains.get(audio);
+  if (gain) {
+    gain.disconnect();
+    // Howler recycles the element (and so its source node): left connected,
+    // every released track would keep a dead gain node in the audio graph
+    try {
+      mediaSources.get(element)?.disconnect(gain);
+    } catch {}
+  }
   audioGains.delete(audio);
   audio.unload();
 

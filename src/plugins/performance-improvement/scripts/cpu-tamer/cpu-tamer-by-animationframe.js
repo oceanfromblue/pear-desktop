@@ -158,8 +158,15 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
       }
       asc.id = 'a-f';
       let qr = null;
+      // The animation only runs while a frame is awaited: an infinite animation
+      // makes the page render a frame at every screen refresh, even when idle
+      const setAnimationRunning = (running) =>
+        asc.style.setProperty('animation-play-state', running ? 'running' : 'paused', 'important');
+      setAnimationRunning(false);
       asc.onanimationiteration = function () {
         if (qr !== null) qr = (qr(), null);
+        // (whatever qr() resumes runs afterwards, and can ask for another frame)
+        if (qr === null) setAnimationRunning(false);
       }
       if (!document.getElementById('afscript')) {
         const style = document.createElement('style');
@@ -194,7 +201,10 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
         (document.head || document.documentElement).appendChild(style);
       }
       document.documentElement.insertBefore(asc, document.documentElement.firstChild);
-      return (resolve) => (qr = afInterupter = resolve);
+      return (resolve) => {
+        qr = afInterupter = resolve;
+        setAnimationRunning(true);
+      };
     };
 
     /** @type {(resolve: () => void)}  */

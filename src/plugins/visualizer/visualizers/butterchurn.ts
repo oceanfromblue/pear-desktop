@@ -22,7 +22,8 @@ class ButterchurnVisualizer extends Visualizer {
     const preset = ButterchurnPresets[config.butterchurn.preset];
     const renderVisualizer = () => {
       if (this.destroyed) return;
-      this.visualizer.render();
+      // A WebGL frame per screen refresh: not while paused or off screen
+      if (this.shouldDraw) this.visualizer.render();
       this.animFrameHandle = requestAnimationFrame(renderVisualizer);
     };
 
@@ -32,6 +33,7 @@ class ButterchurnVisualizer extends Visualizer {
     });
     this.visualizer.loadPreset(preset, config.butterchurn.blendTimeInSeconds);
     this.visualizer.connectAudio(audioNode);
+    this.watchCanvas(canvas);
 
     // Start animation request loop. Do not use setInterval!
     this.animFrameHandle = requestAnimationFrame(renderVisualizer);
@@ -44,6 +46,7 @@ class ButterchurnVisualizer extends Visualizer {
   destroy() {
     if (this.animFrameHandle) cancelAnimationFrame(this.animFrameHandle);
     this.destroyed = true;
+    this.unwatchCanvas();
     try {
       this.visualizer.disconnectAudio(this.audioNode);
       this.audioSource.disconnect(this.audioNode);

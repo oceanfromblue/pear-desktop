@@ -67,12 +67,19 @@ const scheduleMemoryTrim = (delay: number) => {
     scheduleMemoryTrim(TRIM_MEMORY_INTERVAL_MS);
   }, delay);
 };
-document.addEventListener('visibilitychange', () => {
-  clearTimeout(trimMemoryTimeout);
-  if (document.visibilityState === 'hidden') {
-    scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
-  }
-});
+// On `window` in the capture phase: the page stops the event there (renderer.ts),
+// this listener being registered before it runs first. The page's override of
+// `document.visibilityState` doesn't reach this (isolated) world.
+window.addEventListener(
+  'visibilitychange',
+  () => {
+    clearTimeout(trimMemoryTimeout);
+    if (document.visibilityState === 'hidden') {
+      scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
+    }
+  },
+  true,
+);
 // A page loaded while the window is hidden doesn't get the event
 if (document.visibilityState === 'hidden') {
   scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
@@ -88,10 +95,18 @@ ipcRenderer.on('plugin:enable', async (_, id: string) => {
 contextBridge.exposeInMainWorld('mainConfig', config);
 contextBridge.exposeInMainWorld('electronIs', is);
 contextBridge.exposeInMainWorld('ipcRenderer', {
+  // Returns the function removing the listener: `off` and `removeListener`
+  // can't find it, a function crossing the context bridge arrives here as a
+  // new one every time
   on: (
     channel: string,
     listener: (event: IpcRendererEvent, ...args: unknown[]) => void,
-  ) => ipcRenderer.on(channel, listener),
+  ) => {
+    ipcRenderer.on(channel, listener);
+    return () => {
+      ipcRenderer.removeListener(channel, listener);
+    };
+  },
   off: (channel: string, listener: (...args: unknown[]) => void) =>
     ipcRenderer.off(channel, listener),
   once: (

@@ -27,6 +27,7 @@ import {
 } from './providers/audio-only';
 import { startingPages } from './providers/extracted-data';
 import { getMediaElement } from './providers/media-element';
+import { PAGE_VISIBILITY_EVENT } from './providers/page-visibility';
 import { createShareUrlRewriter } from './providers/share-url';
 import { setupSongInfo } from './providers/song-info-front';
 import { setupVideoQualityManager } from './providers/video-quality';
@@ -635,7 +636,11 @@ const main = async () => {
   });
   addEventListener(
     'visibilitychange',
-    (e) => e.stopImmediatePropagation(),
+    (e) => {
+      e.stopImmediatePropagation();
+      // The app's own features still need to know (see page-visibility.ts)
+      document.dispatchEvent(new Event(PAGE_VISIBILITY_EVENT));
+    },
     true,
   );
 

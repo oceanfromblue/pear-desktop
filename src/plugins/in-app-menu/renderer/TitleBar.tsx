@@ -303,14 +303,19 @@ export const TitleBar = (props: TitleBarProps) => {
     // tracking mouse position
     window.addEventListener('mousemove', listener);
     const ytmusicAppLayout = document.querySelector<HTMLElement>('#layout');
-    ytmusicAppLayout?.addEventListener('scroll', () => {
-      const scrollValue = ytmusicAppLayout.scrollTop;
-      if (scrollValue > 20) {
-        ytmusicAppLayout.classList.add('content-scrolled');
-      } else {
-        ytmusicAppLayout.classList.remove('content-scrolled');
-      }
-    });
+    let isScrolled = ytmusicAppLayout?.classList.contains('content-scrolled');
+    ytmusicAppLayout?.addEventListener(
+      'scroll',
+      () => {
+        const scrolled = ytmusicAppLayout.scrollTop > 20;
+        // Only when it changes: even a class that is already there notifies
+        // the page's mutation observers, on every scrolled frame
+        if (scrolled === isScrolled) return;
+        isScrolled = scrolled;
+        ytmusicAppLayout.classList.toggle('content-scrolled', scrolled);
+      },
+      { passive: true },
+    );
   });
 
   createEffect(() => {

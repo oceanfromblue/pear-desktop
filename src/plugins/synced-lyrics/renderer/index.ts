@@ -1,3 +1,4 @@
+import { isPageHidden } from '@/providers/page-visibility';
 import { getSongInfo } from '@/providers/song-info-front';
 import { createRenderer } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
@@ -82,7 +83,7 @@ export const renderer = createRenderer<
     if (!this.updateTimestampInterval) {
       this.updateTimestampInterval = setInterval(() => {
         // Nothing shows the lyrics: don't re-render them every 100ms
-        if (document.hidden || !isVisible()) return;
+        if (isPageHidden() || !isVisible()) return;
 
         setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000);
       }, 100);

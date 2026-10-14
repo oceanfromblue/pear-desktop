@@ -14,9 +14,10 @@ const loadedPluginMap: Record<
 
 /** The renderer-side IPC bridge, shared with the standalone settings window. */
 export const createRendererIpc = (): RendererContext<PluginConfig>['ipc'] => {
-  // The preload listener receives Electron's event argument; `off` has to be
-  // given the very function `on` registered, so keep them here.
-  const listeners = new Map<CallableFunction, (...args: unknown[]) => void>();
+  // `off` can't be given the listener: a function crossing the context bridge
+  // arrives in the preload as a new one every time. `on` returns the function
+  // removing it instead, kept here for each channel and listener.
+  const unsubscribers = new Map<string, Map<CallableFunction, () => void>>();
 
   return {
     send: (event: string, ...args: unknown[]) => {
@@ -25,20 +26,32 @@ export const createRendererIpc = (): RendererContext<PluginConfig>['ipc'] => {
     invoke: (event: string, ...args: unknown[]) =>
       window.ipcRenderer.invoke(event, ...args),
     on: (event: string, listener: CallableFunction) => {
-      const wrapped = (_: unknown, ...args: unknown[]) => {
-        // oxlint-disable-next-line typescript/no-unsafe-call
-        listener(...args);
-      };
-      listeners.set(listener, wrapped);
-      window.ipcRenderer.on(event, wrapped);
+      // The preload listener receives Electron's event argument
+      const unsubscribe = window.ipcRenderer.on(
+        event,
+        (_: unknown, ...args: unknown[]) => {
+          // oxlint-disable-next-line typescript/no-unsafe-call
+          listener(...args);
+        },
+      );
+      let channel = unsubscribers.get(event);
+      if (!channel) {
+        channel = new Map();
+        unsubscribers.set(event, channel);
+      }
+      // The same listener added again replaces the previous one
+      channel.get(listener)?.();
+      channel.set(listener, unsubscribe);
     },
     off: (event: string, listener: CallableFunction) => {
-      const wrapped = listeners.get(listener);
-      if (!wrapped) return;
-      listeners.delete(listener);
-      window.ipcRenderer.off(event, wrapped);
+      const channel = unsubscribers.get(event);
+      const unsubscribe = channel?.get(listener);
+      if (!unsubscribe) return;
+      channel!.delete(listener);
+      unsubscribe();
     },
     removeAllListeners: (event: string) => {
+      unsubscribers.delete(event);
       window.ipcRenderer.removeAllListeners(event);
     },
   };

@@ -10,6 +10,13 @@ const COLOR_KEY = '--ytmusic-album-color';
 const DARK_COLOR_KEY = '--ytmusic-album-color-dark';
 const RATIO_KEY = '--ytmusic-album-color-ratio';
 
+/** The CSS variables set on the page, removed when the plugin is disabled */
+const appliedVariables = new Set<string>([
+  COLOR_KEY,
+  DARK_COLOR_KEY,
+  RATIO_KEY,
+]);
+
 type Config = {
   enabled: boolean;
   ratio: number;
@@ -96,6 +103,10 @@ export default createPlugin({
     ytmusicAppLayout: null as HTMLElement | null,
     color: null as ColorInstance | null,
     darkColor: null as ColorInstance | null,
+    fastAverageColor: null as FastAverageColor | null,
+    videoDataChangeListener: null as
+      | ((event: CustomEvent<{ name: string }>) => Promise<void>)
+      | null,
 
     start() {
       this.playerPage = document.querySelector<HTMLElement>('#player-page');
@@ -117,9 +128,18 @@ export default createPlugin({
       const config = await getConfig();
       (this as Renderer).onConfigChange(config);
 
+      // Called again when enabled at runtime: don't add a second listener
+      if (this.videoDataChangeListener) {
+        document.removeEventListener(
+          'videodatachange',
+          this.videoDataChangeListener,
+        );
+      }
+      this.fastAverageColor?.destroy();
       const fastAverageColor = new FastAverageColor();
+      this.fastAverageColor = fastAverageColor;
 
-      document.addEventListener('videodatachange', async (event) => {
+      this.videoDataChangeListener = async (event) => {
         if (event.detail.name !== 'dataloaded') return;
 
         const playerResponse = playerApi.getPlayerResponse();
@@ -168,7 +188,27 @@ export default createPlugin({
           }
         }
         (this as Renderer).updateColor(alpha ?? 1);
-      });
+      };
+      document.addEventListener(
+        'videodatachange',
+        this.videoDataChangeListener,
+      );
+    },
+    stop() {
+      if (this.videoDataChangeListener) {
+        document.removeEventListener(
+          'videodatachange',
+          this.videoDataChangeListener,
+        );
+        this.videoDataChangeListener = null;
+      }
+      this.fastAverageColor?.destroy();
+      this.fastAverageColor = null;
+
+      for (const variable of appliedVariables) {
+        document.documentElement.style.removeProperty(variable);
+      }
+      document.body.classList.remove('seekbar-theme');
     },
     onConfigChange(config) {
       document.documentElement.style.setProperty(
@@ -261,6 +301,7 @@ export default createPlugin({
           getMixedColor(color, key, alpha, ratio),
           'important',
         );
+        appliedVariables.add(variable);
       });
     },
   },
