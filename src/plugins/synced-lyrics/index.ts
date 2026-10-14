@@ -98,6 +98,8 @@ export default createPlugin<
     lineEffect: 'fancy',
     lyricsFontSize: 'small',
     romanization: true,
+    koreanPronunciation: false,
+    koreanTranslation: false,
     translation: {
       enabled: false,
       provider: 'openai-compatible',
@@ -185,6 +187,21 @@ export default createPlugin<
           label: () => t('plugins.synced-lyrics.settings.romanization'),
           description: () =>
             t('plugins.synced-lyrics.menu.romanization.tooltip'),
+        },
+        {
+          type: 'switch',
+          key: 'koreanPronunciation',
+          label: () =>
+            t('plugins.synced-lyrics.menu.korean-pronunciation.label'),
+          description: () =>
+            t('plugins.synced-lyrics.menu.korean-pronunciation.tooltip'),
+        },
+        {
+          type: 'switch',
+          key: 'koreanTranslation',
+          label: () => t('plugins.synced-lyrics.menu.korean-translation.label'),
+          description: () =>
+            t('plugins.synced-lyrics.menu.korean-translation.tooltip'),
         },
         {
           type: 'select',

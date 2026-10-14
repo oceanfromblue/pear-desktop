@@ -57,7 +57,11 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
     // https://gist.github.com/cvan/042b2448fcecefafbb6a91469484cdf8
     try {
       const canvas = document.createElement('canvas');
-      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      const context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      // Free the probe context now instead of keeping it until garbage collection
+      const loseContext = context && context.getExtension('WEBGL_lose_context');
+      if (loseContext) loseContext.loseContext();
+      return !!context;
     } catch (e) {
       return false;
     }
@@ -154,8 +158,15 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
       }
       asc.id = 'a-f';
       let qr = null;
+      // The animation only runs while a frame is awaited: an infinite animation
+      // makes the page render a frame at every screen refresh, even when idle
+      const setAnimationRunning = (running) =>
+        asc.style.setProperty('animation-play-state', running ? 'running' : 'paused', 'important');
+      setAnimationRunning(false);
       asc.onanimationiteration = function () {
         if (qr !== null) qr = (qr(), null);
+        // (whatever qr() resumes runs afterwards, and can ask for another frame)
+        if (qr === null) setAnimationRunning(false);
       }
       if (!document.getElementById('afscript')) {
         const style = document.createElement('style');
@@ -190,7 +201,10 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
         (document.head || document.documentElement).appendChild(style);
       }
       document.documentElement.insertBefore(asc, document.documentElement.firstChild);
-      return (resolve) => (qr = afInterupter = resolve);
+      return (resolve) => {
+        qr = afInterupter = resolve;
+        setAnimationRunning(true);
+      };
     };
 
     /** @type {(resolve: () => void)}  */

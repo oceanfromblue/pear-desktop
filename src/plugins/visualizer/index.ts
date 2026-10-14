@@ -325,25 +325,18 @@ export default createPlugin({
       if (!this.props.audioContext || !this.props.audioSource) return;
       if (!config.enabled) return;
 
-      const video = document.querySelector<
-        HTMLVideoElement & { captureStream(): MediaStream }
-      >('video');
-      if (!video) {
-        return;
-      }
-
       const visualizerContainer =
         document.querySelector<HTMLElement>('#player');
       if (!visualizerContainer) {
         return;
       }
 
-      let canvas = document.querySelector<HTMLCanvasElement>('#visualizer');
-      if (!canvas) {
-        canvas = document.createElement('canvas');
-        canvas.id = 'visualizer';
-        visualizerContainer?.prepend(canvas);
-      }
+      // A new canvas for each visualizer: they keep listeners (holding
+      // themselves) on it, a reused canvas keeps every replaced one alive
+      document.querySelector('#visualizer')?.remove();
+      const canvas = document.createElement('canvas');
+      canvas.id = 'visualizer';
+      visualizerContainer.prepend(canvas);
 
       // Disconnect previous gainNode if present
       if (this.props.gainNode) {
@@ -368,7 +361,6 @@ export default createPlugin({
         this.props.audioSource,
         canvas,
         gainNode,
-        video.captureStream(),
         config,
       );
 
@@ -410,6 +402,15 @@ export default createPlugin({
             audioSource: MediaElementAudioSourceNode;
           }>
         ).detail;
+        // This event is sent for every song, but the audio graph stays the same:
+        // don't rebuild the visualizer (and its WebGL context) every time
+        if (
+          this.props.visualizerInstance &&
+          this.props.audioSource === detail.audioSource
+        ) {
+          return;
+        }
+
         this.props.audioContext = detail.audioContext;
         this.props.audioSource = detail.audioSource;
         this.createVisualizer(await getConfig());

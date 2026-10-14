@@ -35,17 +35,30 @@ const getPropertyName = (prop: Node): string | null => {
   return null;
 };
 
+const STUB_ID_RE = /\/plugins\/(?:[^/]+\/index|[^/]+)\.stub\.(?:js|ts|jsx|tsx)$/;
+
 export default function (
-  mode: 'backend' | 'preload' | 'renderer' | 'none',
+  baseMode: 'backend' | 'preload' | 'renderer' | 'none',
 ): PluginOption {
   return {
     name: 'ytm-plugin-loader',
+    enforce: 'pre',
+    resolveId: {
+      filter: { id: STUB_ID_RE },
+      handler(id) {
+        return id;
+      },
+    },
     load: {
       filter: {
-        id: /(?:\/plugins\/[^/]+\/index\.(?:js|ts|jsx|tsx)|\/plugins\/[^/]+\.(?:js|ts|jsx|tsx))$/,
+        id: /(?:\/plugins\/[^/]+\/index(?:\.stub)?\.(?:js|ts|jsx|tsx)|\/plugins\/[^/]+(?:\.stub)?\.(?:js|ts|jsx|tsx))$/,
       },
       handler(id) {
-        const fileContent = readFileSync(id, 'utf8');
+        const isStub = STUB_ID_RE.test(id);
+        const realId = isStub ? id.replace(/\.stub(\.(?:js|ts|jsx|tsx))$/, '$1') : id;
+        if (isStub) this.addWatchFile(realId);
+        const mode = isStub ? 'none' : baseMode;
+        const fileContent = readFileSync(realId, 'utf8');
         // Create or update source file in the global project instance
         const src = globalProject.createSourceFile(
           '_pf' + basename(id),

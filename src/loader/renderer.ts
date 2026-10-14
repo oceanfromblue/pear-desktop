@@ -1,5 +1,4 @@
-import { deepmerge } from 'deepmerge-ts';
-import { rendererPlugins } from 'virtual:plugins';
+import { rendererPlugin, rendererPluginIds } from 'virtual:plugins';
 
 import { t } from '@/i18n';
 import { LoggerPrefix, startPlugin, stopPlugin } from '@/utils';
@@ -15,9 +14,10 @@ const loadedPluginMap: Record<
 
 /** The renderer-side IPC bridge, shared with the standalone settings window. */
 export const createRendererIpc = (): RendererContext<PluginConfig>['ipc'] => {
-  // The preload listener receives Electron's event argument; `off` has to be
-  // given the very function `on` registered, so keep them here.
-  const listeners = new Map<CallableFunction, (...args: unknown[]) => void>();
+  // `off` can't be given the listener: a function crossing the context bridge
+  // arrives in the preload as a new one every time. `on` returns the function
+  // removing it instead, kept here for each channel and listener.
+  const unsubscribers = new Map<string, Map<CallableFunction, () => void>>();
 
   return {
     send: (event: string, ...args: unknown[]) => {
@@ -26,20 +26,32 @@ export const createRendererIpc = (): RendererContext<PluginConfig>['ipc'] => {
     invoke: (event: string, ...args: unknown[]) =>
       window.ipcRenderer.invoke(event, ...args),
     on: (event: string, listener: CallableFunction) => {
-      const wrapped = (_: unknown, ...args: unknown[]) => {
-        // oxlint-disable-next-line typescript/no-unsafe-call
-        listener(...args);
-      };
-      listeners.set(listener, wrapped);
-      window.ipcRenderer.on(event, wrapped);
+      // The preload listener receives Electron's event argument
+      const unsubscribe = window.ipcRenderer.on(
+        event,
+        (_: unknown, ...args: unknown[]) => {
+          // oxlint-disable-next-line typescript/no-unsafe-call
+          listener(...args);
+        },
+      );
+      let channel = unsubscribers.get(event);
+      if (!channel) {
+        channel = new Map();
+        unsubscribers.set(event, channel);
+      }
+      // The same listener added again replaces the previous one
+      channel.get(listener)?.();
+      channel.set(listener, unsubscribe);
     },
     off: (event: string, listener: CallableFunction) => {
-      const wrapped = listeners.get(listener);
-      if (!wrapped) return;
-      listeners.delete(listener);
-      window.ipcRenderer.off(event, wrapped);
+      const channel = unsubscribers.get(event);
+      const unsubscribe = channel?.get(listener);
+      if (!unsubscribe) return;
+      channel!.delete(listener);
+      unsubscribe();
     },
     removeAllListeners: (event: string) => {
+      unsubscribers.delete(event);
       window.ipcRenderer.removeAllListeners(event);
     },
   };
@@ -64,7 +76,7 @@ export const forceUnloadRendererPlugin = async (id: string) => {
     delete adoptedStyleSheetMap[id];
   }
 
-  const plugin = (await rendererPlugins())[id];
+  const plugin = await rendererPlugin(id);
   if (!plugin) return;
 
   const hasStopped = await stopPlugin(id, plugin, {
@@ -89,7 +101,7 @@ export const forceUnloadRendererPlugin = async (id: string) => {
 };
 
 export const forceLoadRendererPlugin = async (id: string) => {
-  const plugin = (await rendererPlugins())[id];
+  const plugin = await rendererPlugin(id);
   if (!plugin) return;
 
   const hasEvaled = await startPlugin(id, plugin, {
@@ -114,7 +126,11 @@ export const forceLoadRendererPlugin = async (id: string) => {
         return styleSheet;
       });
 
-      adoptedStyleSheetMap[id] = styleSheetList;
+      // Removed when the plugin is unloaded, except for plugins that need a restart:
+      // their code keeps running until then (e.g. in-app-menu)
+      if (!plugin.restartNeeded) {
+        adoptedStyleSheetMap[id] = styleSheetList;
+      }
 
       document.adoptedStyleSheets = [
         ...document.adoptedStyleSheets,
@@ -135,22 +151,28 @@ export const forceLoadRendererPlugin = async (id: string) => {
 };
 
 export const loadAllRendererPlugins = async () => {
-  const pluginConfigs = window.mainConfig.plugins.getPlugins();
-
-  for (const [pluginId, pluginDef] of Object.entries(await rendererPlugins())) {
-    const config = deepmerge(
-      pluginDef.config ?? { enabled: false },
-      pluginConfigs[pluginId] ?? {},
-    );
-
-    if (pluginDef.essential || config.enabled) {
-      await forceLoadRendererPlugin(pluginId);
-    } else {
-      if (loadedPluginMap[pluginId]) {
-        await forceUnloadRendererPlugin(pluginId);
+  // Check the enabled state before importing a plugin,
+  // so disabled plugins (and their dependencies) are never evaluated.
+  // The plugins are started concurrently: a plugin whose start waits for the page
+  // (e.g. for an element, up to 30s) must not delay the others (e.g. the in-app menu)
+  await Promise.all(
+    rendererPluginIds.map(async (pluginId) => {
+      // One broken plugin must not prevent the others from loading
+      try {
+        if (await window.mainConfig.plugins.isEnabled(pluginId)) {
+          await forceLoadRendererPlugin(pluginId);
+        } else if (loadedPluginMap[pluginId]) {
+          await forceUnloadRendererPlugin(pluginId);
+        }
+      } catch (error) {
+        console.error(
+          LoggerPrefix,
+          t('common.console.plugins.load-failed', { pluginName: pluginId }),
+          error,
+        );
       }
-    }
-  }
+    }),
+  );
 };
 
 export const getLoadedRendererPlugin = (

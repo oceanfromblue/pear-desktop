@@ -214,8 +214,12 @@ export default createPlugin<
           }
         }
       });
+      // The media element is (re)created inside the player: watching the whole
+      // app would go through every DOM change of the page
       const observerTarget =
-        document.querySelector('ytmusic-app') || document.body;
+        document.querySelector('#movie_player') ||
+        document.querySelector('ytmusic-app') ||
+        document.body;
       this.videoObserver.observe(observerTarget, {
         childList: true,
         subtree: true,

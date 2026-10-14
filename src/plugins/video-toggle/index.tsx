@@ -4,6 +4,7 @@ import { render } from 'solid-js/web';
 import { t } from '@/i18n';
 import { type MenuTemplate } from '@/menu';
 import { moveVolumeHud as preciseVolumeMoveVolumeHud } from '@/plugins/precise-volume/renderer';
+import { setVideoHidden } from '@/providers/video-quality';
 import { type ThumbnailElement } from '@/types/get-player-response';
 import { createPlugin } from '@/utils';
 
@@ -205,6 +206,11 @@ export default createPlugin({
       const config = await getConfig();
       this.config = config;
 
+      // The video is never shown, so don't load it in high quality
+      if (config.forceHide) {
+        setVideoHidden('video-force-hide', true);
+      }
+
       const moveVolumeHud = (await window.mainConfig.plugins.isEnabled(
         'precise-volume',
       ))
@@ -247,6 +253,8 @@ export default createPlugin({
       };
 
       const setVideoState = (showVideo: boolean) => {
+        setVideoHidden('video-toggle', !showVideo);
+
         if (this.config) {
           this.config.hideVideo = !showVideo;
         }
@@ -396,6 +404,10 @@ export default createPlugin({
     onConfigChange(newConfig) {
       this.config = newConfig;
       this.applyStyleClass(newConfig);
+      setVideoHidden(
+        'video-force-hide',
+        document.body.classList.contains('video-toggle-force-hide'),
+      );
     },
   },
 });

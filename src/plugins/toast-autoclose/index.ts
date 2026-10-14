@@ -53,18 +53,22 @@ export default createPlugin({
       };
 
       scan();
-      this.observer = new MutationObserver((mutations) => {
-        const isToastRelated = (node: Node) =>
-          node instanceof Element &&
-          (node.matches('tp-yt-paper-toast') ||
-            node.closest('tp-yt-paper-toast') !== null ||
-            node.querySelector('tp-yt-paper-toast') !== null);
+      const hasToast = (node: Node) =>
+        node instanceof Element &&
+        (node.matches('tp-yt-paper-toast') ||
+          node.querySelector('tp-yt-paper-toast') !== null);
 
+      // Called for every class change of the whole app (e.g. while scrolling):
+      // never search the subtree of a mutation's target
+      this.observer = new MutationObserver((mutations) => {
         if (
-          mutations.some(
-            ({ target, addedNodes, removedNodes }) =>
-              isToastRelated(target) ||
-              [...addedNodes, ...removedNodes].some(isToastRelated),
+          mutations.some((mutation) =>
+            mutation.type === 'attributes'
+              ? // A toast opening or closing changes its own class
+                (mutation.target as Element).matches('tp-yt-paper-toast')
+              : [...mutation.addedNodes, ...mutation.removedNodes].some(
+                  hasToast,
+                ),
           )
         ) {
           scan();

@@ -267,4 +267,5 @@ export interface PlayerAPIEvents {
     name: 'dataloaded' | 'dataupdated';
   };
   onStateChange: number;
+  onPlaybackQualityChange: string;
 }

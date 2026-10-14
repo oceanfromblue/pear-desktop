@@ -18,7 +18,7 @@ import {
 // @ts-expect-error dummy
 globalThis.customElements = { define() {} };
 
-new MutationObserver((mutations, observer) => {
+const adapterScriptObserver = new MutationObserver((mutations, observer) => {
   for (const mutation of mutations) {
     for (const node of mutation.addedNodes) {
       const elem = node as HTMLElement;
@@ -36,7 +36,13 @@ new MutationObserver((mutations, observer) => {
       return;
     }
   }
-}).observe(document, { subtree: true, childList: true });
+});
+adapterScriptObserver.observe(document, { subtree: true, childList: true });
+// The adapter is a parser-inserted script: if it isn't there once the page is loaded,
+// it never will be (don't keep observing every DOM change for the whole session)
+window.addEventListener('load', () => adapterScriptObserver.disconnect(), {
+  once: true,
+});
 
 loadI18n()
   .then(async () => {
@@ -46,6 +52,38 @@ loadI18n()
   .catch((err) => {
     console.error('Failed to load preload plugins:', err);
   });
+
+// While nobody can see the page (e.g. hidden in the tray), free the memory it doesn't need:
+// clears Blink's memory cache and sends a memory pressure signal (garbage collection, caches)
+const TRIM_MEMORY_DELAY_MS = 60_000;
+const TRIM_MEMORY_INTERVAL_MS = 15 * 60_000;
+let trimMemoryTimeout: ReturnType<typeof setTimeout> | undefined;
+const scheduleMemoryTrim = (delay: number) => {
+  trimMemoryTimeout = setTimeout(() => {
+    if (document.visibilityState !== 'hidden') return;
+
+    webFrame.clearCache();
+    // The memory grows back while playing in the background
+    scheduleMemoryTrim(TRIM_MEMORY_INTERVAL_MS);
+  }, delay);
+};
+// On `window` in the capture phase: the page stops the event there (renderer.ts),
+// this listener being registered before it runs first. The page's override of
+// `document.visibilityState` doesn't reach this (isolated) world.
+window.addEventListener(
+  'visibilitychange',
+  () => {
+    clearTimeout(trimMemoryTimeout);
+    if (document.visibilityState === 'hidden') {
+      scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
+    }
+  },
+  true,
+);
+// A page loaded while the window is hidden doesn't get the event
+if (document.visibilityState === 'hidden') {
+  scheduleMemoryTrim(TRIM_MEMORY_DELAY_MS);
+}
 
 ipcRenderer.on('plugin:unload', async (_, id: string) => {
   await forceUnloadPreloadPlugin(id);
@@ -57,10 +95,18 @@ ipcRenderer.on('plugin:enable', async (_, id: string) => {
 contextBridge.exposeInMainWorld('mainConfig', config);
 contextBridge.exposeInMainWorld('electronIs', is);
 contextBridge.exposeInMainWorld('ipcRenderer', {
+  // Returns the function removing the listener: `off` and `removeListener`
+  // can't find it, a function crossing the context bridge arrives here as a
+  // new one every time
   on: (
     channel: string,
     listener: (event: IpcRendererEvent, ...args: unknown[]) => void,
-  ) => ipcRenderer.on(channel, listener),
+  ) => {
+    ipcRenderer.on(channel, listener);
+    return () => {
+      ipcRenderer.removeListener(channel, listener);
+    };
+  },
   off: (channel: string, listener: (...args: unknown[]) => void) =>
     ipcRenderer.off(channel, listener),
   once: (

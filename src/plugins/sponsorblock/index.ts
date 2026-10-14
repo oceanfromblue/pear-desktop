@@ -1,6 +1,8 @@
+import { ipcMain, type IpcMainEvent } from 'electron';
 import is from 'electron-is';
 
 import { t } from '@/i18n';
+import { getMediaElement } from '@/providers/media-element';
 import { createPlugin } from '@/utils';
 
 import { sortSegments } from './segments';
@@ -22,6 +24,9 @@ export type SponsorBlockPluginConfig = {
 };
 
 let currentSegments: Segment[] = [];
+let videoSrcChangedListener:
+  | ((event: IpcMainEvent, data: GetPlayerResponse) => void)
+  | null = null;
 
 export default createPlugin({
   name: () => t('plugins.sponsorblock.name'),
@@ -128,15 +133,27 @@ export default createPlugin({
         ipc.send('sponsorblock-skip', segments);
       };
 
-      ipc.on('peard:video-src-changed', handleVideoSrcChanged);
+      // On ipcMain directly, so that stop() can remove this listener alone
+      videoSrcChangedListener = (_, data) => {
+        handleVideoSrcChanged(data).catch(() => {});
+      };
+      ipcMain.on('peard:video-src-changed', videoSrcChangedListener);
     },
-    stop({ ipc }) {
-      ipc.removeAllListeners('peard:video-src-changed');
+    stop() {
+      // Not removeAllListeners: the song info (used by every plugin) and the
+      // downloader listen to this event as well
+      if (videoSrcChangedListener) {
+        ipcMain.removeListener(
+          'peard:video-src-changed',
+          videoSrcChangedListener,
+        );
+        videoSrcChangedListener = null;
+      }
     },
   },
   renderer: {
     timeUpdateListener: (e: Event) => {
-      if (e.target instanceof HTMLVideoElement) {
+      if (e.target instanceof HTMLMediaElement) {
         const target = e.target;
         const t = target.currentTime;
 
@@ -174,7 +191,7 @@ export default createPlugin({
       });
     },
     onPlayerApiReady() {
-      const video = document.querySelector<HTMLVideoElement>('video');
+      const video = getMediaElement();
       if (!video) return;
 
       video.addEventListener('timeupdate', this.timeUpdateListener);
@@ -185,7 +202,7 @@ export default createPlugin({
       ipc.removeAllListeners('sponsorblock-skip');
       currentSegments = [];
 
-      const video = document.querySelector<HTMLVideoElement>('video');
+      const video = getMediaElement();
       if (!video) return;
 
       video.removeEventListener('timeupdate', this.timeUpdateListener);

@@ -9,6 +9,8 @@ import {
 
 let state: ThemeState = { themes: [], selected: '', overrides: {} };
 let injected: HTMLStyleElement[] = [];
+/** The palette of the selected theme, which its script can change */
+let paletteStyle: HTMLStyleElement | null = null;
 /** The mounted theme, kept whole so teardown uses that theme's own hooks. */
 let mounted: { id: string; hash: string; hooks: ThemeHooks } | null = null;
 let cleanup: (() => void) | null = null;
@@ -23,6 +25,7 @@ const inject = (css: string) => {
   element.textContent = css;
   document.head.appendChild(element);
   injected.push(element);
+  return element;
 };
 
 /**
@@ -94,7 +97,7 @@ const applyTheme = () => {
   // over any fallbacks the stylesheet declares and a user override always
   // beats what the theme shipped.
   if (theme.css) inject(theme.css);
-  inject(paletteToCss(palette));
+  paletteStyle = inject(paletteToCss(palette));
 
   if (theme?.js && isNewScript) {
     const hooks = evaluate(theme.js.source, theme.id) ?? {};
@@ -103,8 +106,13 @@ const applyTheme = () => {
         const result = hooks.mount({
           id: theme.id,
           palette,
-          applyPalette: (next: ThemePalette) =>
-            inject(paletteToCss(resolvePalette(palette, next))),
+          applyPalette: (next: ThemePalette) => {
+            const css = paletteToCss(resolvePalette(palette, next));
+            // A theme can recolor for every song: replace the palette
+            // instead of adding one more <style> each time
+            if (paletteStyle?.isConnected) paletteStyle.textContent = css;
+            else paletteStyle = inject(css);
+          },
         });
         cleanup = typeof result === 'function' ? result : null;
       } catch (err) {

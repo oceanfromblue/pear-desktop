@@ -10,7 +10,7 @@ import {
 } from 'electron';
 import is from 'electron-is';
 import { satisfies } from 'semver';
-import { languageResources } from 'virtual:i18n';
+import { availableLanguages, languageNames } from 'virtual:i18n';
 import { allPlugins } from 'virtual:plugins';
 
 import { APPLICATION_NAME, setLanguage, t } from '@/i18n';
@@ -160,9 +160,6 @@ export const mainMenuTemplate = async (
         );
       }),
   );
-
-  const langResources = await languageResources();
-  const availableLanguages = Object.keys(langResources);
 
   return [
     {
@@ -656,6 +653,25 @@ export const mainMenuTemplate = async (
           ],
         },
         {
+          label: t('main.menu.options.submenu.lower-video-quality-when-hidden'),
+          type: 'checkbox',
+          checked: config.get('options.lowerVideoQualityWhenHidden') ?? true,
+          click(item: MenuItem) {
+            config.setMenuOption(
+              'options.lowerVideoQualityWhenHidden',
+              item.checked,
+            );
+          },
+        },
+        {
+          label: t('main.menu.options.submenu.audio-only'),
+          type: 'checkbox',
+          checked: config.get('options.audioOnly') ?? false,
+          click(item: MenuItem) {
+            config.setMenuOption('options.audioOnly', item.checked);
+          },
+        },
+        {
           label: t('main.menu.options.submenu.language.label') + ' (Language)',
           submenu: [
             {
@@ -723,13 +739,14 @@ export const mainMenuTemplate = async (
             availableLanguages
               .map(
                 (lang): Electron.MenuItemConstructorOptions => ({
-                  label: `${langResources[lang].translation.language?.name ?? 'Unknown'} (${langResources[lang].translation.language?.['local-name'] ?? 'Unknown'})`,
+                  label: `${languageNames[lang]?.name ?? 'Unknown'} (${languageNames[lang]?.localName ?? 'Unknown'})`,
                   type: 'checkbox',
                   checked: (config.get('options.language') ?? 'en') === lang,
-                  click() {
+                  async click() {
                     config.setMenuOption('options.language', lang);
+                    // The translations are loaded on demand
+                    await setLanguage(lang);
                     refreshMenu(win);
-                    setLanguage(lang);
                     dialog.showMessageBox(win, {
                       title: t(
                         'main.menu.options.submenu.language.dialog.title',
@@ -765,6 +782,16 @@ export const mainMenuTemplate = async (
               checked: config.get('options.overrideUserAgent'),
               click(item: MenuItem) {
                 config.setMenuOption('options.overrideUserAgent', item.checked);
+              },
+            },
+            {
+              label: t(
+                'main.menu.options.submenu.advanced-options.submenu.low-memory-mode',
+              ),
+              type: 'checkbox',
+              checked: config.get('options.lowMemoryMode') ?? false,
+              click(item: MenuItem) {
+                config.setMenuOption('options.lowMemoryMode', item.checked);
               },
             },
             {

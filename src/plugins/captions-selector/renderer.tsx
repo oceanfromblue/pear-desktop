@@ -2,6 +2,7 @@ import { createSignal, Show } from 'solid-js';
 import { render } from 'solid-js/web';
 
 import { t } from '@/i18n';
+import { getMediaElement } from '@/providers/media-element';
 import { createRenderer } from '@/utils';
 
 import { CaptionsSettingButton } from './templates/captions-settings-template';
@@ -71,9 +72,10 @@ export default createRenderer<
   },
   stop() {
     this.api?.unloadModule('captions');
-    document
-      .querySelector('video')
-      ?.removeEventListener('peard:src-changed', this.videoChangeListener);
+    getMediaElement()?.removeEventListener(
+      'peard:src-changed',
+      this.videoChangeListener,
+    );
     if (this.captionsSettingsButton) {
       document
         .querySelector('.right-controls-buttons')
@@ -154,9 +156,10 @@ export default createRenderer<
     this.captionTrackList =
       this.api.getOption<LanguageOptions[]>('captions', 'tracklist') ?? [];
 
-    document
-      .querySelector('video')
-      ?.addEventListener('peard:src-changed', this.videoChangeListener);
+    getMediaElement()?.addEventListener(
+      'peard:src-changed',
+      this.videoChangeListener,
+    );
   },
   onConfigChange(newConfig) {
     this.config = newConfig;

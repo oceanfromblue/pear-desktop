@@ -20,7 +20,13 @@ declare global {
 
   interface Window {
     trustedTypes?: typeof trustedTypes;
-    ipcRenderer: typeof electronIpcRenderer;
+    ipcRenderer: Omit<typeof electronIpcRenderer, 'on'> & {
+      /**
+       * @returns a function removing the listener: `off` and `removeListener`
+       * can't (the listener crosses the context bridge as a new function)
+       */
+      on(...args: Parameters<typeof electronIpcRenderer.on>): () => void;
+    };
     mainConfig: typeof config;
     electronIs: typeof is;
     ELECTRON_RENDERER_URL: string | undefined;

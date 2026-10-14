@@ -1,5 +1,5 @@
 import { deepmerge } from 'deepmerge-ts';
-import { allPlugins } from 'virtual:plugins';
+import { allPlugins, mainPlugin } from 'virtual:plugins';
 
 import * as config from '@/config';
 import { t } from '@/i18n';
@@ -39,7 +39,8 @@ const createContext = (
 
 export const forceLoadMenuPlugin = async (id: string, win: BrowserWindow) => {
   try {
-    const plugin = (await allPlugins())[id];
+    if (!(await allPlugins())[id]) return;
+    const plugin = await mainPlugin(id);
     if (!plugin) return;
 
     const menu = plugin.menu?.(createContext(id, win));

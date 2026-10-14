@@ -1,3 +1,5 @@
+import { getMediaElement } from '@/providers/media-element';
+
 import type { SkipSilencesPluginConfig } from './index';
 import type { RendererContext } from '@/types/contexts';
 
@@ -15,6 +17,11 @@ const history = 10;
 const speakingHistory = Array.from({ length: history }).fill(0) as number[];
 
 let playOrSeekHandler: (() => void) | undefined;
+// The audio graph is created once and kept for every song (the event below is
+// sent for each of them): the analyser is only set up once
+let analyserSource: AudioNode | undefined;
+let analyser: AnalyserNode | undefined;
+let listenedMedia: HTMLMediaElement | null = null;
 
 const getMaxVolume = (
   analyser: AnalyserNode,
@@ -39,21 +46,41 @@ const stopLoop = () => {
   }
 };
 
-const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
-  const video = document.querySelector('video');
-  const { audioContext } = e.detail;
-  const sourceNode = e.detail.audioSource;
-
-  // A new track started — stop the previous detection loop so timers and
-  // analysers don't accumulate (each `peard:audio-can-play` fires per track).
+const stopAnalyser = () => {
   stopLoop();
+  try {
+    if (analyser) analyserSource?.disconnect(analyser);
+  } catch {}
+  analyserSource = undefined;
+  analyser = undefined;
 
-  const analyser = audioContext.createAnalyser();
-  analyser.fftSize = 512;
-  analyser.smoothingTimeConstant = smoothing;
-  const fftBins = new Float32Array(analyser.frequencyBinCount);
+  if (playOrSeekHandler) {
+    listenedMedia?.removeEventListener('play', playOrSeekHandler);
+    listenedMedia?.removeEventListener('seeked', playOrSeekHandler);
+    playOrSeekHandler = undefined;
+  }
+  listenedMedia = null;
+};
 
-  sourceNode.connect(analyser);
+const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
+  const sourceNode = e.detail.audioSource;
+  // Already analysing this audio: don't add another analyser (it would be
+  // processed for every audio frame), loop and listeners for each song
+  if (analyserSource === sourceNode) return;
+  stopAnalyser();
+
+  // A <video>, or an <audio> in audio only mode
+  const video = getMediaElement();
+  const { audioContext } = e.detail;
+
+  const songAnalyser = audioContext.createAnalyser();
+  songAnalyser.fftSize = 512;
+  songAnalyser.smoothingTimeConstant = smoothing;
+  const fftBins = new Float32Array(songAnalyser.frequencyBinCount);
+
+  sourceNode.connect(songAnalyser);
+  analyserSource = sourceNode;
+  analyser = songAnalyser;
 
   const skipSilence = () => {
     if (config.onlySkipBeginning && hasAudioStarted) {
@@ -67,7 +94,12 @@ const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
 
   const looper = () => {
     loopTimer = window.setTimeout(() => {
-      const currentVolume = getMaxVolume(analyser, fftBins);
+      loopTimer = undefined;
+      // Nothing to detect while paused (the loop runs every few ms):
+      // the 'play' listener below starts it again
+      if (video?.paused) return;
+
+      const currentVolume = getMaxVolume(songAnalyser, fftBins);
 
       let history = 0;
       if (currentVolume > threshold && isSilent) {
@@ -118,8 +150,10 @@ const audioCanPlayListener = (e: CustomEvent<Compressor>) => {
   playOrSeekHandler = () => {
     hasAudioStarted = false;
     skipSilence();
+    if (loopTimer === undefined) looper();
   };
 
+  listenedMedia = video;
   video?.addEventListener('play', playOrSeekHandler);
   video?.addEventListener('seeked', playOrSeekHandler);
 };
@@ -135,13 +169,6 @@ export const onRendererLoad = async ({
 };
 
 export const onRendererUnload = () => {
-  stopLoop();
-
   document.removeEventListener('peard:audio-can-play', audioCanPlayListener);
-
-  if (playOrSeekHandler) {
-    const video = document.querySelector('video');
-    video?.removeEventListener('play', playOrSeekHandler);
-    video?.removeEventListener('seeked', playOrSeekHandler);
-  }
+  stopAnalyser();
 };

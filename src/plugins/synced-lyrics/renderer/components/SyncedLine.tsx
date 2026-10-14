@@ -1,17 +1,25 @@
-import { createEffect, For, Show, createSignal, createMemo } from 'solid-js';
+import {
+  createEffect,
+  For,
+  Show,
+  createSignal,
+  createMemo,
+  untrack,
+} from 'solid-js';
 import { type VirtualizerHandle } from 'virtua/solid';
 
 import { type LineLyrics } from '@/plugins/synced-lyrics/types';
 
 import { _ytAPI } from '..';
 import { config, currentTime } from '../renderer';
-import { lyricsStore } from '../store';
-import { getLineTranslation } from '../translation-store';
+import { lyricsStore, pronunciationContext } from '../store';
+import { effectiveTranslation, getLineTranslation } from '../translation-store';
 import {
   canonicalize,
   convertChineseCharacter,
   romanize,
   simplifyUnicode,
+  toKoreanPronunciation,
 } from '../utils';
 
 interface SyncedLineProps {
@@ -85,6 +93,26 @@ const EmptyLine = (props: SyncedLineProps) => {
   );
 };
 
+/** The words of a line, revealed one after the other by the line effects */
+const AnimatedWords = (props: { text: string }) => (
+  <For each={props.text.split(' ')}>
+    {(word, index) => (
+      <span
+        style={{
+          'transition-delay': `${index() * 0.05}s`,
+          'animation-delay': `${index() * 0.05}s`,
+        }}
+      >
+        <yt-formatted-string
+          text={{
+            runs: [{ text: `${word} ` }],
+          }}
+        />
+      </span>
+    )}
+  </For>
+);
+
 export const SyncedLine = (props: SyncedLineProps) => {
   const text = createMemo(() => {
     let line = props.line.text;
@@ -109,10 +137,28 @@ export const SyncedLine = (props: SyncedLineProps) => {
       });
   });
 
+  const [koreanPronunciation, setKoreanPronunciation] = createSignal('');
+  createEffect(() => {
+    const context = pronunciationContext();
+    if (!context) return;
+
+    const input = canonicalize(text());
+    toKoreanPronunciation(input, context)
+      .then((result) => {
+        // A slower, outdated conversion must not overwrite a newer one
+        if (input === canonicalize(untrack(text))) {
+          setKoreanPronunciation(canonicalize(result));
+        }
+      })
+      .catch(() => {
+        // Best-effort too (e.g. a dictionary that couldn't be downloaded)
+      });
+  });
+
   // SyncedLine receives `props.index` from the VList iteration. The list is
   // [lyricsPicker, ...lines], so the lyric line index is `props.index - 1`.
   const translation = createMemo(() => {
-    if (!config()?.translation?.enabled) return '';
+    if (!effectiveTranslation(config())?.enabled) return '';
     const videoId = lyricsStore.videoId;
     if (!videoId) return '';
     const lyricIndex = props.index - 1;
@@ -154,24 +200,7 @@ export const SyncedLine = (props: SyncedLineProps) => {
             style={{ 'display': 'flex', 'flex-direction': 'column' }}
           >
             <span dir="auto">
-              <For each={text().split(' ')}>
-                {(word, index) => {
-                  return (
-                    <span
-                      style={{
-                        'transition-delay': `${index() * 0.05}s`,
-                        'animation-delay': `${index() * 0.05}s`,
-                      }}
-                    >
-                      <yt-formatted-string
-                        text={{
-                          runs: [{ text: `${word} ` }],
-                        }}
-                      />
-                    </span>
-                  );
-                }}
-              </For>
+              <AnimatedWords text={text()} />
             </span>
 
             <Show
@@ -181,24 +210,20 @@ export const SyncedLine = (props: SyncedLineProps) => {
               }
             >
               <span class="romaji" dir="auto">
-                <For each={romanization().split(' ')}>
-                  {(word, index) => {
-                    return (
-                      <span
-                        style={{
-                          'transition-delay': `${index() * 0.05}s`,
-                          'animation-delay': `${index() * 0.05}s`,
-                        }}
-                      >
-                        <yt-formatted-string
-                          text={{
-                            runs: [{ text: `${word} ` }],
-                          }}
-                        />
-                      </span>
-                    );
-                  }}
-                </For>
+                <AnimatedWords text={romanization()} />
+              </span>
+            </Show>
+
+            <Show
+              when={
+                config()?.koreanPronunciation &&
+                koreanPronunciation() &&
+                simplifyUnicode(text()) !==
+                  simplifyUnicode(koreanPronunciation())
+              }
+            >
+              <span class="korean-pronunciation" dir="auto">
+                <AnimatedWords text={koreanPronunciation()} />
               </span>
             </Show>
 
@@ -209,24 +234,7 @@ export const SyncedLine = (props: SyncedLineProps) => {
               }
             >
               <span class="translation" dir="auto">
-                <For each={translation().split(' ')}>
-                  {(word, index) => {
-                    return (
-                      <span
-                        style={{
-                          'transition-delay': `${index() * 0.05}s`,
-                          'animation-delay': `${index() * 0.05}s`,
-                        }}
-                      >
-                        <yt-formatted-string
-                          text={{
-                            runs: [{ text: `${word} ` }],
-                          }}
-                        />
-                      </span>
-                    );
-                  }}
-                </For>
+                <AnimatedWords text={translation()} />
               </span>
             </Show>
           </div>

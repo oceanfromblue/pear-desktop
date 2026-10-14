@@ -99,6 +99,7 @@
               "auto-reset-app-cache": "앱 시작 시 앱 캐시 초기화하기",
               "disable-hardware-acceleration": "하드웨어 가속 비활성화",
               "edit-config-json": "config.json 편집",
+              "low-memory-mode": "저메모리 모드: 메모리를 덜 쓰지만 느려지거나 불안정할 수 있음 (재시작 필요)",
               "override-user-agent": "User-Agent 재정의하기",
               "restart-on-config-changes": "설정 변경 시 재시작하기",
               "set-proxy": {
@@ -114,6 +115,7 @@
             }
           },
           "always-on-top": "항상 최상단에 표시하기",
+          "audio-only": "오디오 전용 모드: 영상을 아예 불러오지 않음 (실험적, 재시작 필요)",
           "auto-update": "자동 업데이트",
           "hide-menu": {
             "dialog": {
@@ -132,6 +134,7 @@
               "to-help-translate": "번역을 돕고 싶으신가요? 여기를 누르세요"
             }
           },
+          "lower-video-quality-when-hidden": "영상이 보이지 않을 때 화질 낮추기 (메모리 절약, 재시작 필요)",
           "resume-on-start": "앱 시작 시 마지막 곡 다시 듣기",
           "single-instance-lock": "단일 인스턴스 잠금",
           "start-at-login": "로그온 시 자동 실행",
@@ -934,6 +937,14 @@
         "romanization": {
           "label": "가사 로마자 변환",
           "tooltip": "가사가 영어가 아닌 언어로 되어있는 경우, 로마자 표기를 표시합니다."
+        },
+        "korean-pronunciation": {
+          "label": "한국어 발음 표시",
+          "tooltip": "일본어·중국어·영어 가사를 한글 발음으로 표시합니다 (예: 君の名前 → 키미노 나마에). 일본어·영어 사전은 처음 필요할 때 내려받습니다."
+        },
+        "korean-translation": {
+          "label": "한국어 번역 표시",
+          "tooltip": "가사를 한국어로 번역해 표시합니다. '가사 번역'에서 고른 제공자를 쓰고, 그 제공자가 설정되지 않았으면 Google 번역(API 키 불필요)을 씁니다."
         },
         "show-lyrics-even-if-inexact": {
           "label": "가사가 정확하지 않더라도 표시",

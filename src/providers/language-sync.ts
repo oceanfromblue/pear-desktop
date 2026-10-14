@@ -1,4 +1,4 @@
-import { languageResources } from 'virtual:i18n';
+import { availableLanguages } from 'virtual:i18n';
 
 import type { BrowserWindow } from 'electron';
 
@@ -47,8 +47,7 @@ export const youtubeLanguage = async (
   else if (lang.startsWith('es-')) lang = 'es';
   else if (TO_APP[lang]) lang = TO_APP[lang];
 
-  const resources = await languageResources();
-  return resources[lang] ? lang : undefined;
+  return availableLanguages.includes(lang) ? lang : undefined;
 };
 
 /** Points YouTube at one of our languages; take a reload to see. */

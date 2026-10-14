@@ -1,4 +1,5 @@
 import { debounce } from '@/providers/decorators';
+import { getMediaElement } from '@/providers/media-element';
 
 import { type PreciseVolumePluginConfig } from './index';
 
@@ -18,7 +19,7 @@ export const moveVolumeHud = debounce((showVideo: boolean) => {
   }
 
   volumeHud.style.top = showVideo
-    ? `${($('ytmusic-player')!.clientHeight - $('video')!.clientHeight) / 2}px`
+    ? `${($('ytmusic-player')!.clientHeight - ($('video')?.clientHeight ?? 0)) / 2}px`
     : '0';
 }, 250);
 
@@ -71,7 +72,7 @@ export const onPlayerApiReady = async (
         const videoMode = () =>
           api.getPlayerResponse().videoDetails?.musicVideoType !==
           'MUSIC_VIDEO_TYPE_ATV';
-        $('video')?.addEventListener('peard:src-changed', () =>
+        getMediaElement()?.addEventListener('peard:src-changed', () =>
           moveVolumeHud(videoMode()),
         );
       }

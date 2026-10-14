@@ -1,7 +1,10 @@
 import i18next from 'i18next';
 import { setTheme } from 'mdui/functions/setTheme.js';
 import 'mdui/mdui.css';
-import 'mdui';
+// Only register the mdui components that are actually used (by the navigation and synced-lyrics plugins),
+// the full library also bundles the material color utilities which are never used
+import 'mdui/components/button-icon.js';
+import 'mdui/components/tooltip.js';
 
 import { loadI18n, setLanguage, t as i18t } from '@/i18n';
 import { bootStandaloneSettings } from '@/plugins/settings-ui/standalone';
@@ -18,18 +21,31 @@ import {
   getLoadedRendererPlugin,
   loadAllRendererPlugins,
 } from './loader/renderer';
-import { type NextData } from './plugins/synced-lyrics/providers/YTMusic';
+import {
+  forceAudioOnlyPlayer,
+  setupAudioOnlyMode,
+} from './providers/audio-only';
 import { startingPages } from './providers/extracted-data';
+import { getMediaElement } from './providers/media-element';
+import { PAGE_VISIBILITY_EVENT } from './providers/page-visibility';
 import { createShareUrlRewriter } from './providers/share-url';
 import { setupSongInfo } from './providers/song-info-front';
+import { setupVideoQualityManager } from './providers/video-quality';
 import { initThemes } from './themes/renderer';
 
+import type { NextData } from './plugins/synced-lyrics/providers/YTMusic';
 import type { MusicPlayer } from '@/types/music-player';
 import type { MusicPlayerAppElement } from '@/types/music-player-app-element';
 import type { QueueResponse } from '@/types/music-player-desktop-internal';
 import type { PluginConfig } from '@/types/plugins';
 import type { QueueElement } from '@/types/queue';
 import type { SearchBoxElement } from '@/types/search-box-element';
+
+// Must run before the player is created (this script runs before the page scripts)
+const isAudioOnlyMode = !!window.mainConfig.get('options.audioOnly');
+if (isAudioOnlyMode) {
+  forceAudioOnlyPlayer();
+}
 
 setTheme('dark');
 
@@ -413,11 +429,21 @@ function onApiLoaded() {
     },
   );
 
-  const video = document.querySelector('video');
+  // A <video>, or an <audio> in audio only mode
+  const video = getMediaElement();
   if (!video) return;
   const audioContext = new AudioContext();
   const audioSource = audioContext.createMediaElementSource(video);
   audioSource.connect(audioContext.destination);
+
+  const isPlayingAudioOnly = isAudioOnlyMode && setupAudioOnlyMode(api!);
+  if (
+    !isPlayingAudioOnly &&
+    (window.mainConfig.get('options.lowerVideoQualityWhenHidden') ?? true)
+  ) {
+    // Before the plugins, so they can report when they hide the video
+    setupVideoQualityManager(api!);
+  }
 
   for (const [id, plugin] of Object.entries(getAllLoadedRendererPlugins())) {
     if (typeof plugin.renderer !== 'function') {
@@ -610,7 +636,11 @@ const main = async () => {
   });
   addEventListener(
     'visibilitychange',
-    (e) => e.stopImmediatePropagation(),
+    (e) => {
+      e.stopImmediatePropagation();
+      // The app's own features still need to know (see page-visibility.ts)
+      document.dispatchEvent(new Event(PAGE_VISIBILITY_EVENT));
+    },
     true,
   );
 

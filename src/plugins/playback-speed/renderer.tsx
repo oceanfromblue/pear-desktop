@@ -166,8 +166,11 @@ export const onPlayerApiReady = async (
       video.dataset.playbackSpeedObserved = 'true';
     }
 
+    // The player's media element is (re)created inside #movie_player: watching
+    // the whole page would search it for videos after every DOM change
+    const player = document.querySelector('#movie_player') ?? document.body;
     videoObserver = new MutationObserver(() => {
-      document.querySelectorAll<HTMLVideoElement>('video').forEach((v) => {
+      player.querySelectorAll<HTMLVideoElement>('video').forEach((v) => {
         if (!v.dataset.playbackSpeedObserved) {
           v.dataset.playbackSpeedObserved = 'true';
           applyVideoEvents(v);
@@ -175,7 +178,7 @@ export const onPlayerApiReady = async (
       });
     });
 
-    videoObserver.observe(document.body, {
+    videoObserver.observe(player, {
       childList: true,
       subtree: true,
     });

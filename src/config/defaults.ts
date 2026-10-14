@@ -54,6 +54,10 @@ export interface DefaultConfig {
     /** Whether the first-run theme has been seeded. */
     themesSeeded: boolean;
     customWindowTitle?: string;
+    // Optional: the stored options of existing users don't contain it (missing = enabled)
+    lowerVideoQualityWhenHidden?: boolean;
+    audioOnly?: boolean;
+    lowMemoryMode?: boolean;
   };
   'plugins': Record<string, unknown>;
 }
@@ -100,6 +104,9 @@ export const defaultConfig: DefaultConfig = {
     themeOverrides: {},
     themeConsent: {},
     themesSeeded: false,
+    lowerVideoQualityWhenHidden: true,
+    audioOnly: false,
+    lowMemoryMode: false,
   },
   'plugins': {},
 };

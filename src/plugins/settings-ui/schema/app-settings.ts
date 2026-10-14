@@ -1,4 +1,4 @@
-import { languageResources } from 'virtual:i18n';
+import { availableLanguages, languageNames } from 'virtual:i18n';
 
 import { t } from '@/i18n';
 import { startingPages } from '@/providers/extracted-data';
@@ -72,14 +72,15 @@ const action = (
 /** Options whose value is only read when the app (re)starts. */
 const AT_STARTUP = { restartNeeded: true } satisfies FieldExtras;
 
+// oxlint-disable-next-line typescript/require-await
 const buildLanguageOptions = async (): Promise<SettingOption[]> => {
-  const langResources = await languageResources();
-  return Object.keys(langResources)
+  // Only the names, the translations themselves are loaded on demand
+  return availableLanguages
     .map((lang) => {
-      const meta = langResources[lang].translation.language;
+      const meta = languageNames[lang];
       return {
         value: lang,
-        label: () => `${meta?.name ?? lang} (${meta?.['local-name'] ?? lang})`,
+        label: () => `${meta?.name ?? lang} (${meta?.localName ?? lang})`,
       };
     })
     .sort((a, b) => a.label().localeCompare(b.label()));

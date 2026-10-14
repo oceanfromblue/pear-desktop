@@ -53,6 +53,23 @@ const ffmpeg = lazy(async () =>
 );
 const ffmpegMutex = new Mutex();
 
+// Once loaded, ffmpeg keeps its wasm memory (hundreds of MB after converting a
+// song) and its worker threads: it is released when no conversion followed
+// for a while, and loaded again for the next one
+const FFMPEG_IDLE_MS = 60_000;
+let ffmpegIdleTimer: ReturnType<typeof setTimeout> | undefined;
+const releaseFFmpegWhenIdle = () => {
+  clearTimeout(ffmpegIdleTimer);
+  ffmpegIdleTimer = setTimeout(() => {
+    ffmpegMutex
+      .runExclusive(async () => {
+        const instance = await ffmpeg.get();
+        if (instance.isLoaded()) instance.exit();
+      })
+      .catch(() => {});
+  }, FFMPEG_IDLE_MS);
+};
+
 let yt: Innertube;
 let win: BrowserWindow;
 let playingUrl: string;
@@ -422,64 +439,69 @@ async function iterableStreamToProcessedUint8Array(
 
   const safeVideoName = randomBytes(32).toString('hex');
 
-  return await ffmpegMutex.runExclusive(async () => {
-    try {
-      const ffmpegInstance = await ffmpeg.get();
-      if (!ffmpegInstance.isLoaded()) {
-        await ffmpegInstance.load();
-      }
-
-      sendFeedback(t('plugins.downloader.backend.feedback.preparing-file'));
-      ffmpegInstance.FS(
-        'writeFile',
-        safeVideoName,
-        Buffer.concat(
-          await downloadChunks(
-            stream,
-            contentLength,
-            sendFeedback,
-            increasePlaylistProgress,
-          ),
-        ),
-      );
-
-      sendFeedback(t('plugins.downloader.backend.feedback.converting'));
-
-      ffmpegInstance.setProgress(({ ratio }) => {
-        sendFeedback(
-          t('plugins.downloader.backend.feedback.conversion-progress', {
-            percent: Math.floor(ratio * 100),
-          }),
-          ratio,
-        );
-        increasePlaylistProgress(0.15 + ratio * 0.85);
-      });
-
-      const safeVideoNameWithExtension = `${safeVideoName}.${extension}`;
+  clearTimeout(ffmpegIdleTimer);
+  try {
+    return await ffmpegMutex.runExclusive(async () => {
       try {
-        await ffmpegInstance.run(
-          '-i',
+        const ffmpegInstance = await ffmpeg.get();
+        if (!ffmpegInstance.isLoaded()) {
+          await ffmpegInstance.load();
+        }
+
+        sendFeedback(t('plugins.downloader.backend.feedback.preparing-file'));
+        ffmpegInstance.FS(
+          'writeFile',
           safeVideoName,
-          ...presetFfmpegArgs,
-          ...getFFmpegMetadataArgs(metadata),
-          safeVideoNameWithExtension,
+          Buffer.concat(
+            await downloadChunks(
+              stream,
+              contentLength,
+              sendFeedback,
+              increasePlaylistProgress,
+            ),
+          ),
         );
-      } finally {
-        ffmpegInstance.FS('unlink', safeVideoName);
-      }
 
-      sendFeedback(t('plugins.downloader.backend.feedback.saving'));
+        sendFeedback(t('plugins.downloader.backend.feedback.converting'));
 
-      try {
-        return ffmpegInstance.FS('readFile', safeVideoNameWithExtension);
-      } finally {
-        ffmpegInstance.FS('unlink', safeVideoNameWithExtension);
+        ffmpegInstance.setProgress(({ ratio }) => {
+          sendFeedback(
+            t('plugins.downloader.backend.feedback.conversion-progress', {
+              percent: Math.floor(ratio * 100),
+            }),
+            ratio,
+          );
+          increasePlaylistProgress(0.15 + ratio * 0.85);
+        });
+
+        const safeVideoNameWithExtension = `${safeVideoName}.${extension}`;
+        try {
+          await ffmpegInstance.run(
+            '-i',
+            safeVideoName,
+            ...presetFfmpegArgs,
+            ...getFFmpegMetadataArgs(metadata),
+            safeVideoNameWithExtension,
+          );
+        } finally {
+          ffmpegInstance.FS('unlink', safeVideoName);
+        }
+
+        sendFeedback(t('plugins.downloader.backend.feedback.saving'));
+
+        try {
+          return ffmpegInstance.FS('readFile', safeVideoNameWithExtension);
+        } finally {
+          ffmpegInstance.FS('unlink', safeVideoNameWithExtension);
+        }
+      } catch (error: unknown) {
+        sendError(error as Error, safeVideoName);
       }
-    } catch (error: unknown) {
-      sendError(error as Error, safeVideoName);
-    }
-    return null;
-  });
+      return null;
+    });
+  } finally {
+    releaseFFmpegWhenIdle();
+  }
 }
 
 const getCoverBuffer = async (url: string) => {

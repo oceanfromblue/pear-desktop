@@ -8,6 +8,7 @@ let activeLineElement: HTMLElement | null = null;
 let timer: number | undefined;
 let observer: MutationObserver | undefined;
 let sendLyrics: (() => void) | undefined;
+let removeIpcListeners: (() => void) | undefined;
 let sendInFlight = false;
 let sendRequested = false;
 let lastPayload: string | undefined;
@@ -283,11 +284,21 @@ export const renderer = createRenderer({
       sendLyrics?.();
     }, 250);
 
-    window.ipcRenderer.removeListener('peard:play-or-paused', onPlayOrPaused);
-    window.ipcRenderer.removeListener('peard:time-changed', onTimeChanged);
-
-    window.ipcRenderer.on('peard:play-or-paused', onPlayOrPaused);
-    window.ipcRenderer.on('peard:time-changed', onTimeChanged);
+    // (`removeListener` can't find a listener that crossed the context bridge)
+    removeIpcListeners?.();
+    const removePlayOrPaused = window.ipcRenderer.on(
+      'peard:play-or-paused',
+      onPlayOrPaused,
+    );
+    const removeTimeChanged = window.ipcRenderer.on(
+      'peard:time-changed',
+      onTimeChanged,
+    );
+    removeIpcListeners = () => {
+      removePlayOrPaused();
+      removeTimeChanged();
+      removeIpcListeners = undefined;
+    };
   },
   stop() {
     if (timer) {
@@ -298,8 +309,7 @@ export const renderer = createRenderer({
     observer?.disconnect();
     observer = undefined;
 
-    window.ipcRenderer.removeListener('peard:play-or-paused', onPlayOrPaused);
-    window.ipcRenderer.removeListener('peard:time-changed', onTimeChanged);
+    removeIpcListeners?.();
 
     sendLyrics = undefined;
     resetLineState();

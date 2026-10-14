@@ -15,6 +15,7 @@ import viteResolve from 'vite-plugin-resolve';
 import solidPlugin from 'vite-plugin-solid';
 
 import { i18nImporter } from './vite-plugins/i18n-importer.mjs';
+import latin1Output from './vite-plugins/latin1-output.mjs';
 import { pluginVirtualModuleGenerator } from './vite-plugins/plugin-importer.mjs';
 import pluginLoader from './vite-plugins/plugin-loader.mjs';
 
@@ -56,7 +57,13 @@ export default defineConfig(({ mode }) => {
     'node-smtc',
     ...builtinModules,
   ];
+
+  // By default, every key of a JSON file becomes a named export (a getter function),
+  // which is very costly in memory for big dictionaries (e.g. ~55k getters for hanja)
+  const json = { namedExports: false, stringify: 'auto' } as const;
+
   const mainConfig: MainViteConfig = {
+    json,
     plugins: [
       pluginLoader('backend'),
       viteResolve({
@@ -98,6 +105,7 @@ export default defineConfig(({ mode }) => {
   };
 
   const preloadConfig: PreloadViteConfig = {
+    json,
     plugins: [
       pluginLoader('preload'),
       viteResolve({
@@ -130,6 +138,7 @@ export default defineConfig(({ mode }) => {
 
   const rendererExcludes = ['electron', ...builtinModules];
   const rendererConfig: RendererViteConfig = {
+    json,
     plugins: [
       pluginLoader('renderer'),
       viteResolve({
@@ -139,6 +148,9 @@ export default defineConfig(({ mode }) => {
       withFilter(solidPlugin(), {
         load: { id: [/\.(tsx|jsx)$/, '/@solid-refresh'] },
       }),
+      // The renderer is injected as a script, whose source V8 keeps in memory
+      // (production only: it would break the source maps)
+      !isDev && latin1Output(),
     ],
     root: './src/',
     build: {

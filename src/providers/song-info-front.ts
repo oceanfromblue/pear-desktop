@@ -1,3 +1,4 @@
+import { getMediaElement } from '@/providers/media-element';
 import { LikeType, type GetState } from '@/types/datahost-get-state';
 
 import { singleton } from './decorators';
@@ -27,8 +28,8 @@ window.ipcRenderer.on(
 const srcChangedEvent = new CustomEvent('peard:src-changed');
 
 export const setupSeekedListener = singleton(() => {
-  document.querySelector('video')?.addEventListener('seeked', (v) => {
-    if (v.target instanceof HTMLVideoElement) {
+  getMediaElement()?.addEventListener('seeked', (v) => {
+    if (v.target instanceof HTMLMediaElement) {
       window.ipcRenderer.send('peard:seeked', v.target.currentTime);
     }
   });
@@ -124,7 +125,7 @@ export const setupLikeChangedListener = singleton(() => {
 });
 
 export const setupVolumeChangedListener = singleton((api: MusicPlayer) => {
-  document.querySelector('video')?.addEventListener('volumechange', () => {
+  getMediaElement()?.addEventListener('volumechange', () => {
     window.ipcRenderer.send('peard:volume-changed', {
       state: api.getVolume(),
       isMuted: api.isMuted(),
@@ -237,7 +238,7 @@ export const setupSongInfo = (api: MusicPlayer) => {
 
   const playPausedHandler = (e: Event, status: string) => {
     if (
-      e.target instanceof HTMLVideoElement &&
+      e.target instanceof HTMLMediaElement &&
       Math.round(e.target.currentTime) > 0
     ) {
       window.ipcRenderer.send('peard:play-or-paused', {
@@ -252,9 +253,9 @@ export const setupSongInfo = (api: MusicPlayer) => {
     pause: (e: Event) => playPausedHandler(e, 'pause'),
   };
 
-  let currentVideo: HTMLVideoElement | null = null;
+  let currentVideo: HTMLMediaElement | null = null;
 
-  const attachPlayPauseListeners = (video: HTMLVideoElement) => {
+  const attachPlayPauseListeners = (video: HTMLMediaElement) => {
     if (currentVideo && currentVideo !== video) {
       for (const status of ['playing', 'pause'] as const) {
         currentVideo.removeEventListener(status, playPausedHandlers[status]);
@@ -299,7 +300,7 @@ export const setupSongInfo = (api: MusicPlayer) => {
       clearVideoTimeout(videoData.videoId);
       sendSongInfo(videoData);
     } else if (name === 'dataloaded') {
-      const video = document.querySelector<HTMLVideoElement>('video');
+      const video = getMediaElement();
       video?.dispatchEvent(srcChangedEvent);
 
       if (video) {
@@ -321,7 +322,7 @@ export const setupSongInfo = (api: MusicPlayer) => {
     }
   });
 
-  const video = document.querySelector('video');
+  const video = getMediaElement();
 
   if (video) {
     attachPlayPauseListeners(video);

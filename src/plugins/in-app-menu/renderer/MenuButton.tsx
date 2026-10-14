@@ -1,5 +1,5 @@
+import { css } from 'goober';
 import { type JSX, splitProps } from 'solid-js';
-import { css } from 'solid-styled-components';
 
 import { cacheNoArgs } from '@/providers/decorators';
 

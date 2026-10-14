@@ -27,8 +27,8 @@ import unhandled from 'electron-unhandled';
 import { autoUpdater } from 'electron-updater';
 import { deepEqual } from 'fast-equals';
 import { parse } from 'node-html-parser';
-import { languageResources } from 'virtual:i18n';
-import { allPlugins, mainPlugins } from 'virtual:plugins';
+import { availableLanguages } from 'virtual:i18n';
+import { allPlugins } from 'virtual:plugins';
 
 import { buildLabel, copyright } from '@/app-info';
 import * as config from '@/config';
@@ -135,13 +135,31 @@ app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 // OverlayScrollbar: Required for overlay scrollbars
 // UseOzonePlatform: Required for Wayland support
 // WaylandWindowDecorations: Required for Wayland decorations
-app.commandLine.appendSwitch(
-  'enable-features',
-  'OverlayScrollbar,SharedArrayBuffer,UseOzonePlatform,WaylandWindowDecorations',
-);
+const enabledFeatures = [
+  'OverlayScrollbar',
+  'SharedArrayBuffer',
+  'UseOzonePlatform',
+  'WaylandWindowDecorations',
+];
 
 // Disable Fluent Scrollbar (for OverlayScrollbar)
 const disabledFeatures = ['FluentScrollbar'];
+
+// Chromium keeps up to 150MB of video per media source, 80MB is its own limit for
+// low memory devices (30MB affects the buffering of HD videos)
+const lowMemoryMode = config.get('options.lowMemoryMode') ?? false;
+app.commandLine.appendSwitch(
+  'mse-video-buffer-size-limit-mb',
+  lowMemoryMode ? '30' : '80',
+);
+if (lowMemoryMode) {
+  // Run the audio and network services in the main process (one process less each),
+  // at the cost of their crash isolation
+  disabledFeatures.push('AudioServiceOutOfProcess');
+  enabledFeatures.push('NetworkServiceInProcess2');
+  // Favor memory over speed in V8, like Chromium on low-end devices
+  app.commandLine.appendSwitch('js-flags', '--optimize-for-size');
+}
 let disableHardwareAcceleration = config.get(
   'options.disableHardwareAcceleration',
 );
@@ -176,7 +194,8 @@ if (disableHardwareAcceleration) {
   app.disableHardwareAcceleration();
 }
 
-// Apply disabled features
+// Apply enabled and disabled features (only the last value of a switch is used)
+app.commandLine.appendSwitch('enable-features', enabledFeatures.join(','));
 app.commandLine.appendSwitch('disable-features', disabledFeatures.join(','));
 
 // Windows SMTC support via node-smtc
@@ -309,8 +328,8 @@ function onClosed() {
   mainWindow = null;
 }
 
-ipcMain.handle('peard:get-main-plugin-names', async () =>
-  Object.keys(await mainPlugins()),
+ipcMain.handle('peard:get-main-plugin-names', () =>
+  Object.keys(getAllLoadedMainPlugins()),
 );
 
 const initHook = async (win: BrowserWindow) => {
@@ -598,6 +617,11 @@ async function createMainWindow() {
     show: false,
     webPreferences: {
       contextIsolation: true,
+      // Don't disable it: when the window is hidden (e.g. in the tray), Chromium marks the
+      // page as hidden and stops decoding the video (the audio keeps playing)
+      backgroundThrottling: true,
+      // There is no UI to use the spellchecker suggestions (it loads dictionaries)
+      spellcheck: false,
       preload: path.join(__dirname, '..', 'preload', 'preload.cjs'),
       ...(isTesting()
         ? undefined
@@ -740,7 +764,21 @@ async function createMainWindow() {
   win.once('ready-to-show', () => {
     if (config.get('options.appVisible')) {
       win.show();
+      return;
     }
+
+    // Started hidden in the tray: the window is never shown, but Chromium still considers
+    // the page visible (so it keeps decoding the video, and the page is never "hidden").
+    // Hiding the (already invisible) window marks the page as hidden.
+    let isHidden = false;
+    const hide = () => {
+      if (isHidden || win.isDestroyed()) return;
+      isHidden = true;
+      if (!win.isVisible()) win.hide();
+    };
+    // Let the player load first, like when the window is hidden later on
+    ipcMain.once('peard:player-api-loaded', hide);
+    setTimeout(hide, 30_000);
   });
 
   removeContentSecurityPolicy();
@@ -888,12 +926,12 @@ app.on('activate', async () => {
   }
 });
 
-const getDefaultLocale = async (locale: string) =>
-  Object.keys(await languageResources()).includes(locale) ? locale : null;
+const getDefaultLocale = (locale: string) =>
+  availableLanguages.includes(locale) ? locale : null;
 
 app.whenReady().then(async () => {
   if (!config.get('options.language')) {
-    const locale = await getDefaultLocale(app.getLocale());
+    const locale = getDefaultLocale(app.getLocale());
     if (locale) {
       config.set('options.language', locale);
     }

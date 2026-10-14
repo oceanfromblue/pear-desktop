@@ -1,3 +1,4 @@
+import { isPageHidden } from '@/providers/page-visibility';
 import { getSongInfo } from '@/providers/song-info-front';
 import { createRenderer } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
@@ -10,7 +11,7 @@ import {
   translateInvoke,
 } from './ipc-bridge';
 import { disposeReactiveRoot } from './reactive-root';
-import { setConfig, setCurrentTime } from './renderer';
+import { isVisible, setConfig, setCurrentTime } from './renderer';
 import { refreshCurrentLyrics } from './store';
 import { selectors, tabStates } from './utils';
 
@@ -80,10 +81,12 @@ export const renderer = createRenderer<
   },
   async videoDataChange() {
     if (!this.updateTimestampInterval) {
-      this.updateTimestampInterval = setInterval(
-        () => setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000),
-        100,
-      );
+      this.updateTimestampInterval = setInterval(() => {
+        // Nothing shows the lyrics: don't re-render them every 100ms
+        if (isPageHidden() || !isVisible()) return;
+
+        setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000);
+      }, 100);
     }
 
     // prettier-ignore

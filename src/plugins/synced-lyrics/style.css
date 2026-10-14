@@ -87,6 +87,11 @@
     font-style: italic !important;
   }
 
+  & .text-lyrics > .korean-pronunciation {
+    color: var(--ytmusic-text-secondary) !important;
+    font-size: calc(var(--lyrics-font-size) * 0.8) !important;
+  }
+
   & .text-lyrics > .translation {
     font-size: calc(var(--lyrics-font-size) * 0.7) !important;
     font-weight: inherit !important;
@@ -138,6 +143,11 @@
     color: var(--ytmusic-text-secondary) !important;
     font-size: calc(var(--lyrics-font-size) * 0.84) !important;
     font-style: italic !important;
+  }
+
+  & > .korean-pronunciation {
+    color: var(--ytmusic-text-secondary) !important;
+    font-size: calc(var(--lyrics-font-size) * 0.8) !important;
   }
 
   & > .translation {

@@ -1,4 +1,5 @@
 import { t } from '@/i18n';
+import { setVideoHidden } from '@/providers/video-quality';
 import { createPlugin } from '@/utils';
 
 import type { MusicPlayer } from '@/types/music-player';
@@ -47,6 +48,8 @@ export default createPlugin<
 
     onPlayerApiReady(api) {
       this.api = api;
+      // Don't let the video quality manager restore the quality
+      setVideoHidden('audio-only-plugin', true);
 
       // Remove a previous listener if the player API re-initialized, so
       // listeners don't stack and re-run on every song change.
@@ -70,6 +73,7 @@ export default createPlugin<
     },
 
     stop() {
+      setVideoHidden('audio-only-plugin', false);
       if (this.playbackModeObserver) {
         this.playbackModeObserver.disconnect();
         this.playbackModeObserver = null;

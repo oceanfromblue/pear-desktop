@@ -22,6 +22,23 @@ let appliedFilters: BiquadFilterNode[] = [];
 let audioSourceNode: AudioNode | null = null;
 let audioCtx: AudioContext | null = null;
 
+/** Takes the filters out of the audio graph, restoring the default path */
+const removeFilters = () => {
+  if (audioSourceNode && appliedFilters.length > 0) {
+    try {
+      audioSourceNode.disconnect(appliedFilters[0]);
+    } catch {}
+  }
+  appliedFilters.forEach((filter) => filter.disconnect());
+  appliedFilters = [];
+
+  if (audioSourceNode && audioCtx) {
+    audioSourceNode.connect(audioCtx.destination);
+  }
+  audioSourceNode = null;
+  audioCtx = null;
+};
+
 export default createPlugin({
   name: () => t('plugins.equalizer.name'),
   description: () => t('plugins.equalizer.description'),
@@ -68,57 +85,67 @@ export default createPlugin({
   },
   renderer: {
     components: { presets: EqualizerPresets },
+    audioCanPlayListener: null as
+      | ((event: CustomEvent<Compressor>) => void)
+      | null,
     async start({ getConfig }) {
       const config = await getConfig();
 
+      this.audioCanPlayListener = ({
+        detail: { audioSource, audioContext },
+      }) => {
+        // This event is sent for every song, but the audio graph stays the
+        // same: the filters are only inserted once
+        if (audioSourceNode === audioSource) return;
+
+        const filtersToApply = config.filters.concat(
+          defaultPresets
+            .filter((preset) => config.presets[preset])
+            .map((preset) => presetConfigs[preset]),
+        );
+
+        if (filtersToApply.length === 0) return;
+
+        removeFilters();
+        audioSourceNode = audioSource;
+        audioCtx = audioContext;
+
+        // Disconnect default path to avoid parallel audio
+        try {
+          audioSource.disconnect(audioContext.destination);
+        } catch {}
+
+        let lastNode: AudioNode = audioSource;
+        filtersToApply.forEach((filter) => {
+          const biquadFilter = audioContext.createBiquadFilter();
+          biquadFilter.type = filter.type;
+          biquadFilter.frequency.value = filter.frequency;
+          biquadFilter.Q.value = filter.Q;
+          biquadFilter.gain.value = filter.gain;
+
+          lastNode.connect(biquadFilter);
+          lastNode = biquadFilter;
+
+          appliedFilters.push(biquadFilter);
+        });
+        lastNode.connect(audioContext.destination);
+      };
+
       document.addEventListener(
         'peard:audio-can-play',
-        ({ detail: { audioSource, audioContext } }) => {
-          const filtersToApply = config.filters.concat(
-            defaultPresets
-              .filter((preset) => config.presets[preset])
-              .map((preset) => presetConfigs[preset]),
-          );
-
-          if (filtersToApply.length === 0) return;
-
-          // Clean up previous filters if they exist
-          appliedFilters.forEach((filter) => filter.disconnect());
-          appliedFilters = [];
-
-          audioSourceNode = audioSource;
-          audioCtx = audioContext;
-
-          // Disconnect default path to avoid parallel audio
-          audioSource.disconnect(audioContext.destination);
-
-          let lastNode: AudioNode = audioSource;
-          filtersToApply.forEach((filter) => {
-            const biquadFilter = audioContext.createBiquadFilter();
-            biquadFilter.type = filter.type;
-            biquadFilter.frequency.value = filter.frequency;
-            biquadFilter.Q.value = filter.Q;
-            biquadFilter.gain.value = filter.gain;
-
-            lastNode.connect(biquadFilter);
-            lastNode = biquadFilter;
-
-            appliedFilters.push(biquadFilter);
-          });
-          lastNode.connect(audioContext.destination);
-        },
+        this.audioCanPlayListener,
       );
     },
     stop() {
-      appliedFilters.forEach((filter) => filter.disconnect());
-      appliedFilters = [];
-
-      // Restore default audio path
-      if (audioSourceNode && audioCtx) {
-        audioSourceNode.connect(audioCtx.destination);
-        audioSourceNode = null;
-        audioCtx = null;
+      if (this.audioCanPlayListener) {
+        document.removeEventListener(
+          'peard:audio-can-play',
+          this.audioCanPlayListener,
+        );
+        this.audioCanPlayListener = null;
       }
+
+      removeFilters();
     },
   },
 });

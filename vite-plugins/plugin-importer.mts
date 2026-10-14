@@ -48,7 +48,26 @@ export const pluginVirtualModuleGenerator = (
       for (const { name, path } of plugins) {
         const absolutePath = resolve(srcPath, '..', path).replace(/\\/g, '/');
         if (mode === 'main') {
-          // dynamic import (for main)
+          // full module (backend + menu) is imported only for enabled plugins,
+          // the stub (name/description/config/...) comes from a light `.stub` module
+          const stubPath = absolutePath.replace(/\.(js|ts|jsx|tsx)$/, '.stub.$1');
+          writer.writeLine(
+            `import ${kebabToCamel(name)}PluginStubImport from '${stubPath}';`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}PluginImport = () => import('${absolutePath}');`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}Plugin = async () => (await ${kebabToCamel(name)}PluginImport()).default;`,
+          );
+          writer.writeLine(
+            `const ${kebabToCamel(name)}PluginStub = () => Promise.resolve(${kebabToCamel(name)}PluginStubImport);`,
+          );
+        } else if (mode === 'renderer') {
+          // dynamic import (for main and renderer)
+          // NOTE: the renderer is bundled into a single IIFE file, but the bundler still wraps
+          // dynamically imported modules in lazy initializers, so the code (and the heavy
+          // dependencies) of disabled plugins is never evaluated
           writer.writeLine(
             `const ${kebabToCamel(name)}PluginImport = () => import('${absolutePath}');`,
           );
@@ -127,6 +146,44 @@ export const pluginVirtualModuleGenerator = (
       writer.writeLine('  return await promise;');
       writer.writeLine('};');
       writer.blankLine();
+
+      if (mode === 'main') {
+        writer.writeLine('const mainPluginLoaders = {');
+        for (const { name } of plugins) {
+          writer.writeLine(`  "${name}": ${kebabToCamel(name)}Plugin,`);
+        }
+        writer.writeLine('};');
+        writer.writeLine('const mainPluginCache = {};');
+        writer.writeLine('export const mainPlugin = async (id) => {');
+        writer.writeLine('  if (!Object.hasOwn(mainPluginLoaders, id)) return undefined;');
+        writer.writeLine('  mainPluginCache[id] ??= mainPluginLoaders[id]().then((plg) => supportsPlatform(plg) ? plg : undefined);');
+        writer.writeLine('  return await mainPluginCache[id];');
+        writer.writeLine('};');
+        writer.blankLine();
+      }
+
+      if (mode === 'renderer') {
+        // Load a single plugin, so only enabled plugins are evaluated
+        writer.writeLine(
+          `export const rendererPluginIds = ${JSON.stringify(plugins.map(({ name }) => name))};`,
+        );
+        writer.writeLine('const rendererPluginLoaders = {');
+        for (const { name } of plugins) {
+          writer.writeLine(`  "${name}": ${kebabToCamel(name)}Plugin,`);
+        }
+        writer.writeLine('};');
+        writer.writeLine('const rendererPluginCache = {};');
+        writer.writeLine('export const rendererPlugin = async (id) => {');
+        writer.writeLine(
+          '  if (!Object.hasOwn(rendererPluginLoaders, id)) return undefined;',
+        );
+        writer.writeLine(
+          "  rendererPluginCache[id] ??= rendererPluginLoaders[id]().then((plg) => plg['renderer'] && supportsPlatform(plg) ? plg : undefined);",
+        );
+        writer.writeLine('  return await rendererPluginCache[id];');
+        writer.writeLine('};');
+        writer.blankLine();
+      }
     },
     { overwrite: true },
   );
